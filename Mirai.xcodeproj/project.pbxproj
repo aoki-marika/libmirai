@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EC423FF023CC8B990047CF9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC423FEF23CC8B990047CF9E /* main.m */; };
+		EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FFC23CCAC970047CF9E /* ctpk.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		EC423FEC23CC8B990047CF9E /* Mirai */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mirai; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC423FEF23CC8B990047CF9E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		EC423FFB23CCAC970047CF9E /* ctpk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctpk.h; sourceTree = "<group>"; };
+		EC423FFC23CCAC970047CF9E /* ctpk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,15 +60,25 @@
 		EC423FEE23CC8B990047CF9E /* Mirai */ = {
 			isa = PBXGroup;
 			children = (
+				EC423FF923CC8D190047CF9E /* include */,
 				EC423FFA23CC8D1D0047CF9E /* src */,
 			);
 			path = Mirai;
+			sourceTree = "<group>";
+		};
+		EC423FF923CC8D190047CF9E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				EC423FFB23CCAC970047CF9E /* ctpk.h */,
+			);
+			path = include;
 			sourceTree = "<group>";
 		};
 		EC423FFA23CC8D1D0047CF9E /* src */ = {
 			isa = PBXGroup;
 			children = (
 				EC423FEF23CC8B990047CF9E /* main.m */,
+				EC423FFC23CCAC970047CF9E /* ctpk.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -128,6 +141,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC423FF023CC8B990047CF9E /* main.m in Sources */,
+				EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
