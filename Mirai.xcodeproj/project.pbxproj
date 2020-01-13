@@ -57,9 +57,17 @@
 		EC423FEE23CC8B990047CF9E /* Mirai */ = {
 			isa = PBXGroup;
 			children = (
-				EC423FEF23CC8B990047CF9E /* main.m */,
+				EC423FFA23CC8D1D0047CF9E /* src */,
 			);
 			path = Mirai;
+			sourceTree = "<group>";
+		};
+		EC423FFA23CC8D1D0047CF9E /* src */ = {
+			isa = PBXGroup;
+			children = (
+				EC423FEF23CC8B990047CF9E /* main.m */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
