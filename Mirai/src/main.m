@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "db.h"
+#import "cgfx.h"
 
 int main(int argc, const char *argv[])
 {
@@ -17,9 +17,7 @@ int main(int argc, const char *argv[])
         for (int i = 1; i < argc; i++)
         {
             printf("%s:\n", argv[i]);
-            struct db_t db;
-            db_open(argv[i], &db);
-            db_close(&db);
+            cgfx_open(argv[i]);
             printf("\n");
         }
     }

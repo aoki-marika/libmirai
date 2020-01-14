@@ -123,10 +123,10 @@ void ctpk_open(FILE *file, struct ctpk_t *ctpk)
     // the signature is CTPK in ascii
     struct ctpk_header_t header;
     fread(&header, sizeof(header), 1, file);
-    assert(header.signatureC == 0x43);
-    assert(header.signatureT == 0x54);
-    assert(header.signatureP == 0x50);
-    assert(header.signatureK == 0x4b);
+    assert(header.signatureC == 'C');
+    assert(header.signatureT == 'T');
+    assert(header.signatureP == 'P');
+    assert(header.signatureK == 'K');
 
     // initialize the output file
     ctpk->num_textures = header.num_textures;

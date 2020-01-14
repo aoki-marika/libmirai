@@ -11,6 +11,7 @@
 		EC423FF023CC8B990047CF9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC423FEF23CC8B990047CF9E /* main.m */; };
 		EC423FF823CC8D130047CF9E /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FF723CC8D130047CF9E /* spr.c */; };
 		EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FFC23CCAC970047CF9E /* ctpk.c */; };
+		ECD640B623CE523000C89360 /* cgfx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECD640B523CE523000C89360 /* cgfx.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,9 @@
 		EC423FF723CC8D130047CF9E /* spr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = spr.c; sourceTree = "<group>"; };
 		EC423FFB23CCAC970047CF9E /* ctpk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctpk.h; sourceTree = "<group>"; };
 		EC423FFC23CCAC970047CF9E /* ctpk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
+		EC89912F23CD2FD0009B4598 /* etcdec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = etcdec.h; sourceTree = "<group>"; };
+		ECD640B223CE521400C89360 /* cgfx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
+		ECD640B523CE523000C89360 /* cgfx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cgfx.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +83,7 @@
 				EC423FF623CC8D130047CF9E /* spr.h */,
 				EC423FFB23CCAC970047CF9E /* ctpk.h */,
 				EC160C9423CE3DF000FC17EC /* db.h */,
+				ECD640B223CE521400C89360 /* cgfx.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -89,6 +94,8 @@
 				EC423FEF23CC8B990047CF9E /* main.m */,
 				EC423FF723CC8D130047CF9E /* spr.c */,
 				EC423FFC23CCAC970047CF9E /* ctpk.c */,
+				EC160C9223CE3DE300FC17EC /* db.c */,
+				ECD640B523CE523000C89360 /* cgfx.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
