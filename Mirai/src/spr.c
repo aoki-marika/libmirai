@@ -13,6 +13,11 @@
 #include <stdbool.h>
 #include <string.h>
 
+// MARK: - Constants
+
+/// The maximum length of a CTPK name, in bytes.
+const int max_ctpk_name_length = 32;
+
 // MARK: - Data Structures
 
 /// The data structure for the header of an spr file.
@@ -24,10 +29,10 @@ struct spr_header_t
     /// The pointer to the beginning of the CTPK data within this file.
     uint32_t ctpks_pointer;
 
-    /// The number of CTPK files within this file..
+    /// The number of CTPK files within this file.
     uint32_t num_ctpks;
 
-    /// The pointer to the beginning of the CTPK names data within this file..
+    /// The pointer to the beginning of the CTPK names data within this file.
     uint32_t names_pointer;
 
     // have no idea what this is, seems to always be all zeroes
@@ -42,6 +47,40 @@ struct spr_header_t
 };
 
 // MARK: - Functions
+
+/// Read an spr name from the given file handle, of the given max length.
+///
+/// Sprs store names in a semi-odd way where they allocate a fixed amount of space,
+/// then all whitespace is replaced by terminator characters.
+///
+/// The name is read starting from the current position of the given file handle.
+/// @param file The file handle to read the name from.
+/// @param allocated_size The size of the allocated space for the name, in bytes.
+char *spr_read_name(FILE *file, int allocated_size)
+{
+    char characters[allocated_size];
+    fread(characters, allocated_size, 1, file);
+
+    // allocate the maximum size first,
+    // then find the real size and reallocate it
+    char *name = malloc(allocated_size + 1);
+    int name_index = 0;
+    int name_length = 0;
+    for (int i = 0; i < allocated_size; i++)
+    {
+        if (characters[i] != '\0')
+        {
+            name[name_index] = characters[i];
+            name_index++;
+            name_length++;
+        }
+    }
+
+    // +1 for the terminator character
+    name = realloc(name, name_length + 1);
+    name[name_length] = '\0';
+    return name;
+}
 
 void spr_open(const char *path, struct spr_t *spr)
 {
@@ -64,37 +103,8 @@ void spr_open(const char *path, struct spr_t *spr)
     for (unsigned int i = 0; i < header.num_ctpks; i++)
     {
         // read the name
-        // each name is actually within 32 bytes,
-        // surrounded by an unknown amount of terminator characters
-        // so read the maximum length then get the actual name by reading between the terminators
-        const unsigned int name_max_length = 32;
-        char name_full[name_max_length];
         fseek(spr->file, names_pointer, SEEK_SET);
-        fread(name_full, sizeof(name_full), 1, spr->file);
-
-        unsigned int name_start_index = 0;
-        unsigned int name_length = 0;
-        bool name_start_index_set = false;
-        for (unsigned int i = 0; i < name_max_length; i++)
-        {
-            if (name_full[i] != '\0' && !name_start_index_set)
-            {
-                name_start_index = i;
-                name_start_index_set = true;
-            }
-
-            if (name_start_index_set && name_full[i] == '\0')
-            {
-                name_length = i - name_start_index;
-                break;
-            }
-        }
-
-        // copy the null terminated name into a new string to get the final name
-        char *name = malloc(name_length + 1);
-        name[name_length] = '\0';
-        memcpy(name, name_full + name_start_index, name_length);
-        spr->ctpk_names[i] = name;
+        spr->ctpk_names[i] = spr_read_name(spr->file, max_ctpk_name_length);
 
         // read the ctpk file
         // not sure what this is but theres an additional 4 bytes before the ctpk header
@@ -109,7 +119,7 @@ void spr_open(const char *path, struct spr_t *spr)
         // increment the pointers for the next ctpk
         // ctpk pointer needs to be handled specially as it should skip past texture data without reading it
         // but if there are no textures then the next ctpk should be immediately after
-        names_pointer += name_max_length;
+        names_pointer += max_ctpk_name_length;
 
         if (ctpk->num_textures > 0)
         {
