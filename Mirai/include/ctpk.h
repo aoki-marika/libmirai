@@ -83,6 +83,9 @@ struct ctpk_texture
     /// The offset of the data of this texture within the original file handle, in bytes.
     unsigned long long data_pointer;
 
+    /// The size of this texture's data when it has been decoded.
+    unsigned long long decoded_data_size;
+
     /// The format of this texture's data.
     enum ctpk_texture_format data_format;
 };

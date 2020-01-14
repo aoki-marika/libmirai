@@ -119,6 +119,27 @@ void ctpk_open(FILE *input, struct ctpk_file *output)
         texture->data_size = texture_header.data_size;
         texture->data_pointer = start_pointer + header.textures_pointer + texture_header.data_pointer;
         texture->data_format = texture_header.format;
+
+        unsigned long long w = texture_header.width;
+        unsigned long long h = texture_header.height;
+        switch (texture_header.format)
+        {
+            case CTPK_TEXTURE_FORMAT_RGBA8888: texture->decoded_data_size = w * h * 4;
+            case CTPK_TEXTURE_FORMAT_RGB888:   texture->decoded_data_size = w * h * 3;
+            case CTPK_TEXTURE_FORMAT_RGBA5551:
+            case CTPK_TEXTURE_FORMAT_RGB565:
+            case CTPK_TEXTURE_FORMAT_RGBA4444: texture->decoded_data_size = w * h * 2;
+            case CTPK_TEXTURE_FORMAT_LA88:
+            case CTPK_TEXTURE_FORMAT_HL8:      texture->decoded_data_size = w * h * 2;
+            case CTPK_TEXTURE_FORMAT_L8:
+            case CTPK_TEXTURE_FORMAT_A8:
+            case CTPK_TEXTURE_FORMAT_LA44:     texture->decoded_data_size = w * h;
+            case CTPK_TEXTURE_FORMAT_L4:
+            case CTPK_TEXTURE_FORMAT_A4:       texture->decoded_data_size = w * h;
+            case CTPK_TEXTURE_FORMAT_ETC1:     texture->decoded_data_size = w * h * 3;
+            case CTPK_TEXTURE_FORMAT_ETC1_A4:  texture->decoded_data_size = w * h * 4;
+        }
+
         output->textures[i] = texture;
     }
 }
@@ -155,7 +176,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 4; k++)
                         temp[(i * 64 + j) * 4 + k] = raw_data[(i * 64 + trans_bytes[j]) * 4 + 3 - k];
 
-            uint8_t *rgba = malloc(w * h * 4);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 4; k++)
@@ -171,7 +192,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 3; k++)
                         temp[(i * 64 + j) * 3 + k] = raw_data[(i * 64 + trans_bytes[j]) * 3 + 2 - k];
 
-            uint8_t *rgba = malloc(w * h * 3);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 3; k++)
@@ -189,7 +210,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 2; k++)
                         temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + k];
 
-            uint8_t *rgba = malloc(w * h * 2);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 2; k++)
@@ -206,7 +227,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 2; k++)
                         temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + 1 - k];
 
-            uint8_t *rgba = malloc(w * h * 2);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 2; k++)
@@ -223,7 +244,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 for (int j = 0; j < 64; j++)
                     temp[i * 64 + j] = raw_data[i * 64 + trans_bytes[j]];
 
-            uint8_t *rgba = malloc(w * h);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     rgba[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
@@ -243,7 +264,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 }
             }
 
-            uint8_t *rgba = malloc(w * h);
+            uint8_t *rgba = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     rgba[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
