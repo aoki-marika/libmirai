@@ -16,7 +16,7 @@
 // MARK: - Data Structures
 
 /// The data structure for the header of a sprite AET file.
-struct spr_header
+struct spr_header_t
 {
     /// The sprite AET signature for this file, must be `0x0000`.
     uint32_t signature;
@@ -43,20 +43,20 @@ struct spr_header
 
 // MARK: - Functions
 
-void spr_open(const char *path, struct spr_file *output)
+void spr_open(const char *path, struct spr_t *output)
 {
     // open the file for binary reading
     output->handle = fopen(path, "rb");
 
     // read the header
-    struct spr_header header;
-    fread(&header, sizeof(struct spr_header), 1, output->handle);
+    struct spr_header_t header;
+    fread(&header, sizeof(struct spr_header_t), 1, output->handle);
     assert(header.signature == 0x0000);
 
     // initialize the output file
     output->num_ctpks = header.num_ctpks;
     output->ctpk_names = malloc(header.num_ctpks * sizeof(char *));
-    output->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_file *));
+    output->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_t *));
 
     // read each ctpk file
     unsigned long long names_pointer = header.names_pointer;
@@ -102,7 +102,7 @@ void spr_open(const char *path, struct spr_file *output)
         fseek(output->handle, ctpks_pointer, SEEK_SET);
         fseek(output->handle, 4, SEEK_CUR);
 
-        struct ctpk_file *ctpk = malloc(sizeof(struct ctpk_file));
+        struct ctpk_t *ctpk = malloc(sizeof(struct ctpk_t));
         ctpk_open(output->handle, ctpk);
         output->ctpks[i] = ctpk;
 
@@ -113,7 +113,7 @@ void spr_open(const char *path, struct spr_file *output)
 
         if (ctpk->num_textures > 0)
         {
-            struct ctpk_texture *last_texture = ctpk->textures[ctpk->num_textures - 1];
+            struct ctpk_texture_t *last_texture = ctpk->textures[ctpk->num_textures - 1];
             ctpks_pointer = last_texture->data_pointer + last_texture->data_size;
         }
         else
@@ -123,7 +123,7 @@ void spr_open(const char *path, struct spr_file *output)
     }
 }
 
-void spr_close(struct spr_file *file)
+void spr_close(struct spr_t *file)
 {
     for (unsigned int i = 0; i < file->num_ctpks; i++)
     {

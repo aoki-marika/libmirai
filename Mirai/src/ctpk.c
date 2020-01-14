@@ -32,7 +32,7 @@ const int trans_bytes[64] =
 // MARK: - Data Structures
 
 /// The data structure for the header of a CTPK file.
-struct ctpk_header
+struct ctpk_header_t
 {
     /// The `CTPK` signature of this file.
     uint32_t signature;
@@ -60,7 +60,7 @@ struct ctpk_header
 };
 
 /// The data structure for the header of a single texture within a CTPK file.
-struct ctpk_texture_header
+struct ctpk_texture_header_t
 {
     uint32_t file_path_pointer;
     uint32_t data_size;
@@ -76,7 +76,7 @@ struct ctpk_texture_header
 };
 
 /// The data structure for the conversion info of a single texture within a CTPK file.
-struct ctpk_texture_conversion_info
+struct ctpk_texture_conversion_info_t
 {
     uint8_t format;
     uint8_t mipmap_level;
@@ -86,7 +86,7 @@ struct ctpk_texture_conversion_info
 
 // MARK: - Functions
 
-void ctpk_open(FILE *input, struct ctpk_file *output)
+void ctpk_open(FILE *input, struct ctpk_t *output)
 {
     // read the start of this file relative to the file handle
     unsigned long long start_pointer = ftell(input);
@@ -95,27 +95,27 @@ void ctpk_open(FILE *input, struct ctpk_file *output)
     // the signature is CTPK in ascii
     // but since the byte order is swapped when reading it,
     // it is actually KPTC
-    struct ctpk_header header;
+    struct ctpk_header_t header;
     fread(&header, sizeof(header), 1, input);
     assert(header.signature == 0x4b505443);
 
     // initialize the output file
     output->num_textures = header.num_textures;
-    output->textures = malloc(header.num_textures * sizeof(struct ctpk_texture *));
+    output->textures = malloc(header.num_textures * sizeof(struct ctpk_texture_t *));
 
     // read all the textures
     for (unsigned int i = 0; i < header.num_textures; i++)
     {
         // read the header
-        struct ctpk_texture_header texture_header;
+        struct ctpk_texture_header_t texture_header;
         fread(&texture_header, sizeof(texture_header), 1, input);
 
         // read the conversion info
-        struct ctpk_texture_conversion_info conversion_info;
+        struct ctpk_texture_conversion_info_t conversion_info;
         fread(&conversion_info, sizeof(conversion_info), 1, input);
 
         // create the texture
-        struct ctpk_texture *texture = malloc(sizeof(struct ctpk_texture));
+        struct ctpk_texture_t *texture = malloc(sizeof(struct ctpk_texture_t));
         texture->width = texture_header.width;
         texture->height = texture_header.height;
         texture->data_size = texture_header.data_size;
@@ -146,7 +146,7 @@ void ctpk_open(FILE *input, struct ctpk_file *output)
     }
 }
 
-void ctpk_close(struct ctpk_file *file)
+void ctpk_close(struct ctpk_t *file)
 {
     for (unsigned int i = 0; i < file->num_textures; i++)
         free(file->textures[i]);
@@ -176,7 +176,7 @@ uint32_t read_etc_word(const uint8 *source, int *offset)
     return word;
 }
 
-uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
+uint8_t *ctpk_texture_decode(const struct ctpk_texture_t *texture, FILE *source)
 {
     // these are all translations from dnasdws ctpktool project
     // all credits to them for creating the implementations

@@ -13,19 +13,19 @@
 // MARK: - Data Structures
 
 /// The data structure for a CTPK file that has been opened.
-struct ctpk_file
+struct ctpk_t
 {
     /// The number of textures within this file.
     unsigned int num_textures;
 
     /// The array of textures within this file.
-    struct ctpk_texture **textures;
+    struct ctpk_texture_t **textures;
 };
 
-/// The different formats that a single texture within a CTPK file can be.
+/// The different formats that the data of a single texture within a CTPK file can be.
 ///
 /// Unless stated otherwise, each format decodes to the same format.
-enum ctpk_texture_format
+enum ctpk_texture_format_t
 {
     /// Eight bits for the red, green, blue, and alpha channels.
     CTPK_TEXTURE_FORMAT_RGBA8888 = 0x0,
@@ -73,7 +73,7 @@ enum ctpk_texture_format
 };
 
 /// The data structure for a texture that has been read from a CTPK file.
-struct ctpk_texture
+struct ctpk_texture_t
 {
     /// The width of this texture, in pixels.
     uint16_t width;
@@ -91,24 +91,24 @@ struct ctpk_texture
     unsigned long long decoded_data_size;
 
     /// The format of this texture's data.
-    enum ctpk_texture_format data_format;
+    enum ctpk_texture_format_t data_format;
 };
 
 // MARK: - Functions
 
-/// Open the CTPK file from the given file handle into the given `ctpk_file` data structure.
+/// Open the CTPK file from the given file handle into the given `ctpk_t` data structure.
 /// @param input The file handle to read the CTPK file from.
-/// @param output The `ctpk_file` to read the file into.
-void ctpk_open(FILE *input, struct ctpk_file *output);
+/// @param output The `ctpk_t` to read the file into.
+void ctpk_open(FILE *input, struct ctpk_t *output);
 
-/// Close the given `ctpk_file`, releasing all of it's memory.
-/// This must be called after an `ctpk_file` is opened and before program execution completes.
-/// @param file The `ctpk_file` to close.
-void ctpk_close(struct ctpk_file *file);
+/// Close the given `ctpk_t`, releasing all of it's memory.
+/// This must be called after an `ctpk_t` is opened and before program execution completes.
+/// @param file The `ctpk_t` to close.
+void ctpk_close(struct ctpk_t *file);
 
 /// Decode the given CTPK texture's data from the given file handle.
 /// @param texture The texture to decode the data of.
 /// @param source The file handle to read the texture's data from.
 /// @returns A pointer to the array of decoded texture data from the given texture. This must be freed before program execution completes.
 /// Note that that the data is in different formats for the different texture formats, see `ctpk_texture_format` cases for more information.
-uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source);
+uint8_t *ctpk_texture_decode(const struct ctpk_texture_t *texture, FILE *source);
