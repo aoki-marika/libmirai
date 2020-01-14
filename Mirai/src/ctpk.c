@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "etcdec.h"
+
 // MARK: - Constants
 
 /// Translation bytes used for decoding texture data from a CTPK file.

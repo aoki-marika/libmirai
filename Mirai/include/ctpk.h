@@ -23,6 +23,8 @@ struct ctpk_file
 };
 
 /// The different formats that a single texture within a CTPK file can be.
+///
+/// Unless stated otherwise, each format decodes to the same format.
 enum ctpk_texture_format
 {
     /// Eight bits for the red, green, blue, and alpha channels.
@@ -62,9 +64,11 @@ enum ctpk_texture_format
     CTPK_TEXTURE_FORMAT_A4       = 0xb,
 
     /// Ericsson Texture Compression version one.
+    /// Decodes to eight bit red, green, and blue channels.
     CTPK_TEXTURE_FORMAT_ETC1     = 0xc,
 
     /// Ericsson Texture Compression version one, with an additional four bits for the alpha channel.
+    /// Decodes to eight bit red, green, blue, and alpha channels.
     CTPK_TEXTURE_FORMAT_ETC1_A4  = 0xd,
 };
 

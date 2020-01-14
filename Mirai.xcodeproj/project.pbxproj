@@ -65,6 +65,7 @@
 			children = (
 				EC423FF923CC8D190047CF9E /* include */,
 				EC423FFA23CC8D1D0047CF9E /* src */,
+				EC89912823CD230F009B4598 /* etc */,
 			);
 			path = Mirai;
 			sourceTree = "<group>";
@@ -86,6 +87,14 @@
 				EC423FFC23CCAC970047CF9E /* ctpk.c */,
 			);
 			path = src;
+			sourceTree = "<group>";
+		};
+		EC89912823CD230F009B4598 /* etc */ = {
+			isa = PBXGroup;
+			children = (
+				EC89912F23CD2FD0009B4598 /* etcdec.h */,
+			);
+			path = etc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
