@@ -152,6 +152,28 @@ void ctpk_close(struct ctpk_file *file)
     free(file->textures);
 }
 
+/// Read an ETC compressed word from the given bytes at the given offset.
+/// @param source The array of bytes to read the word from.
+/// @param offset The offset in the source to read the word from, modified to increment past the word once it's read.
+/// @returns The 32bit ETC word from the given source at the given offset.
+uint32_t read_etc_word(const uint8 *source, int *offset)
+{
+    uint8_t bytes[sizeof(uint32_t)];
+    memcpy(bytes, source + *offset, sizeof(uint32_t));
+    *offset += sizeof(uint32_t);
+
+    uint32_t word = 0;
+    word |= bytes[0];
+    word <<= 8;
+    word |= bytes[1];
+    word <<= 8;
+    word |= bytes[2];
+    word <<= 8;
+    word |= bytes[3];
+
+    return word;
+}
+
 uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
 {
     // these are all translations from dnasdws ctpktool project
@@ -176,13 +198,13 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 4; k++)
                         temp[(i * 64 + j) * 4 + k] = raw_data[(i * 64 + trans_bytes[j]) * 4 + 3 - k];
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 4; k++)
-                        rgba[(i * w + j) * 4 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 4 + k];
+                        decoded[(i * w + j) * 4 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 4 + k];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_RGB888:
         {
@@ -192,13 +214,13 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 3; k++)
                         temp[(i * 64 + j) * 3 + k] = raw_data[(i * 64 + trans_bytes[j]) * 3 + 2 - k];
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 3; k++)
-                        rgba[(i * w + j) * 3 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 3 + k];
+                        decoded[(i * w + j) * 3 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 3 + k];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_RGBA5551:
         case CTPK_TEXTURE_FORMAT_RGB565:
@@ -210,13 +232,13 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 2; k++)
                         temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + k];
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 2; k++)
-                        rgba[(i * w + j) * 2 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 2 + k];
+                        decoded[(i * w + j) * 2 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 2 + k];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_LA88:
         case CTPK_TEXTURE_FORMAT_HL8:
@@ -227,13 +249,13 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                     for (int k = 0; k < 2; k++)
                         temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + 1 - k];
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     for (int k = 0; k < 2; k++)
-                        rgba[(i * w + j) * 2 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 2 + k];
+                        decoded[(i * w + j) * 2 + k] = temp[(((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8) * 2 + k];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_L8:
         case CTPK_TEXTURE_FORMAT_A8:
@@ -244,12 +266,12 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 for (int j = 0; j < 64; j++)
                     temp[i * 64 + j] = raw_data[i * 64 + trans_bytes[j]];
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
-                    rgba[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
+                    decoded[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_L4:
         case CTPK_TEXTURE_FORMAT_A4:
@@ -264,12 +286,12 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 }
             }
 
-            uint8_t *rgba = malloc(texture->decoded_data_size);
+            uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
-                    rgba[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
+                    decoded[i * w + j] = temp[((i / 8) * (w / 8) + j / 8) * 64 + i % 8 * 8 + j % 8];
 
-            return rgba;
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_ETC1:
         {
@@ -278,24 +300,36 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 for (int j = 0; j < 8; j++)
                     temp[i * 8 + j] = raw_data[i * 8 + 7 - j];
 
-            uint8_t *rgba = malloc(w * h * 4);
+            uint8_t compressed[w * h / 2];
             for (int i = 0; i < h; i += 4)
                 for (int j = 0; j < h; j += 4)
-                    memcpy(rgba + ((i / 4) * (w / 4) + j / 4) * 8, temp + (((i / 8) * (w / 8) + j / 8) * 4 + (i % 8 / 4 * 2 + j % 8 / 4)) * 8, 8);
+                    memcpy(compressed + ((i / 4) * (w / 4) + j / 4) * 8, temp + (((i / 8) * (w / 8) + j / 8) * 4 + (i % 8 / 4 * 2 + j % 8 / 4)) * 8, 8);
 
-            return rgba;
+            int offset = 0;
+            uint8_t *decoded = malloc(texture->decoded_data_size);
+            for (int y = 0; y < h / 4; y++)
+            {
+                for (int x = 0; x < w / 4; x++)
+                {
+                    uint32_t block1 = read_etc_word(compressed, &offset);
+                    uint32_t block2 = read_etc_word(compressed, &offset);
+                    decompressBlockETC2(block1, block2, decoded, w, h, x * 4, y * 4);
+                }
+            }
+
+            return decoded;
         }
         case CTPK_TEXTURE_FORMAT_ETC1_A4:
         {
-            uint8_t rgba_temp[w * h / 2];
+            uint8_t rgb_compressed_temp[w * h / 2];
             for (int i = 0; i < w * h / 2 / 8; i++)
                 for (int j = 0; j < 8; j++)
-                    rgba_temp[i * 8 + j] = raw_data[8 + i * 16 + 7 - j];
+                    rgb_compressed_temp[i * 8 + j] = raw_data[8 + i * 16 + 7 - j];
 
-            uint8_t *rgba = malloc(w * h / 2);
+            uint8_t rgb_compressed[w * h / 2];
             for (int i = 0; i < h; i += 4)
                 for (int j = 0; j < w; j += 4)
-                    memcpy(rgba + ((i / 4) * (w / 4) + j / 4) * 8, rgba_temp + (((i / 8) * (w / 8) + j / 8) * 4 + (i % 8 / 4 * 2 + j % 8 / 4)) * 8, 8);
+                    memcpy(rgb_compressed + ((i / 4) * (w / 4) + j / 4) * 8, rgb_compressed_temp + (((i / 8) * (w / 8) + j / 8) * 4 + (i % 8 / 4 * 2 + j % 8 / 4)) * 8, 8);
 
             uint8_t alpha_temp[w * h];
             for (int i = 0; i < w * h / 16; i++)
@@ -309,12 +343,37 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture *texture, FILE *source)
                 }
             }
 
-            uint8_t *alpha = malloc(w * h);
+            uint8_t alpha[w * h];
             for (int i = 0; i < h; i++)
                 for (int j = 0; j < w; j++)
                     alpha[i * w + j] = alpha_temp[(((i / 8) * (w / 8) + j / 8) * 4 + i % 8 / 4 * 2 + j % 8 / 4) * 16 + i % 4 * 4 + j % 4];
 
-            return NULL;
+            int offset = 0;
+            uint8_t rgb[w * h * 3];
+            for (int y = 0; y < h / 4; y++)
+            {
+                for (int x = 0; x < w / 4; x++)
+                {
+                    uint32_t block1 = read_etc_word(rgb_compressed, &offset);
+                    uint32_t block2 = read_etc_word(rgb_compressed, &offset);
+                    decompressBlockETC2(block1, block2, rgb, w, h, x * 4, y * 4);
+                }
+            }
+
+            uint8_t *decoded = malloc(texture->decoded_data_size);
+            for (int i = 0; i < w * h; i++)
+            {
+                int rgb_index = i * 3;
+                int alpha_index = i;
+                int decoded_index = i * 4;
+
+                decoded[decoded_index + 0] = rgb[rgb_index + 0];
+                decoded[decoded_index + 1] = rgb[rgb_index + 1];
+                decoded[decoded_index + 2] = rgb[rgb_index + 2];
+                decoded[decoded_index + 3] = alpha[alpha_index];
+            }
+
+            return decoded;
         }
     }
 }
