@@ -15,19 +15,19 @@
 
 // MARK: - Data Structures
 
-/// The data structure for the header of a sprite AET file.
+/// The data structure for the header of an spr file.
 struct spr_header_t
 {
-    /// The sprite AET signature for this file, must be `0x0000`.
+    /// The signature for this file, must be `0x0000`.
     uint32_t signature;
 
-    /// The pointer to the beginning of the underlying CTPK file data within this file.
+    /// The pointer to the beginning of the CTPK data within this file.
     uint32_t ctpks_pointer;
 
-    /// The number of underlying CTPK files within this file.
+    /// The number of CTPK files within this file..
     uint32_t num_ctpks;
 
-    /// The pointer to the beginning of the CTPK file names data within this file.
+    /// The pointer to the beginning of the CTPK names data within this file..
     uint32_t names_pointer;
 
     // have no idea what this is, seems to always be all zeroes
@@ -35,28 +35,28 @@ struct spr_header_t
 
     // unsure what these are, but the layout seems to indicate that theyre uint32s
     // on spr files unk2 seems to always line up with ctpk_pointer
-    // but on spr_ae files it appears to be way after, probably after the uv data
-    // unk2 does however always appear to line up with the offset of the reader after the strings
+    // but on spr_ae files it appears to be way after, probably after the block that appears to be 3d related data
+    // unk2 seems to always line up with the offset of the reader after reading the ctpk names data
     uint32_t unk1;
     uint32_t unk2;
 };
 
 // MARK: - Functions
 
-void spr_open(const char *path, struct spr_t *output)
+void spr_open(const char *path, struct spr_t *spr)
 {
     // open the file for binary reading
-    output->handle = fopen(path, "rb");
+    spr->handle = fopen(path, "rb");
 
     // read the header
     struct spr_header_t header;
-    fread(&header, sizeof(struct spr_header_t), 1, output->handle);
+    fread(&header, sizeof(struct spr_header_t), 1, spr->handle);
     assert(header.signature == 0x0000);
 
     // initialize the output file
-    output->num_ctpks = header.num_ctpks;
-    output->ctpk_names = malloc(header.num_ctpks * sizeof(char *));
-    output->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_t *));
+    spr->num_ctpks = header.num_ctpks;
+    spr->ctpk_names = malloc(header.num_ctpks * sizeof(char *));
+    spr->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_t *));
 
     // read each ctpk file
     unsigned long long names_pointer = header.names_pointer;
@@ -69,8 +69,8 @@ void spr_open(const char *path, struct spr_t *output)
         // so read the maximum length then get the actual name by reading between the terminators
         const unsigned int name_max_length = 32;
         char name_full[name_max_length];
-        fseek(output->handle, names_pointer, SEEK_SET);
-        fread(name_full, sizeof(name_full), 1, output->handle);
+        fseek(spr->handle, names_pointer, SEEK_SET);
+        fread(name_full, sizeof(name_full), 1, spr->handle);
 
         unsigned int name_start_index = 0;
         unsigned int name_length = 0;
@@ -94,17 +94,17 @@ void spr_open(const char *path, struct spr_t *output)
         char *name = malloc(name_length + 1);
         name[name_length] = '\0';
         memcpy(name, name_full + name_start_index, name_length);
-        output->ctpk_names[i] = name;
+        spr->ctpk_names[i] = name;
 
         // read the ctpk file
         // not sure what this is but theres an additional 4 bytes before the ctpk header
         // so read those and ignore them
-        fseek(output->handle, ctpks_pointer, SEEK_SET);
-        fseek(output->handle, 4, SEEK_CUR);
+        fseek(spr->handle, ctpks_pointer, SEEK_SET);
+        fseek(spr->handle, 4, SEEK_CUR);
 
         struct ctpk_t *ctpk = malloc(sizeof(struct ctpk_t));
-        ctpk_open(output->handle, ctpk);
-        output->ctpks[i] = ctpk;
+        ctpk_open(spr->handle, ctpk);
+        spr->ctpks[i] = ctpk;
 
         // increment the pointers for the next ctpk
         // ctpk pointer needs to be handled specially as it should skip past texture data without reading it
@@ -118,20 +118,20 @@ void spr_open(const char *path, struct spr_t *output)
         }
         else
         {
-            ctpks_pointer = ftell(output->handle);
+            ctpks_pointer = ftell(spr->handle);
         }
     }
 }
 
-void spr_close(struct spr_t *file)
+void spr_close(struct spr_t *spr)
 {
-    for (unsigned int i = 0; i < file->num_ctpks; i++)
+    for (unsigned int i = 0; i < spr->num_ctpks; i++)
     {
-        free(file->ctpk_names[i]);
-        ctpk_close(file->ctpks[i]);
+        free(spr->ctpk_names[i]);
+        ctpk_close(spr->ctpks[i]);
     }
 
-    free(file->ctpk_names);
-    free(file->ctpks);
-    fclose(file->handle);
+    free(spr->ctpk_names);
+    free(spr->ctpks);
+    fclose(spr->handle);
 }
