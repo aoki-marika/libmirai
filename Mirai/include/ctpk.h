@@ -13,16 +13,20 @@
 // MARK: - Data Structures
 
 /// The data structure for a CTPK file that has been opened.
+///
+/// If `ctpk_open(file, ctpk)` is called on a CTPK then `ctpk_close(ctpk)` must also be called on it before program execution completes.
 struct ctpk_t
 {
-    /// The number of textures within this file.
+    /// The number of textures within this CTPK.
     unsigned int num_textures;
 
-    /// The array of textures within this file.
+    /// All of the textures within this CTPK.
+    ///
+    /// The array and each texture are allocated.
     struct ctpk_texture_t **textures;
 };
 
-/// The different formats that the data of a single texture within a CTPK file can be.
+/// The different formats that the encoded data of a single texture within a CTPK can be.
 ///
 /// Unless stated otherwise, each format decodes to the same format.
 enum ctpk_texture_format_t
@@ -72,7 +76,7 @@ enum ctpk_texture_format_t
     CTPK_TEXTURE_FORMAT_ETC1_A4  = 0xd,
 };
 
-/// The data structure for a texture that has been read from a CTPK file.
+/// The data structure for a single texture within a CTPK.
 struct ctpk_texture_t
 {
     /// The width of this texture, in pixels.
@@ -81,34 +85,38 @@ struct ctpk_texture_t
     /// The height of this texture, in pixels.
     uint16_t height;
 
-    /// The size of the data of this texture, in bytes.
+    /// The size of this texture's encoded data within the file, in bytes.
     unsigned long long data_size;
 
-    /// The offset of the data of this texture within the original file handle, in bytes.
+    /// The offset of this texture's encoded data within the file, in bytes.
     unsigned long long data_pointer;
+
+    /// The format of this texture's encoded data within the file.
+    enum ctpk_texture_format_t data_format;
 
     /// The size of this texture's data when it has been decoded.
     unsigned long long decoded_data_size;
-
-    /// The format of this texture's data.
-    enum ctpk_texture_format_t data_format;
 };
 
 // MARK: - Functions
 
-/// Open the CTPK file from the given file handle into the given `ctpk_t` data structure.
-/// @param input The file handle to read the CTPK file from.
-/// @param output The `ctpk_t` to read the file into.
-void ctpk_open(FILE *input, struct ctpk_t *output);
+/// Open the CTPK file from the given file handle into the given CTPK.
+///
+/// The CTPK file is read starting from the current position indicator of the given file handle.
+/// @param file The file handle to open the CTPK file from.
+/// @param ctpk The CTPK to open the file into.
+void ctpk_open(FILE *file, struct ctpk_t *ctpk);
 
-/// Close the given `ctpk_t`, releasing all of it's memory.
-/// This must be called after an `ctpk_t` is opened and before program execution completes.
-/// @param file The `ctpk_t` to close.
-void ctpk_close(struct ctpk_t *file);
+/// Close the given CTPK, releasing all of it's allocated memory.
+///
+/// This must be called after a CTPK is opened and before program execution completes.
+/// @param ctpk The CTPK to close.
+void ctpk_close(struct ctpk_t *ctpk);
 
-/// Decode the given CTPK texture's data from the given file handle.
-/// @param texture The texture to decode the data of.
-/// @param source The file handle to read the texture's data from.
-/// @returns A pointer to the array of decoded texture data from the given texture. This must be freed before program execution completes.
-/// Note that that the data is in different formats for the different texture formats, see `ctpk_texture_format` cases for more information.
-uint8_t *ctpk_texture_decode(const struct ctpk_texture_t *texture, FILE *source);
+/// Read and decode the given CTPK texture's data from the given file handle.
+/// @param texture The texture to read and decode the data of.
+/// @param file The file handle to read the texture's data from.
+/// @returns A pointer to the array of decoded texture data from the given texture.
+/// This data is allocated so it must be freed before program execution completes.
+/// Note that that the decoded data is in different formats for each texture format, see `ctpk_texture_format_t` cases for more information.
+uint8_t *ctpk_texture_decode(const struct ctpk_texture_t *texture, FILE *file);

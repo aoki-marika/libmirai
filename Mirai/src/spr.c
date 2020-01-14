@@ -46,11 +46,11 @@ struct spr_header_t
 void spr_open(const char *path, struct spr_t *spr)
 {
     // open the file for binary reading
-    spr->handle = fopen(path, "rb");
+    spr->file = fopen(path, "rb");
 
     // read the header
     struct spr_header_t header;
-    fread(&header, sizeof(struct spr_header_t), 1, spr->handle);
+    fread(&header, sizeof(struct spr_header_t), 1, spr->file);
     assert(header.signature == 0x0000);
 
     // initialize the output file
@@ -69,8 +69,8 @@ void spr_open(const char *path, struct spr_t *spr)
         // so read the maximum length then get the actual name by reading between the terminators
         const unsigned int name_max_length = 32;
         char name_full[name_max_length];
-        fseek(spr->handle, names_pointer, SEEK_SET);
-        fread(name_full, sizeof(name_full), 1, spr->handle);
+        fseek(spr->file, names_pointer, SEEK_SET);
+        fread(name_full, sizeof(name_full), 1, spr->file);
 
         unsigned int name_start_index = 0;
         unsigned int name_length = 0;
@@ -99,11 +99,11 @@ void spr_open(const char *path, struct spr_t *spr)
         // read the ctpk file
         // not sure what this is but theres an additional 4 bytes before the ctpk header
         // so read those and ignore them
-        fseek(spr->handle, ctpks_pointer, SEEK_SET);
-        fseek(spr->handle, 4, SEEK_CUR);
+        fseek(spr->file, ctpks_pointer, SEEK_SET);
+        fseek(spr->file, 4, SEEK_CUR);
 
         struct ctpk_t *ctpk = malloc(sizeof(struct ctpk_t));
-        ctpk_open(spr->handle, ctpk);
+        ctpk_open(spr->file, ctpk);
         spr->ctpks[i] = ctpk;
 
         // increment the pointers for the next ctpk
@@ -118,7 +118,7 @@ void spr_open(const char *path, struct spr_t *spr)
         }
         else
         {
-            ctpks_pointer = ftell(spr->handle);
+            ctpks_pointer = ftell(spr->file);
         }
     }
 }
@@ -133,5 +133,5 @@ void spr_close(struct spr_t *spr)
 
     free(spr->ctpk_names);
     free(spr->ctpks);
-    fclose(spr->handle);
+    fclose(spr->file);
 }

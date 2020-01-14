@@ -17,10 +17,10 @@
 /// If `spr_open(path, spr)` is called on an spr then `spr_close(spr)` must also be called on it before program execution completes.
 struct spr_t
 {
-    /// The handle to the file that this spr is reading data from.
+    /// The file handle for the file that this spr is reading data from.
     ///
-    /// Kept open until `spr_close(file)` is called with this spr.
-    FILE *handle;
+    /// Kept open until `spr_close(spr)` is called with this spr.
+    FILE *file;
 
     /// The number of CTPKs within this spr.
     unsigned int num_ctpks;
