@@ -333,7 +333,7 @@ uint8_t *ctpk_texture_decode(const struct ctpk_texture_t *texture, FILE *file)
 
             uint8_t compressed[w * h / 2];
             for (int i = 0; i < h; i += 4)
-                for (int j = 0; j < h; j += 4)
+                for (int j = 0; j < w; j += 4)
                     memcpy(compressed + ((i / 4) * (w / 4) + j / 4) * 8, temp + (((i / 8) * (w / 8) + j / 8) * 4 + (i % 8 / 4 * 2 + j % 8 / 4)) * 8, 8);
 
             int offset = 0;
