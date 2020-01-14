@@ -18,6 +18,9 @@
 /// The maximum length of a CTPK name, in bytes.
 const int max_ctpk_name_length = 32;
 
+/// The maximum length of an image name, in bytes.
+const int max_image_name_length = 71;
+
 // MARK: - Data Structures
 
 /// The data structure for the header of an spr file.
@@ -38,12 +41,11 @@ struct spr_header_t
     // have no idea what this is, seems to always be all zeroes
     uint8_t unknown[8];
 
-    // unsure what these are, but the layout seems to indicate that theyre uint32s
-    // on spr files unk2 seems to always line up with ctpk_pointer
-    // but on spr_ae files it appears to be way after, probably after the block that appears to be 3d related data
-    // unk2 seems to always line up with the offset of the reader after reading the ctpk names data
-    uint32_t unk1;
-    uint32_t unk2;
+    /// The number of images within this file.
+    uint32_t num_images;
+
+    /// The offset of the image data within this file, in bytes.
+    uint32_t images_pointer;
 };
 
 // MARK: - Functions
@@ -92,10 +94,52 @@ void spr_open(const char *path, struct spr_t *spr)
     fread(&header, sizeof(struct spr_header_t), 1, spr->file);
     assert(header.signature == 0x0000);
 
-    // initialize the output file
+    // initialize the output spr
     spr->num_ctpks = header.num_ctpks;
     spr->ctpk_names = malloc(header.num_ctpks * sizeof(char *));
     spr->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_t *));
+    spr->num_images = header.num_images;
+    spr->images = malloc(header.num_images * sizeof(struct spr_image_t *));
+
+    // read each image
+    fseek(spr->file, header.images_pointer, SEEK_SET);
+    for (int i = 0; i < header.num_images; i++)
+    {
+        // read the ctpk index
+        uint8_t ctpk_index;
+        fread(&ctpk_index, sizeof(ctpk_index), 1, spr->file);
+
+        // read the name
+        char *name = spr_read_name(spr->file, max_image_name_length);
+
+        // read the top left coordinates
+        float start_x, start_y;
+        fread(&start_x, sizeof(start_x), 1, spr->file);
+        fread(&start_y, sizeof(start_y), 1, spr->file);
+
+        // read the bottom right coordinates
+        float end_x, end_y;
+        fread(&end_x, sizeof(end_x), 1, spr->file);
+        fread(&end_y, sizeof(end_y), 1, spr->file);
+
+        // assert that the coordinates are proper, mostly for debugging
+        // potentially remove later?
+        assert(start_x <= 1.0 && start_y <= 1.0 && end_x <= 1.0 && end_y <= 1.0);
+        assert(end_x >= start_x && end_y >= start_y);
+
+        // unsure what these bytes are, so skip them
+        fseek(spr->file, 8, SEEK_CUR);
+
+        // add the image
+        struct spr_image_t *image = malloc(sizeof(struct spr_image_t));
+        image->ctpk_index = ctpk_index;
+        image->name = name;
+        image->start_x = start_x;
+        image->start_y = start_y;
+        image->end_x = end_x;
+        image->end_y = end_y;
+        spr->images[i] = image;
+    }
 
     // read each ctpk file
     unsigned long long names_pointer = header.names_pointer;
@@ -141,7 +185,14 @@ void spr_close(struct spr_t *spr)
         ctpk_close(spr->ctpks[i]);
     }
 
+    for (unsigned int i = 0; i < spr->num_images; i++)
+    {
+        free(spr->images[i]->name);
+        free(spr->images[i]);
+    }
+
     free(spr->ctpk_names);
     free(spr->ctpks);
+    free(spr->images);
     fclose(spr->file);
 }

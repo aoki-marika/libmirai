@@ -34,6 +34,43 @@ struct spr_t
     ///
     /// The array and each CTPK are allocated.
     struct ctpk_t **ctpks;
+
+    /// The number of images within this spr.
+    unsigned int num_images;
+
+    /// All of the images within this spr.
+    ///
+    /// The array and each image are allocated.
+    struct spr_image_t **images;
+};
+
+/// The data structure for a single image within a texture of a CTPK within an spr.
+///
+/// When referring to normalized coordinates within an image that means that it is on a scale of `0` to `1`,
+/// then at runtime it is mapped to the actual size of the texture.
+struct spr_image_t
+{
+    /// The index of the CTPK within this image's spr that this image is within.
+    ///
+    /// Sprs don't seem to utilise multi-texture CTPKs, so an image applies to all textures within the CTPK.
+    uint8_t ctpk_index;
+
+    /// The name of this image.
+    ///
+    /// Allocated.
+    char *name;
+
+    /// The normalized X position of the top-left corner of this image within it's texture.
+    float start_x;
+
+    /// The normalized Y position of the top-left corner of this image within it's texture.
+    float start_y;
+
+    /// The normalized X position of the bottom-left corner of this image within it's texture.
+    float end_x;
+
+    /// The normalized Y position of the bottom-right corner of this image within it's texture.
+    float end_y;
 };
 
 // MARK: - Functions
