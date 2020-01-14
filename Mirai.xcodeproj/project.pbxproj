@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC160C9323CE3DE300FC17EC /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = EC160C9223CE3DE300FC17EC /* db.c */; };
 		EC423FF023CC8B990047CF9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC423FEF23CC8B990047CF9E /* main.m */; };
 		EC423FF823CC8D130047CF9E /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FF723CC8D130047CF9E /* spr.c */; };
 		EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FFC23CCAC970047CF9E /* ctpk.c */; };
@@ -25,6 +26,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EC160C9223CE3DE300FC17EC /* db.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = db.c; sourceTree = "<group>"; };
+		EC160C9423CE3DF000FC17EC /* db.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = db.h; sourceTree = "<group>"; };
 		EC423FEC23CC8B990047CF9E /* Mirai */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mirai; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC423FEF23CC8B990047CF9E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EC423FF623CC8D130047CF9E /* spr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
@@ -75,6 +78,7 @@
 			children = (
 				EC423FF623CC8D130047CF9E /* spr.h */,
 				EC423FFB23CCAC970047CF9E /* ctpk.h */,
+				EC160C9423CE3DF000FC17EC /* db.h */,
 			);
 			path = include;
 			sourceTree = "<group>";
