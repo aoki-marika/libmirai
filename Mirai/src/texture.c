@@ -64,20 +64,20 @@ void texture_create(unsigned int width,
     size_t decoded_data_size;
     switch (data_format)
     {
-        case TEXTURE_FORMAT_RGBA8888: decoded_data_size = w * h * 4;
-        case TEXTURE_FORMAT_RGB888:   decoded_data_size = w * h * 3;
+        case TEXTURE_FORMAT_RGBA8888: decoded_data_size = w * h * 4; break;
+        case TEXTURE_FORMAT_RGB888:   decoded_data_size = w * h * 3; break;
         case TEXTURE_FORMAT_RGBA5551:
         case TEXTURE_FORMAT_RGB565:
-        case TEXTURE_FORMAT_RGBA4444: decoded_data_size = w * h * 2;
+        case TEXTURE_FORMAT_RGBA4444: decoded_data_size = w * h * 2; break;
         case TEXTURE_FORMAT_LA88:
-        case TEXTURE_FORMAT_HL8:      decoded_data_size = w * h * 2;
+        case TEXTURE_FORMAT_HL8:      decoded_data_size = w * h * 2; break;
         case TEXTURE_FORMAT_L8:
         case TEXTURE_FORMAT_A8:
-        case TEXTURE_FORMAT_LA44:     decoded_data_size = w * h;
+        case TEXTURE_FORMAT_LA44:     decoded_data_size = w * h;     break;
         case TEXTURE_FORMAT_L4:
-        case TEXTURE_FORMAT_A4:       decoded_data_size = w * h;
-        case TEXTURE_FORMAT_ETC1:     decoded_data_size = w * h * 3;
-        case TEXTURE_FORMAT_ETC1_A4:  decoded_data_size = w * h * 4;
+        case TEXTURE_FORMAT_A4:       decoded_data_size = w * h;     break;
+        case TEXTURE_FORMAT_ETC1:     decoded_data_size = w * h * 3; break;
+        case TEXTURE_FORMAT_ETC1_A4:  decoded_data_size = w * h * 4; break;
     }
 
     // fill in the given texture
