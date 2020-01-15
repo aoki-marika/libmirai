@@ -12,19 +12,9 @@
 #include <string.h>
 #include <assert.h>
 
-// MARK: - Functions
+#include "utils.h"
 
-/// Read the relative offset at the current offset of the given file handle, and convert it to a file-relative absolute pointer.
-/// @param file The file handle to read the offset from and use the offset of.
-/// @returns The file-relative absolute pointer of the offset at the current offset of the given file handle.
-uint32_t cgfx_absolute_pointer(FILE *file)
-{
-    // note that the offset is relative to the beginning of its bytes, not the end
-    uint32_t base = (uint32_t)ftell(file);
-    uint32_t offset;
-    fread(&offset, sizeof(offset), 1, file);
-    return base + offset;
-}
+// MARK: - Functions
 
 /// Read the dictionary entry at the current offset of the given file handle into the given data structure.
 /// @param file The file handle to read the entry from.
@@ -36,8 +26,8 @@ void cgfx_dict_entry_read(FILE *file, struct cgfx_dict_entry_t *entry)
     fseek(file, 8, SEEK_CUR);
 
     // read the name and data pointers
-    uint32_t name_pointer = cgfx_absolute_pointer(file);
-    uint32_t data_pointer = cgfx_absolute_pointer(file);
+    uint32_t name_pointer = utils_absolute_pointer(file);
+    uint32_t data_pointer = utils_absolute_pointer(file);
 
     // read the name
     // the name is a null terminated string at the name pointer,
@@ -79,7 +69,7 @@ void cgfx_dict_read(FILE *file, struct cgfx_dict_t *dict)
     fread(&num_entries, sizeof(num_entries), 1, file);
 
     // read the offset of the dictionary, in bytes
-    uint32_t pointer = cgfx_absolute_pointer(file);
+    uint32_t pointer = utils_absolute_pointer(file);
 
     // initialize the dictionary
     dict->num_entries = num_entries;
