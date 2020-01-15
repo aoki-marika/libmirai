@@ -41,6 +41,7 @@
 		EC2B8BBC23CF53DD009AA3CE /* texture.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
 		EC2B8BC323CF8465009AA3CE /* cmdl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cmdl.h; sourceTree = "<group>"; };
 		EC2B8BC423CF848C009AA3CE /* cmdl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cmdl.c; sourceTree = "<group>"; };
+		EC2B8BC723CF8A35009AA3CE /* vector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
 		EC423FEC23CC8B990047CF9E /* Mirai */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mirai; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC423FEF23CC8B990047CF9E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EC423FF623CC8D130047CF9E /* spr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 				EC2B8BC323CF8465009AA3CE /* cmdl.h */,
 				EC2B8BBB23CF53CF009AA3CE /* texture.h */,
 				EC2B8BAF23CF49AB009AA3CE /* utils.h */,
+				EC2B8BC723CF8A35009AA3CE /* vector.h */,
 			);
 			path = include;
 			sourceTree = "<group>";

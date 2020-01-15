@@ -45,3 +45,15 @@ char *utils_read_string(FILE *file)
     memcpy(string, string_fixed, string_length);
     return string;
 }
+
+void utils_read_vec3(FILE *file, struct vec3_t *vector)
+{
+    float x, y, z;
+    fread(&x, sizeof(x), 1, file);
+    fread(&y, sizeof(y), 1, file);
+    fread(&z, sizeof(z), 1, file);
+
+    vector->x = x;
+    vector->y = y;
+    vector->z = z;
+}

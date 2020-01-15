@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 
+#include "vector.h"
+
 // MARK: - Functions
 
 /// Read the relative offset at the current offset of the given file handle, and convert it to an absolute pointer within the file.
@@ -25,3 +27,8 @@ uint32_t utils_absolute_pointer(FILE *file);
 /// @returns The null terminated string at the current offset of the given file handle.
 /// This string is allocated and must be freed.
 char *utils_read_string(FILE *file);
+
+/// Read the 3D vector at the current offset of the given file handle into the given 3D vector.
+/// @param file The file handle to read the 3D vector from.
+/// @param vector The 3D vector to load the data into.
+void utils_read_vec3(FILE *file, struct vec3_t *vector);
