@@ -10,19 +10,6 @@
 
 #import "cgfx.h"
 
-void print_dict(struct cgfx_dict_t *dict, const char *name)
-{
-    printf(" - %s:\n", name);
-
-    for (int i = 0; i < dict->num_entries; i++)
-    {
-        struct cgfx_dict_entry_t *entry = dict->entries[i];
-        printf("    - entry %i:\n", i);
-        printf("       - name: \"%s\"\n", entry->name);
-        printf("       - data pointer: %u (%08x)\n", entry->data_pointer, entry->data_pointer);
-    }
-}
-
 int main(int argc, const char *argv[])
 {
     @autoreleasepool {
@@ -44,21 +31,22 @@ int main(int argc, const char *argv[])
                 printf("       - data: %zu bytes at %zu (%08zx)\n", txob->texture.data_size, txob->texture.data_pointer, txob->texture.data_pointer);
             }
 
-            print_dict(cgfx.data->models, "models");
-            print_dict(cgfx.data->textures, "textures");
-            print_dict(cgfx.data->lookup_tables, "lookup tables");
-            print_dict(cgfx.data->materials, "materials");
-            print_dict(cgfx.data->shaders, "shaders");
-            print_dict(cgfx.data->cameras, "cameras");
-            print_dict(cgfx.data->lights, "lights");
-            print_dict(cgfx.data->fogs, "fogs");
-            print_dict(cgfx.data->scenes, "scenes");
-            print_dict(cgfx.data->skeletal_animations, "skeletal animations");
-            print_dict(cgfx.data->material_animations, "material animations");
-            print_dict(cgfx.data->visibility_animations, "visibility animations");
-            print_dict(cgfx.data->camera_animations, "camera animations");
-            print_dict(cgfx.data->light_animations, "light animations");
-            print_dict(cgfx.data->emitters, "emitters");
+            printf(" - models:\n");
+            for (int i = 0; i < cgfx.data->models->num_entries; i++)
+            {
+                struct cgfx_dict_entry_t *entry = cgfx.data->models->entries[i];
+                printf("    - cmdl %i:\n", i);
+                printf("       - dict name: \"%s\"\n", entry->name);
+                printf("       - data pointer: %u (%08x)\n", entry->data_pointer, entry->data_pointer);
+
+                // read the flags and cmdl
+                uint32_t flags;
+                fseek(cgfx.file, entry->data_pointer, SEEK_SET);
+                fread(&flags, sizeof(flags), 1, cgfx.file);
+
+                printf("       - has skeleton: %i\n", (flags & 0x80) > 0);
+            }
+
             cgfx_close(&cgfx);
             printf("\n");
         }
