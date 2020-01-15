@@ -38,8 +38,8 @@ void txob_open(FILE *file, struct txob_t *txob)
 
     // read the width and height
     uint32_t width, height;
-    fread(&width, sizeof(width), 1, file);
     fread(&height, sizeof(height), 1, file);
+    fread(&width, sizeof(width), 1, file);
 
     // series of unused values
     //  - u32 opengl texture format
