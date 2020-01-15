@@ -10,6 +10,7 @@
 		EC160C9323CE3DE300FC17EC /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = EC160C9223CE3DE300FC17EC /* db.c */; };
 		EC2B8BB123CF49BF009AA3CE /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2B8BB023CF49BF009AA3CE /* utils.c */; };
 		EC2B8BB823CF4EE4009AA3CE /* txob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2B8BB723CF4EE4009AA3CE /* txob.c */; };
+		EC2B8BBD23CF53DD009AA3CE /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2B8BBC23CF53DD009AA3CE /* texture.c */; };
 		EC423FF023CC8B990047CF9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC423FEF23CC8B990047CF9E /* main.m */; };
 		EC423FF823CC8D130047CF9E /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FF723CC8D130047CF9E /* spr.c */; };
 		EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FFC23CCAC970047CF9E /* ctpk.c */; };
@@ -35,6 +36,8 @@
 		EC2B8BB023CF49BF009AA3CE /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
 		EC2B8BB623CF4EAA009AA3CE /* txob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = txob.h; sourceTree = "<group>"; };
 		EC2B8BB723CF4EE4009AA3CE /* txob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = txob.c; sourceTree = "<group>"; };
+		EC2B8BBB23CF53CF009AA3CE /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
+		EC2B8BBC23CF53DD009AA3CE /* texture.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
 		EC423FEC23CC8B990047CF9E /* Mirai */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Mirai; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC423FEF23CC8B990047CF9E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EC423FF623CC8D130047CF9E /* spr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
@@ -91,6 +94,7 @@
 				EC160C9423CE3DF000FC17EC /* db.h */,
 				ECD640B223CE521400C89360 /* cgfx.h */,
 				EC2B8BB623CF4EAA009AA3CE /* txob.h */,
+				EC2B8BBB23CF53CF009AA3CE /* texture.h */,
 				EC2B8BAF23CF49AB009AA3CE /* utils.h */,
 			);
 			path = include;
@@ -105,6 +109,7 @@
 				EC160C9223CE3DE300FC17EC /* db.c */,
 				ECD640B523CE523000C89360 /* cgfx.c */,
 				EC2B8BB723CF4EE4009AA3CE /* txob.c */,
+				EC2B8BBC23CF53DD009AA3CE /* texture.c */,
 				EC2B8BB023CF49BF009AA3CE /* utils.c */,
 			);
 			path = src;
@@ -178,6 +183,7 @@
 				ECD640B623CE523000C89360 /* cgfx.c in Sources */,
 				EC423FF023CC8B990047CF9E /* main.m in Sources */,
 				EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */,
+				EC2B8BBD23CF53DD009AA3CE /* texture.c in Sources */,
 				EC2B8BB123CF49BF009AA3CE /* utils.c in Sources */,
 				EC2B8BB823CF4EE4009AA3CE /* txob.c in Sources */,
 				EC423FF823CC8D130047CF9E /* spr.c in Sources */,
