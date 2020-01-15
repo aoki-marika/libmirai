@@ -8,7 +8,6 @@
 
 #include "cgfx.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -174,13 +173,13 @@ void cgfx_data_read(FILE *file, struct cgfx_data_t *data)
 void cgfx_open(const char *path, struct cgfx_t *cgfx)
 {
     // open the file for binary reading
-    FILE *file = fopen(path, "rb");
+    cgfx->file = fopen(path, "rb");
 
     // read the signature
-    assert(fgetc(file) == 'C');
-    assert(fgetc(file) == 'G');
-    assert(fgetc(file) == 'F');
-    assert(fgetc(file) == 'X');
+    assert(fgetc(cgfx->file) == 'C');
+    assert(fgetc(cgfx->file) == 'G');
+    assert(fgetc(cgfx->file) == 'F');
+    assert(fgetc(cgfx->file) == 'X');
 
     // all of the header values are unused here
     // in order, they are:
@@ -189,14 +188,11 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
     //  - a u32 for the cgfx format revision used, not useful
     //  - a u32 for the file size (in bytes,) not useful
     //  - a u32 for the number of entries in the file, not sure what this refers to but dont think its needed
-    fseek(file, 2 + 2 + 4 + 4 + 4, SEEK_CUR);
+    fseek(cgfx->file, 2 + 2 + 4 + 4 + 4, SEEK_CUR);
 
     // read the data section
     cgfx->data = malloc(sizeof(struct cgfx_data_t));
-    cgfx_data_read(file, cgfx->data);
-
-    // TODO: REMOVEME
-    fclose(file);
+    cgfx_data_read(cgfx->file, cgfx->data);
 }
 
 /// Free the given dictionary, releasing all of it's allocated memory.
@@ -247,4 +243,5 @@ void cgfx_close(struct cgfx_t *cgfx)
     free(cgfx->data->light_animations);
     free(cgfx->data->emitters);
     free(cgfx->data);
+    fclose(cgfx->file);
 }

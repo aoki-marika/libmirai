@@ -8,13 +8,18 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <stdio.h>
 
 // MARK: - Data Structures
 
 /// The data structure for a CGFX file that has been opened.
 struct cgfx_t
 {
+    /// The file handle for the file that this CGFX is reading data from.
+    ///
+    /// Kept open until `cgfx_close(cgfx)` is called with this CGFX.
+    FILE *file;
+
     /// The data section of this CGFX.
     ///
     /// Allocated.
