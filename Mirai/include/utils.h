@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "vector.h"
+#include "matrix.h"
 
 // MARK: - Functions
 
@@ -32,3 +33,8 @@ char *utils_read_string(FILE *file);
 /// @param file The file handle to read the 3D vector from.
 /// @param vector The 3D vector to load the data into.
 void utils_read_vec3(FILE *file, struct vec3_t *vector);
+
+/// Read the 4x3 matrix at the current offset of the given file handle into the given 4x4 matrix.
+/// @param file The file handle to read the 4x3 matrix from.
+/// @param matrix The 4x4 matrix to load the data into.
+void utils_read_mat4(FILE *file, struct mat4_t *matrix);

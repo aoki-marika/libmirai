@@ -57,3 +57,21 @@ void utils_read_vec3(FILE *file, struct vec3_t *vector)
     vector->y = y;
     vector->z = z;
 }
+
+void utils_read_mat4(FILE *file, struct mat4_t *matrix)
+{
+    fread(&matrix->data[0][0], sizeof(float), 1, file);
+    fread(&matrix->data[1][0], sizeof(float), 1, file);
+    fread(&matrix->data[2][0], sizeof(float), 1, file);
+    fread(&matrix->data[3][0], sizeof(float), 1, file);
+
+    fread(&matrix->data[0][1], sizeof(float), 1, file);
+    fread(&matrix->data[1][1], sizeof(float), 1, file);
+    fread(&matrix->data[2][1], sizeof(float), 1, file);
+    fread(&matrix->data[3][1], sizeof(float), 1, file);
+
+    fread(&matrix->data[0][2], sizeof(float), 1, file);
+    fread(&matrix->data[1][2], sizeof(float), 1, file);
+    fread(&matrix->data[2][2], sizeof(float), 1, file);
+    fread(&matrix->data[3][2], sizeof(float), 1, file);
+}
