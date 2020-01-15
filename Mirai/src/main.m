@@ -32,6 +32,18 @@ int main(int argc, const char *argv[])
             printf("%s:\n", argv[i]);
             struct cgfx_t cgfx;
             cgfx_open(argv[i], &cgfx);
+
+            printf(" - textures:\n");
+            for (int i = 0; i < cgfx.num_textures; i++)
+            {
+                struct txob_t *txob = cgfx.textures[i];
+                printf("    - txob %i:\n", i);
+                printf("       - name: \"%s\"\n", txob->name);
+                printf("       - size: %ux%u\n", txob->texture.width, txob->texture.height);
+                printf("       - format: %08x\n", txob->texture.data_format);
+                printf("       - data: %zu bytes at %zu (%08zx)\n", txob->texture.data_size, txob->texture.data_pointer, txob->texture.data_pointer);
+            }
+
             print_dict(cgfx.data->models, "models");
             print_dict(cgfx.data->textures, "textures");
             print_dict(cgfx.data->lookup_tables, "lookup tables");
