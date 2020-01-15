@@ -167,7 +167,7 @@ void spr_open(const char *path, struct spr_t *spr)
 
         if (ctpk->num_textures > 0)
         {
-            struct ctpk_texture_t *last_texture = ctpk->textures[ctpk->num_textures - 1];
+            struct texture_t *last_texture = ctpk->textures[ctpk->num_textures - 1];
             ctpks_pointer = last_texture->data_pointer + last_texture->data_size;
         }
         else
