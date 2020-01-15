@@ -12,14 +12,14 @@
 
 void print_dict(struct cgfx_dict_t *dict, const char *name)
 {
-    printf("    - %s:\n", name);
+    printf(" - %s:\n", name);
 
     for (int i = 0; i < dict->num_entries; i++)
     {
         struct cgfx_dict_entry_t *entry = dict->entries[i];
-        printf("      - entry %i:\n", i);
-        printf("         - name: \"%s\"\n", entry->name);
-        printf("         - data pointer: %u (%08x)\n", entry->data_pointer, entry->data_pointer);
+        printf("    - entry %i:\n", i);
+        printf("       - name: \"%s\"\n", entry->name);
+        printf("       - data pointer: %u (%08x)\n", entry->data_pointer, entry->data_pointer);
     }
 }
 
