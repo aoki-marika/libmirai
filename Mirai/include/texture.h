@@ -6,6 +6,8 @@
 //  Copyright © 2020 Marika. All rights reserved.
 //
 
+#pragma once
+
 #include <stdio.h>
 
 // MARK: - Enumerations

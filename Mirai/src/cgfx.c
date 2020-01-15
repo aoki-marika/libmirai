@@ -168,6 +168,24 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
     // read the data section
     cgfx->data = malloc(sizeof(struct cgfx_data_t));
     cgfx_data_read(cgfx->file, cgfx->data);
+
+    // read the data structures for each data section
+    // textures
+    cgfx->num_textures = cgfx->data->textures->num_entries;
+    cgfx->textures = malloc(cgfx->num_textures * sizeof(struct txob_t *));
+    for (int i = 0; i < cgfx->num_textures; i++)
+    {
+        struct cgfx_dict_entry_t *entry = cgfx->data->textures->entries[i];
+
+        // read the txob
+        // seek +4 to skip the 4 type bytes preceeding the txob
+        struct txob_t *txob = malloc(sizeof(struct txob_t));
+        fseek(cgfx->file, entry->data_pointer + 4, SEEK_SET);
+        txob_open(cgfx->file, txob);
+
+        // insert the txob
+        cgfx->textures[i] = txob;
+    }
 }
 
 /// Free the given dictionary, releasing all of it's allocated memory.
@@ -186,6 +204,12 @@ void cgfx_dict_free(struct cgfx_dict_t *dict)
 
 void cgfx_close(struct cgfx_t *cgfx)
 {
+    for (int i = 0; i < cgfx->num_textures; i++)
+    {
+        txob_close(cgfx->textures[i]);
+        free(cgfx->textures[i]);
+    }
+
     cgfx_dict_free(cgfx->data->models);
     cgfx_dict_free(cgfx->data->textures);
     cgfx_dict_free(cgfx->data->lookup_tables);
@@ -218,5 +242,6 @@ void cgfx_close(struct cgfx_t *cgfx)
     free(cgfx->data->light_animations);
     free(cgfx->data->emitters);
     free(cgfx->data);
+    free(cgfx->textures);
     fclose(cgfx->file);
 }

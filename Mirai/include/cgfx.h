@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 
+#include "txob.h"
+
 // MARK: - Data Structures
 
 /// The data structure for a CGFX file that has been opened.
@@ -19,6 +21,14 @@ struct cgfx_t
     ///
     /// Kept open until `cgfx_close(cgfx)` is called with this CGFX.
     FILE *file;
+
+    /// The number of textures within this CGFX file.
+    unsigned int num_textures;
+
+    /// All of the textures within this CGFX file.
+    ///
+    /// The array and each TXOB are allocated.
+    struct txob_t **textures;
 
     /// The data section of this CGFX.
     ///

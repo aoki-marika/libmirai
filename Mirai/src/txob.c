@@ -50,7 +50,7 @@ void txob_open(FILE *file, struct txob_t *txob)
     fseek(file, 4 + 4 + 4 + 4 + 4, SEEK_CUR);
 
     // read the texture format
-    uint32_t format;
+    enum texture_format_t format;
     fread(&format, sizeof(format), 1, file);
 
     // three unknown u32s
@@ -70,14 +70,17 @@ void txob_open(FILE *file, struct txob_t *txob)
     //  - u32 memory address
     fseek(file, 4 + 4 + 4 + 4, SEEK_CUR);
 
-    // TODO: REMOVEME
-    printf("    - name: \"%s\"\n", name);
-    printf("    - size: %ux%u\n", width, height);
-    printf("    - format: %u (%08x)\n", format, format);
-    printf("    - data: %u bytes at %u (%08x)\n", data_size, data_pointer, data_pointer);
-    free(name);
+    // create the txob
+    txob->name = name;
+    texture_create(width,
+                   height,
+                   data_size,
+                   data_pointer,
+                   format,
+                   &txob->texture);
 }
 
 void txob_close(struct txob_t *txob)
 {
+    free(txob->name);
 }

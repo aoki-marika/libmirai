@@ -10,11 +10,20 @@
 
 #include <stdio.h>
 
+#include "texture.h"
+
 // MARK: - Data Structures
 
 /// The data structure for a TXOB file that has been opened.
 struct txob_t
 {
+    /// The name of this TXOB.
+    ///
+    /// Allocated.
+    char *name;
+
+    /// The texture of this TXOB.
+    struct texture_t texture;
 };
 
 // MARK: - Functions
