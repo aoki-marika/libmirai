@@ -30,25 +30,10 @@ void cgfx_dict_entry_read(FILE *file, struct cgfx_dict_entry_t *entry)
     uint32_t data_pointer = utils_absolute_pointer(file);
 
     // read the name
-    // the name is a null terminated string at the name pointer,
-    // so seek, read, and then seek back
+    // seek, read the name, and seek back so the next entry can be read
     long seek_return = ftell(file);
     fseek(file, name_pointer, SEEK_SET);
-
-    char name_full[256];
-    int name_length = 0;
-    while (1)
-    {
-        char c = fgetc(file);
-        name_full[name_length] = c;
-        name_length++;
-
-        if (c == '\0')
-            break;
-    }
-
-    char *name = malloc(name_length);
-    memcpy(name, name_full, name_length);
+    char *name = utils_read_string(file);
     fseek(file, seek_return, SEEK_SET);
 
     // create the entry

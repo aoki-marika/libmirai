@@ -9,7 +9,10 @@
 #include "db.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include "utils.h"
 
 // MARK: - Data Structures
 
@@ -30,16 +33,6 @@ struct db_header_t
 };
 
 // MARK: - Functions
-
-void db_read_string(FILE *file, char *string, int max_length)
-{
-    for (int i = 0; i < max_length; i++)
-    {
-        fread(string + i, 1, 1, file);
-        if (string[i] == '\0')
-            break;
-    }
-}
 
 void db_open(const char *path, struct db_t *db)
 {
@@ -71,12 +64,11 @@ void db_open(const char *path, struct db_t *db)
             fread(&flags, sizeof(flags), 1, file);
             unknown_pointer += sizeof(pointer) + sizeof(flags);
 
-            char string[256];
             fseek(file, pointer, SEEK_SET);
-            db_read_string(file, string, 256);
+            char *string = utils_read_string(file);
 
             // unsure what null is used for, maybe byte alignment?
-            // is always suceeded by two broken items, so on ever null skip those
+            // is always suceeded by two broken items, so on every null skip those
             if (strcmp(string, "NULL") == 0)
             {
                 unknown_pointer += sizeof(uint16_t) * 4;
@@ -87,10 +79,12 @@ void db_open(const char *path, struct db_t *db)
             if (strlen(string) >= strlen(suffix) && strcmp(string + (strlen(string) - strlen(suffix)), suffix) == 0)
             {
                 printf("       - flags %04x uses file \"%s\"\n", flags, string);
+                free(string);
                 break;
             }
             else {
                 printf("       - flags %04x alias \"%s\"\n", flags, string);
+                free(string);
             }
         }
 

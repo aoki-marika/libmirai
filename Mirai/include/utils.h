@@ -19,3 +19,9 @@
 /// @param file The file handle to read the offset from and use the base offset of.
 /// @returns The absolute pointer within the file of the offset at the current offset of the given file handle.
 uint32_t utils_absolute_pointer(FILE *file);
+
+/// Read the null terminated string at the current offset of the given file handle.
+/// @param file The file handle to read the string from.
+/// @returns The null terminated string at the current offset of the given file handle.
+/// This string is allocated and must be freed.
+char *utils_read_string(FILE *file);
