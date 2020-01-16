@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "txob.h"
+#include "cmdl.h"
 #include "dict.h"
 
 // MARK: - Data Structures
@@ -22,6 +23,14 @@ struct cgfx_t
     ///
     /// Kept open until `cgfx_close(cgfx)` is called with this CGFX.
     FILE *file;
+
+    /// The number of models within this CGFX file.
+    unsigned int num_models;
+
+    /// All of the models within this CGFX file.
+    ///
+    /// The array and each CMDL are allocated.
+    struct cmdl_t **models;
 
     /// The number of textures within this CGFX file.
     unsigned int num_textures;

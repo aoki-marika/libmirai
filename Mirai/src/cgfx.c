@@ -90,6 +90,22 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
     cgfx_data_read(cgfx->file, cgfx->data);
 
     // read the data structures for each data section
+    // models
+    cgfx->num_models = cgfx->data->models->num_entries;
+    cgfx->models = malloc(cgfx->num_models * sizeof(struct cmdl_t *));
+    for (int i = 0; i < cgfx->num_models; i++)
+    {
+        struct dict_entry_t *entry = cgfx->data->models->entries[i];
+
+        // read the cmdl
+        struct cmdl_t *cmdl = malloc(sizeof(struct cmdl_t));
+        fseek(cgfx->file, entry->data_pointer, SEEK_SET);
+        cmdl_open(cgfx->file, cmdl);
+
+        // insert the cmdl
+        cgfx->models[i] = cmdl;
+    }
+
     // textures
     cgfx->num_textures = cgfx->data->textures->num_entries;
     cgfx->textures = malloc(cgfx->num_textures * sizeof(struct txob_t *));
@@ -110,6 +126,12 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
 
 void cgfx_close(struct cgfx_t *cgfx)
 {
+    for (int i = 0; i < cgfx->num_models; i++)
+    {
+        cmdl_close(cgfx->models[i]);
+        free(cgfx->models[i]);
+    }
+
     for (int i = 0; i < cgfx->num_textures; i++)
     {
         txob_close(cgfx->textures[i]);
@@ -149,5 +171,6 @@ void cgfx_close(struct cgfx_t *cgfx)
     free(cgfx->data->emitters);
     free(cgfx->data);
     free(cgfx->textures);
+    free(cgfx->models);
     fclose(cgfx->file);
 }
