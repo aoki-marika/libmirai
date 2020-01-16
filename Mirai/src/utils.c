@@ -13,7 +13,7 @@
 
 // MARK: - Functions
 
-uint32_t utils_absolute_pointer(FILE *file)
+uint32_t utils_read_relative_pointer(FILE *file)
 {
     uint32_t base = (uint32_t)ftell(file);
     uint32_t offset;

@@ -22,7 +22,7 @@ void dict_open(FILE *file, struct dict_t *dict)
     fread(&num_entries, sizeof(num_entries), 1, file);
 
     // read the dict pointer
-    uint32_t dict_pointer = utils_absolute_pointer(file);
+    uint32_t dict_pointer = utils_read_relative_pointer(file);
 
     // initialize the dictionary
     dict->num_entries = num_entries;
@@ -65,8 +65,8 @@ void dict_open(FILE *file, struct dict_t *dict)
             fseek(file, 8, SEEK_CUR);
 
             // read the name and data pointers
-            uint32_t name_pointer = utils_absolute_pointer(file);
-            uint32_t data_pointer = utils_absolute_pointer(file);
+            uint32_t name_pointer = utils_read_relative_pointer(file);
+            uint32_t data_pointer = utils_read_relative_pointer(file);
 
             // read the name and seek back
             long name_return = ftell(file);

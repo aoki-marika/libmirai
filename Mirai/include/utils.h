@@ -21,7 +21,7 @@
 /// So to get the absolute offset of that offset within the file, it can add the offset to the current offset of the file handle before reading the offset.
 /// @param file The file handle to read the offset from and use the base offset of.
 /// @returns The absolute pointer within the file of the offset at the current offset of the given file handle.
-uint32_t utils_absolute_pointer(FILE *file);
+uint32_t utils_read_relative_pointer(FILE *file);
 
 /// Read the null terminated string at the current offset of the given file handle.
 /// @param file The file handle to read the string from.

@@ -27,7 +27,7 @@ void txob_open(FILE *file, struct txob_t *txob)
     fseek(file, 4, SEEK_CUR);
 
     // read the name and seek back
-    uint32_t name_pointer = utils_absolute_pointer(file);
+    uint32_t name_pointer = utils_read_relative_pointer(file);
     long name_return = ftell(file);
     fseek(file, name_pointer, SEEK_SET);
     char *name = utils_read_string(file);
@@ -60,7 +60,7 @@ void txob_open(FILE *file, struct txob_t *txob)
     uint32_t data_size;
     fread(&data_size, sizeof(data_size), 1, file);
 
-    uint32_t data_pointer = utils_absolute_pointer(file);
+    uint32_t data_pointer = utils_read_relative_pointer(file);
 
     // another series of unused values
     // these are assumingly used for laying out the texture in 3ds memory
