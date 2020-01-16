@@ -163,7 +163,7 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     fseek(file, 4, SEEK_CUR);
 
     // read the vertex groups
-    // the vertex groups need to be inserted so that the invalid ones dont leave gaps in the array
+    // the vertex groups need to be inserted such that the invalid ones dont leave gaps in the array
     int vertex_group_index = 0;
     int num_valid_vertex_groups = 0;
 
@@ -175,8 +175,10 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
         fseek(file, utils_read_relative_pointer(file), SEEK_SET);
 
         // read the vertex group
+        // skip any invalid ones
         struct sobj_vertex_group_t *vertex_group = malloc(sizeof(struct sobj_vertex_group_t));
-        sobj_read_vertex_group(file, vertex_group);
+        if (!sobj_read_vertex_group(file, vertex_group))
+            continue;
 
         // insert the vertex group
         shape->vertex_groups[vertex_group_index] = vertex_group;
