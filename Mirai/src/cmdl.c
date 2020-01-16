@@ -13,6 +13,7 @@
 #include <assert.h>
 
 #include "dict.h"
+#include "sobj.h"
 #include "utils.h"
 #include "vector.h"
 #include "matrix.h"
@@ -78,14 +79,10 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
     uint32_t vertex_sobjs_pointer = utils_read_relative_pointer(file);
 
-    // read the shape sobj count and pointer
-    uint32_t num_shape_sobjs;
-    fread(&num_shape_sobjs, sizeof(num_shape_sobjs), 1, file);
-
-    uint32_t shape_sobjs_pointer = utils_read_relative_pointer(file);
-
-    // 12 unknown bytes
-    fseek(file, 12, SEEK_CUR);
+    // dict unknown and 12 unknown bytes
+    // ohana3ds refers to this dict as object nodes,
+    // each entry is a name and visibility flag
+    fseek(file, 8 + 12, SEEK_CUR);
 
     // read the skeleton sobj pointer
     // only present if the skeleton sobj flag was set
@@ -107,10 +104,41 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     printf("       - vertex info sobjs: %u at %u (%08x)\n", num_vertex_info_sobjs, vertex_info_sobjs_pointer, vertex_info_sobjs_pointer);
     printf("       - mtobs: %u\n", mtobs.num_entries);
     printf("       - vertex sobjs: %u at %u (%08x)\n", num_vertex_sobjs, vertex_sobjs_pointer, vertex_sobjs_pointer);
-    printf("       - shape sobjs: %u at %u (%08x)\n", num_shape_sobjs, shape_sobjs_pointer, shape_sobjs_pointer);
 
     if (has_skeleton_sobj)
         printf("       - skeleton sobj: 1 at %u (%08x)\n", skeleton_sobj_pointer, skeleton_sobj_pointer);
+
+    printf("       - %u vertex info sobjs:\n", num_vertex_info_sobjs);
+    for (int i = 0; i < num_vertex_info_sobjs; i++)
+    {
+        fseek(file, vertex_info_sobjs_pointer + (i * 4), SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        printf("          - vertex info sobj %u:\n", i);
+        struct sobj_t sobj;
+        sobj_open(file, &sobj);
+    }
+
+    printf("       - %u vertex sobjs:\n", num_vertex_sobjs);
+    for (int i = 0; i < num_vertex_sobjs; i++)
+    {
+        fseek(file, vertex_sobjs_pointer + (i * 4), SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        printf("          - vertex sobj %u:\n", i);
+        struct sobj_t sobj;
+        sobj_open(file, &sobj);
+    }
+
+    if (has_skeleton_sobj)
+    {
+        printf("       - 1 skeleton sobj:\n");
+        fseek(file, skeleton_sobj_pointer, SEEK_SET);
+
+        printf("          - skeleton sobj 1:\n");
+        struct sobj_t sobj;
+        sobj_open(file, &sobj);
+    }
 
     dict_close(&mtobs);
     dict_close(&animation_types_dict);
