@@ -20,6 +20,17 @@ int main(int argc, const char *argv[])
             struct cgfx_t cgfx;
             cgfx_open(argv[i], &cgfx);
 
+            printf(" - models:\n");
+            for (int i = 0; i < cgfx.num_models; i++)
+            {
+                struct cmdl_t *cmdl = cgfx.models[i];
+                printf("    - cmdl %i:\n", i);
+                printf("       - name: \"%s\"\n", cmdl->name);
+                printf("       - meshes: %u\n", cmdl->num_meshes);
+                printf("       - shapes: %u\n", cmdl->num_shapes);
+                printf("       - skeletons: %i\n", cmdl->skeleton != NULL);
+            }
+
             printf(" - textures:\n");
             for (int i = 0; i < cgfx.num_textures; i++)
             {
@@ -29,20 +40,6 @@ int main(int argc, const char *argv[])
                 printf("       - size: %ux%u\n", txob->texture.width, txob->texture.height);
                 printf("       - format: %08x\n", txob->texture.data_format);
                 printf("       - data: %zu bytes at %zu (%08zx)\n", txob->texture.data_size, txob->texture.data_pointer, txob->texture.data_pointer);
-            }
-
-            printf(" - models:\n");
-            for (int i = 0; i < cgfx.data->models->num_entries; i++)
-            {
-                struct dict_entry_t *entry = cgfx.data->models->entries[i];
-                printf("    - cmdl %i:\n", i);
-                printf("       - dict name: \"%s\"\n", entry->name);
-                printf("       - data: unknown bytes at %u (%08x)\n", entry->data_pointer, entry->data_pointer);
-
-                // read the cmdl
-                struct cmdl_t cmdl;
-                fseek(cgfx.file, entry->data_pointer, SEEK_SET);
-                cmdl_open(cgfx.file, &cmdl);
             }
 
             cgfx_close(&cgfx);

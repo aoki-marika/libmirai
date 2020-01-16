@@ -78,7 +78,7 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     fseek(file, 24, SEEK_CUR);
 
     // read the animation types dict
-    // TODO: Read the animation types dict
+    #warning TODO: Read the animation types dict.
     struct dict_t animation_types_dict;
     dict_open(file, &animation_types_dict);
 
@@ -159,7 +159,7 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
         cmdl->skeleton = NULL;
     }
 
-    // TODO: Remove when MTOB and animation types dict reading is implemented
+    #warning Remove this when MTOB and animation types dict reading is implemented.
     dict_close(&mtobs);
     dict_close(&animation_types_dict);
 }
