@@ -50,6 +50,8 @@
 		EC423FFB23CCAC970047CF9E /* ctpk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ctpk.h; sourceTree = "<group>"; };
 		EC423FFC23CCAC970047CF9E /* ctpk.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
 		EC89912F23CD2FD0009B4598 /* etcdec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = etcdec.h; sourceTree = "<group>"; };
+		ECAF37C423D0839A001179B7 /* dict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
+		ECAF37C523D083A5001179B7 /* dict.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
 		ECD640B223CE521400C89360 /* cgfx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
 		ECD640B523CE523000C89360 /* cgfx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cgfx.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -98,6 +100,7 @@
 				EC423FFB23CCAC970047CF9E /* ctpk.h */,
 				EC160C9423CE3DF000FC17EC /* db.h */,
 				ECD640B223CE521400C89360 /* cgfx.h */,
+				ECAF37C423D0839A001179B7 /* dict.h */,
 				EC2B8BB623CF4EAA009AA3CE /* txob.h */,
 				EC2B8BC323CF8465009AA3CE /* cmdl.h */,
 				EC2B8BBB23CF53CF009AA3CE /* texture.h */,
@@ -116,6 +119,7 @@
 				EC423FFC23CCAC970047CF9E /* ctpk.c */,
 				EC160C9223CE3DE300FC17EC /* db.c */,
 				ECD640B523CE523000C89360 /* cgfx.c */,
+				ECAF37C523D083A5001179B7 /* dict.c */,
 				EC2B8BB723CF4EE4009AA3CE /* txob.c */,
 				EC2B8BC423CF848C009AA3CE /* cmdl.c */,
 				EC2B8BBC23CF53DD009AA3CE /* texture.c */,
@@ -194,6 +198,7 @@
 				EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */,
 				EC2B8BBD23CF53DD009AA3CE /* texture.c in Sources */,
 				EC2B8BB123CF49BF009AA3CE /* utils.c in Sources */,
+				ECAF37C623D083A5001179B7 /* dict.c in Sources */,
 				EC2B8BB823CF4EE4009AA3CE /* txob.c in Sources */,
 				EC423FF823CC8D130047CF9E /* spr.c in Sources */,
 				EC160C9323CE3DE300FC17EC /* db.c in Sources */,
