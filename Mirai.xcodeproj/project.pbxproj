@@ -52,6 +52,8 @@
 		EC89912F23CD2FD0009B4598 /* etcdec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = etcdec.h; sourceTree = "<group>"; };
 		ECAF37C423D0839A001179B7 /* dict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
 		ECAF37C523D083A5001179B7 /* dict.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
+		ECAF37C823D09611001179B7 /* sobj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sobj.h; sourceTree = "<group>"; };
+		ECAF37C923D0961B001179B7 /* sobj.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sobj.c; sourceTree = "<group>"; };
 		ECD640B223CE521400C89360 /* cgfx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
 		ECD640B523CE523000C89360 /* cgfx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cgfx.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,6 +105,7 @@
 				ECAF37C423D0839A001179B7 /* dict.h */,
 				EC2B8BB623CF4EAA009AA3CE /* txob.h */,
 				EC2B8BC323CF8465009AA3CE /* cmdl.h */,
+				ECAF37C823D09611001179B7 /* sobj.h */,
 				EC2B8BBB23CF53CF009AA3CE /* texture.h */,
 				EC2B8BAF23CF49AB009AA3CE /* utils.h */,
 				EC2B8BC723CF8A35009AA3CE /* vector.h */,
@@ -122,6 +125,7 @@
 				ECAF37C523D083A5001179B7 /* dict.c */,
 				EC2B8BB723CF4EE4009AA3CE /* txob.c */,
 				EC2B8BC423CF848C009AA3CE /* cmdl.c */,
+				ECAF37C923D0961B001179B7 /* sobj.c */,
 				EC2B8BBC23CF53DD009AA3CE /* texture.c */,
 				EC2B8BB023CF49BF009AA3CE /* utils.c */,
 			);
@@ -202,6 +206,7 @@
 				EC2B8BB823CF4EE4009AA3CE /* txob.c in Sources */,
 				EC423FF823CC8D130047CF9E /* spr.c in Sources */,
 				EC160C9323CE3DE300FC17EC /* db.c in Sources */,
+				ECAF37CA23D0961B001179B7 /* sobj.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

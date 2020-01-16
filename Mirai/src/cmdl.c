@@ -93,6 +93,10 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     if (has_skeleton_sobj)
         skeleton_sobj_pointer = utils_read_relative_pointer(file);
 
+    // according to 3dbrew, the next 0x4*N bytes are "Vertex Info SOBJ self-relative offset list"
+    // pretty sure this is legacy as theres already a vertex info dict with all the offsets needed
+    // so ignore it and use the dict instead
+
     // TODO: REMOVEME
     printf("       - name: \"%s\"\n", name);
     printf("       - has skeleton: %i\n", has_skeleton_sobj);

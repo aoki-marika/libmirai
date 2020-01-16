@@ -19,7 +19,7 @@ struct cmdl_t
 
 // MARK: - Functions
 
-/// Open the CMDL file at the given path into the given CMDL.
+/// Open the CMDL file at the current offset of the given file handle into the given CMDL.
 /// @param file The file handle to open the CMDL file from.
 /// @param cmdl The CMDL to open the file into.
 void cmdl_open(FILE *file, struct cmdl_t *cmdl);
