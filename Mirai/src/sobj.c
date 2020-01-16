@@ -104,8 +104,10 @@ bool sobj_read_vertex_group(FILE *file, struct sobj_vertex_group_t *vertex_group
     uint32_t components_pointer = utils_read_relative_pointer(file);
 
     // initialize the vertex group
+    vertex_group->num_vertices = data_size / data_stride;
     vertex_group->data_size = (size_t)data_size;
     vertex_group->data_pointer = (size_t)data_pointer;
+    vertex_group->data_stride = (size_t)data_stride;
 
     // read the components
     vertex_group->num_components = num_components;
@@ -124,6 +126,20 @@ bool sobj_read_vertex_group(FILE *file, struct sobj_vertex_group_t *vertex_group
         vertex_group->components[i] = component;
     }
 
+    // calculate the decoded data size and stride
+    int num_values = 0;
+    for (int c = 0; c < vertex_group->num_components; c++)
+    {
+        struct sobj_component_t *component = vertex_group->components[c];
+        for (int v = 0; v < component->num_values; v++)
+            num_values++;
+    }
+
+    int decoded_data_stride = num_values * sizeof(float);
+    vertex_group->decoded_data_size = decoded_data_stride * vertex_group->num_vertices;
+    vertex_group->decoded_data_stride = decoded_data_stride;
+
+    // indicate that the vertex group was valid
     return true;
 }
 
@@ -275,4 +291,61 @@ void sobj_close(struct sobj_t *sobj)
     }
 
     free(sobj->name);
+}
+
+/// Small macro for decoding the various SOBJ component data types into floats within `sobj_vertex_group_decode(vertex_group, file)`.
+#define SOBJ_DATA_TYPE_DECODE(type) \
+{ \
+    type raw; \
+    memcpy(&raw, &raw_data[(v * vertex_group->data_stride) + component->offset + (i * sizeof(raw))], sizeof(raw)); \
+    value = (float)raw; \
+    break; \
+}
+
+float *sobj_vertex_group_decode(const struct sobj_vertex_group_t *vertex_group, FILE *file)
+{
+    // read the data to decode
+    uint8_t raw_data[vertex_group->data_size];
+    fseek(file, vertex_group->data_pointer, SEEK_SET);
+    fread(raw_data, vertex_group->data_size, 1, file);
+
+    // decode the data
+    // for each vertex:
+    //  for each component:
+    //   for each value:
+    //    read the original value
+    //    convert to float
+    //    apply multiplier
+    //    increment index
+    float *decoded_data = malloc(vertex_group->decoded_data_size);
+
+    unsigned int decoded_index = 0;
+    for (int v = 0; v < vertex_group->num_vertices; v++)
+    {
+        for (int c = 0; c < vertex_group->num_components; c++)
+        {
+            struct sobj_component_t *component = vertex_group->components[c];
+            for (int i = 0; i < component->num_values; i++)
+            {
+                float value;
+
+                // handle the size of the different data types
+                switch (component->data_type)
+                {
+                    case SOBJ_COMPONENT_DATA_TYPE_SBYTE:  SOBJ_DATA_TYPE_DECODE(int8_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_BYTE:   SOBJ_DATA_TYPE_DECODE(uint8_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_SHORT:  SOBJ_DATA_TYPE_DECODE(int16_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_USHORT: SOBJ_DATA_TYPE_DECODE(uint16_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_INT:    SOBJ_DATA_TYPE_DECODE(int32_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_UINT:   SOBJ_DATA_TYPE_DECODE(uint32_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_FLOAT:  SOBJ_DATA_TYPE_DECODE(float);
+                }
+
+                decoded_data[decoded_index] = value * component->multiplier;
+                decoded_index++;
+            }
+        }
+    }
+
+    return decoded_data;
 }

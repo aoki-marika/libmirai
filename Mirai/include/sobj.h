@@ -109,6 +109,9 @@ struct sobj_shape_t
 /// The data structure for a single group of vertices within an SOBJ shape.
 struct sobj_vertex_group_t
 {
+    /// The number of vertices within this group.
+    unsigned int num_vertices;
+
     /// The number of components for each vertex in this group.
     unsigned int num_components;
 
@@ -122,6 +125,15 @@ struct sobj_vertex_group_t
 
     /// The offset of this group's vertex data within the SOBJ file, in bytes.
     size_t data_pointer;
+
+    /// The combined size of each of a single vertex's components within the SOBJ file, in bytes.
+    size_t data_stride;
+
+    /// The size of this group's decoded vertex data, in bytes.
+    size_t decoded_data_size;
+
+    /// The combined size of each of a single vertex's components within this group's decoded data, in bytes.
+    size_t decoded_data_stride;
 };
 
 /// The data structure for describing the contents of one of a vertex's components.
@@ -157,3 +169,13 @@ void sobj_open(FILE *file, struct sobj_t *sobj);
 /// This must be called after an SOBJ is opened and before program execution completes.
 /// @param sobj The SOBJ to close.
 void sobj_close(struct sobj_t *sobj);
+
+/// Read and decode the given vertex group's data from the given file handle.
+/// @param vertex_group The vertex group to read and decode the data of.
+/// @param file The file handle to read the vertex group's data from.
+/// @returns A pointer to the array of decoded vertex data from the given vertex group.
+/// This data is allocated so it must be freed before program execution completes.
+/// Note that that the decoded data is layed out differently depending on the components of the given vertex group.
+/// Each value is converted to a 32-bit float, so the stride is different, but the values are layed out in the same order.
+/// Use `sobj_vertex_group_t.decoded_data_stride` to then read the decoded data into a renderer.
+float *sobj_vertex_group_decode(const struct sobj_vertex_group_t *vertex_group, FILE *file);
