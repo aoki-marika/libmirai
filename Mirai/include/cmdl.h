@@ -10,11 +10,45 @@
 
 #include <stdio.h>
 
+#include "sobj.h"
+
 // MARK: - Data Structures
 
 /// The data structure for a CMDL file that has been opened.
 struct cmdl_t
 {
+    /// The name of this CMDL.
+    ///
+    /// Allocated.
+    char *name;
+
+    /// The number of mesh SOBJs within this CMDL.
+    unsigned int num_meshes;
+
+    /// All the mesh SOBJs within this CMDL.
+    ///
+    /// The type of each of these SOBJs is always `SOBJ_TYPE_MESH`.
+    ///
+    /// The array and each item are allocated.
+    struct sobj_t **meshes;
+
+    /// The number of shape SOBJs within this CMDL.
+    unsigned int num_shapes;
+
+    /// All the shape SOBJs within this CMDL.
+    ///
+    /// The type of each of these SOBJs is always `SOBJ_TYPE_SHAPE`.
+    ///
+    /// The array and each item are allocated.
+    struct sobj_t **shapes;
+
+    /// The skeleton SOBJ of this CMDL, if any.
+    ///
+    /// The type of this SOBJ is always `SOBJ_TYPE_SKELETON`.
+    ///
+    /// If this is `NULL`, then this CMDL has no skeleton.
+    /// If this is not `NULL`, then this is allocated.
+    struct sobj_t *skeleton;
 };
 
 // MARK: - Functions

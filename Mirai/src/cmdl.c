@@ -13,17 +13,46 @@
 #include <assert.h>
 
 #include "dict.h"
-#include "sobj.h"
 #include "utils.h"
 #include "vector.h"
 #include "matrix.h"
 
 // MARK: - Functions
 
+/// Read the given number of SOBJs from the given pointer table, of the given type, into the given array.
+/// @param file The file handle to read the SOBJs from.
+/// @param num_sobjs The number of SOBJs to read.
+/// @param pointer The pointer to the pointer table for the SOBJs.
+/// @param expected_type The expected type that each SOBJ should be.
+/// @param out The array to insert the read SOBJs into.
+/// This array must of be size `num_sobjs * sizeof(struct sobj_t *)`.
+/// Each item is allocated.
+void cmdl_read_sobj_table(FILE *file,
+                          unsigned int num_sobjs,
+                          unsigned int pointer,
+                          enum sobj_type_t expected_type,
+                          struct sobj_t **out)
+{
+    for (int i = 0; i < num_sobjs; i++)
+    {
+        // pointer table
+        fseek(file, pointer + (i * 4), SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        // read the sobj
+        struct sobj_t *sobj = malloc(sizeof(struct sobj_t));
+        sobj_open(file, sobj);
+        assert(sobj->type == expected_type);
+
+        // add the sobj
+        out[i] = sobj;
+    }
+}
+
 void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 {
     // read the preceeding flags
-    //  - bit 7: whether there is a special sobj for a skeleton
+    //  - bit 7: whether there is an sobj for a skeleton
     uint32_t flags;
     fread(&flags, sizeof(flags), 1, file);
 
@@ -48,7 +77,8 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     // 24 unknown bytes
     fseek(file, 24, SEEK_CUR);
 
-    // read the 0animation types dict
+    // read the animation types dict
+    // TODO: Read the animation types dict
     struct dict_t animation_types_dict;
     dict_open(file, &animation_types_dict);
 
@@ -63,21 +93,21 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     utils_read_mat4(file, &matrix_local);
     utils_read_mat4(file, &matrix_world);
 
-    // read the vertex info sobj count and pointer
-    uint32_t num_vertex_info_sobjs;
-    fread(&num_vertex_info_sobjs, sizeof(num_vertex_info_sobjs), 1, file);
+    // read the mesh count and pointer
+    uint32_t num_meshes;
+    fread(&num_meshes, sizeof(num_meshes), 1, file);
 
-    uint32_t vertex_info_sobjs_pointer = utils_read_relative_pointer(file);
+    uint32_t meshes_pointer = utils_read_relative_pointer(file);
 
     // read the mtobs dict
     struct dict_t mtobs;
     dict_open(file, &mtobs);
 
-    // read the vertex sobj count and pointer
-    uint32_t num_vertex_sobjs;
-    fread(&num_vertex_sobjs, sizeof(num_vertex_sobjs), 1, file);
+    // read the shape count and pointer
+    uint32_t num_shapes;
+    fread(&num_shapes, sizeof(num_shapes), 1, file);
 
-    uint32_t vertex_sobjs_pointer = utils_read_relative_pointer(file);
+    uint32_t shapes_pointer = utils_read_relative_pointer(file);
 
     // dict unknown and 12 unknown bytes
     // ohana3ds refers to this dict as object nodes,
@@ -94,57 +124,66 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     // pretty sure this is legacy as theres already a vertex info dict with all the offsets needed
     // so ignore it and use the dict instead
 
-    // TODO: REMOVEME
-    printf("       - name: \"%s\"\n", name);
-    printf("       - has skeleton: %i\n", has_skeleton_sobj);
-    printf("       - animation types: %i\n", animation_types_dict.num_entries);
-    printf("       - scale: %f,%f,%f\n", scale.x, scale.y, scale.z);
-    printf("       - rotation: %f,%f,%f\n", rotation.x, rotation.y, rotation.z);
-    printf("       - translation: %f,%f,%f\n", translation.x, translation.y, translation.z);
-    printf("       - vertex info sobjs: %u at %u (%08x)\n", num_vertex_info_sobjs, vertex_info_sobjs_pointer, vertex_info_sobjs_pointer);
-    printf("       - mtobs: %u\n", mtobs.num_entries);
-    printf("       - vertex sobjs: %u at %u (%08x)\n", num_vertex_sobjs, vertex_sobjs_pointer, vertex_sobjs_pointer);
+    // initialize the cmdl
+    cmdl->name = name;
 
-    if (has_skeleton_sobj)
-        printf("       - skeleton sobj: 1 at %u (%08x)\n", skeleton_sobj_pointer, skeleton_sobj_pointer);
+    // read the meshes
+    cmdl->num_meshes = num_meshes;
+    cmdl->meshes = malloc(num_meshes * sizeof(struct sobj_t *));
+    cmdl_read_sobj_table(file,
+                         num_meshes,
+                         meshes_pointer,
+                         SOBJ_TYPE_MESH,
+                         cmdl->meshes);
 
-    printf("       - %u vertex info sobjs:\n", num_vertex_info_sobjs);
-    for (int i = 0; i < num_vertex_info_sobjs; i++)
-    {
-        fseek(file, vertex_info_sobjs_pointer + (i * 4), SEEK_SET);
-        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+    // read the shapes
+    cmdl->num_shapes = num_shapes;
+    cmdl->shapes = malloc(num_shapes * sizeof(struct sobj_t *));
+    cmdl_read_sobj_table(file,
+                         num_shapes,
+                         shapes_pointer,
+                         SOBJ_TYPE_SHAPE,
+                         cmdl->shapes);
 
-        printf("          - vertex info sobj %u:\n", i);
-        struct sobj_t sobj;
-        sobj_open(file, &sobj);
-    }
-
-    printf("       - %u vertex sobjs:\n", num_vertex_sobjs);
-    for (int i = 0; i < num_vertex_sobjs; i++)
-    {
-        fseek(file, vertex_sobjs_pointer + (i * 4), SEEK_SET);
-        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
-
-        printf("          - vertex sobj %u:\n", i);
-        struct sobj_t sobj;
-        sobj_open(file, &sobj);
-    }
-
+    // read the skeleton
     if (has_skeleton_sobj)
     {
-        printf("       - 1 skeleton sobj:\n");
         fseek(file, skeleton_sobj_pointer, SEEK_SET);
 
-        printf("          - skeleton sobj 1:\n");
-        struct sobj_t sobj;
-        sobj_open(file, &sobj);
+        struct sobj_t *sobj = malloc(sizeof(struct sobj_t));
+        sobj_open(file, sobj);
+        cmdl->skeleton = sobj;
+    }
+    else
+    {
+        cmdl->skeleton = NULL;
     }
 
+    // TODO: Remove when MTOB and animation types dict reading is implemented
     dict_close(&mtobs);
     dict_close(&animation_types_dict);
-    free(name);
 }
 
 void cmdl_close(struct cmdl_t *cmdl)
 {
+    for (int i = 0; i < cmdl->num_meshes; i++)
+    {
+        struct sobj_t *sobj = cmdl->meshes[i];
+        sobj_close(sobj);
+        free(sobj);
+    }
+
+    for (int i = 0; i < cmdl->num_shapes; i++)
+    {
+        struct sobj_t *sobj = cmdl->shapes[i];
+        sobj_close(sobj);
+        free(sobj);
+    }
+
+    if (cmdl->skeleton != NULL)
+        free(cmdl->skeleton);
+
+    free(cmdl->shapes);
+    free(cmdl->meshes);
+    free(cmdl->name);
 }
