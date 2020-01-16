@@ -42,9 +42,7 @@ int main(int argc, const char *argv[])
                 // read the cmdl
                 struct cmdl_t cmdl;
                 fseek(cgfx.file, entry->data_pointer, SEEK_SET);
-                fread(&flags, sizeof(flags), 1, cgfx.file);
-
-                printf("       - has skeleton: %i\n", (flags & 0x80) > 0);
+                cmdl_open(cgfx.file, &cmdl);
             }
 
             cgfx_close(&cgfx);
