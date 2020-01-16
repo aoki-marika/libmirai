@@ -135,7 +135,7 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     // two unused values
     //  - u32 flags
     //  - u32 bounding box pointer
-    fseek(file, 4, SEEK_CUR);
+    fseek(file, 4 + 4, SEEK_CUR);
 
     // read the position offset
     struct vec3_t position_offset;
