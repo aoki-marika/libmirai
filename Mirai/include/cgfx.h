@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "txob.h"
+#include "dict.h"
 
 // MARK: - Data Structures
 
@@ -40,75 +41,49 @@ struct cgfx_t
 struct cgfx_data_t
 {
     /// The dictionary of model data within this section.
-    struct cgfx_dict_t *models;
+    struct dict_t *models;
 
     /// The dictionary of texture data within this section.
-    struct cgfx_dict_t *textures;
+    struct dict_t *textures;
 
     /// The dictionary of lookup table data within this section.
-    struct cgfx_dict_t *lookup_tables;
+    struct dict_t *lookup_tables;
 
     /// The dictionary of material data within this section.
-    struct cgfx_dict_t *materials;
+    struct dict_t *materials;
 
     /// The dictionary of shader data within this section.
-    struct cgfx_dict_t *shaders;
+    struct dict_t *shaders;
 
     /// The dictionary of camera data within this section.
-    struct cgfx_dict_t *cameras;
+    struct dict_t *cameras;
 
     /// The dictionary of light data within this section.
-    struct cgfx_dict_t *lights;
+    struct dict_t *lights;
 
     /// The dictionary of fog data within this section.
-    struct cgfx_dict_t *fogs;
+    struct dict_t *fogs;
 
     /// The dictionary of scene data within this section.
-    struct cgfx_dict_t *scenes;
+    struct dict_t *scenes;
 
     /// The dictionary of skeletal animation data within this section.
-    struct cgfx_dict_t *skeletal_animations;
+    struct dict_t *skeletal_animations;
 
     /// The dictionary of material animation data within this section.
-    struct cgfx_dict_t *material_animations;
+    struct dict_t *material_animations;
 
     /// The dictionary of visibility animation data within this section.
-    struct cgfx_dict_t *visibility_animations;
+    struct dict_t *visibility_animations;
 
     /// The dictionary of camera animation data within this section.
-    struct cgfx_dict_t *camera_animations;
+    struct dict_t *camera_animations;
 
     /// The dictionary of light animation data within this section.
-    struct cgfx_dict_t *light_animations;
+    struct dict_t *light_animations;
 
     /// The dictionary of emitter data within this section.
-    struct cgfx_dict_t *emitters;
-};
-
-/// The data structure for a single dictionary within a CGFX data section.
-struct cgfx_dict_t
-{
-    /// The number of entries within this dictionary
-    unsigned int num_entries;
-
-    /// All of the entries within this dictionary.
-    ///
-    /// The array and each entry are allocated.
-    struct cgfx_dict_entry_t **entries;
-};
-
-/// The data structure for a single entry within a dictionary.
-struct cgfx_dict_entry_t
-{
-    /// The name of this entry.
-    ///
-    /// Allocated.
-    char *name;
-
-    /// The offset of this entry's data in the file, in bytes.
-    ///
-    /// This data can be in any format or of any length, both are determined by which dictionary it belongs to.
-    uint32_t data_pointer;
+    struct dict_t *emitters;
 };
 
 // MARK: - Functions

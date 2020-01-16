@@ -28,7 +28,7 @@ struct txob_t
 
 // MARK: - Functions
 
-/// Open the TXOB file at the given path into the given TXOB.
+/// Open the TXOB file at the current offset of the given file handle into the given TXOB.
 /// @param file The file handle to open the TXOB file from.
 /// @param txob The TXOB to open the file into.
 void txob_open(FILE *file, struct txob_t *txob);

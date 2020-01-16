@@ -34,13 +34,13 @@ int main(int argc, const char *argv[])
             printf(" - models:\n");
             for (int i = 0; i < cgfx.data->models->num_entries; i++)
             {
-                struct cgfx_dict_entry_t *entry = cgfx.data->models->entries[i];
+                struct dict_entry_t *entry = cgfx.data->models->entries[i];
                 printf("    - cmdl %i:\n", i);
                 printf("       - dict name: \"%s\"\n", entry->name);
-                printf("       - data pointer: %u (%08x)\n", entry->data_pointer, entry->data_pointer);
+                printf("       - data: unknown bytes at %u (%08x)\n", entry->data_pointer, entry->data_pointer);
 
-                // read the flags and cmdl
-                uint32_t flags;
+                // read the cmdl
+                struct cmdl_t cmdl;
                 fseek(cgfx.file, entry->data_pointer, SEEK_SET);
                 fread(&flags, sizeof(flags), 1, cgfx.file);
 

@@ -16,86 +16,6 @@
 
 // MARK: - Functions
 
-/// Read the dictionary entry at the current offset of the given file handle into the given data structure.
-/// @param file The file handle to read the entry from.
-/// @param entry The data structure to read the file into.
-void cgfx_dict_entry_read(FILE *file, struct cgfx_dict_entry_t *entry)
-{
-    // first 8 bytes are values that are unused, skip them
-    // namely reference bit, left node, and right node
-    fseek(file, 8, SEEK_CUR);
-
-    // read the name and data pointers
-    uint32_t name_pointer = utils_absolute_pointer(file);
-    uint32_t data_pointer = utils_absolute_pointer(file);
-
-    // read the name
-    // seek, read the name, and seek back so the next entry can be read
-    long seek_return = ftell(file);
-    fseek(file, name_pointer, SEEK_SET);
-    char *name = utils_read_string(file);
-    fseek(file, seek_return, SEEK_SET);
-
-    // create the entry
-    entry->name = name;
-    entry->data_pointer = data_pointer;
-}
-
-/// Read the dictionary at the current offset of the given file handle into the given data structure.
-///
-/// Note that this is for dictionary lists, where it first reads the size and offset of the dictionary, then seeks to and reads the actual dictionary, then returns to the next dictionary in the list.
-/// When this function returns the file offset is advanced by two u32s.
-/// @param file The file handle to read the dictionary from.
-/// @param dict The data structure to read the file into.
-void cgfx_dict_read(FILE *file, struct cgfx_dict_t *dict)
-{
-    // read the number of entries in the dictionary
-    uint32_t num_entries;
-    fread(&num_entries, sizeof(num_entries), 1, file);
-
-    // read the offset of the dictionary, in bytes
-    uint32_t pointer = utils_absolute_pointer(file);
-
-    // initialize the dictionary
-    dict->num_entries = num_entries;
-    dict->entries = malloc(num_entries * sizeof(struct cgfx_dict_entry_t));
-
-    // only read the dictionary if there are any entries
-    // if there arent then theres no data for it, and the signature check will fail
-    if (num_entries > 0)
-    {
-        // store the current offset and seek to the dictionary
-        // the current offset needs to be stored so it can be returned to to read the next in the list
-        long return_offset = ftell(file);
-        fseek(file, pointer, SEEK_SET);
-
-        // read the signature
-        assert(fgetc(file) == 'D');
-        assert(fgetc(file) == 'I');
-        assert(fgetc(file) == 'C');
-        assert(fgetc(file) == 'T');
-
-        // read the size and entry count
-        uint32_t size, num_entries;
-        fread(&size, sizeof(size), 1, file);
-        fread(&num_entries, sizeof(num_entries), 1, file);
-
-        // the next 16 bytes are an unused root entry, skip it
-        fseek(file, 16, SEEK_CUR);
-
-        // read the entries
-        for (int i = 0; i < num_entries; i++)
-        {
-            struct cgfx_dict_entry_t *entry = malloc(sizeof(struct cgfx_dict_entry_t));
-            cgfx_dict_entry_read(file, entry);
-            dict->entries[i] = entry;
-        }
-
-        // return to the dictionary list
-        fseek(file, return_offset, SEEK_SET);
-    }
-}
-
 /// Read the data section at the current offset of the given file handle into the given data structure.
 /// @param file The file handle to read the data section from.
 /// @param data The data structure to read the file into.
@@ -112,37 +32,37 @@ void cgfx_data_read(FILE *file, struct cgfx_data_t *data)
     fseek(file, 4, SEEK_CUR);
 
     // create and read all of the dictionaries
-    data->models = malloc(sizeof(struct cgfx_dict_t));
-    data->textures = malloc(sizeof(struct cgfx_dict_t));
-    data->lookup_tables = malloc(sizeof(struct cgfx_dict_t));
-    data->materials = malloc(sizeof(struct cgfx_dict_t));
-    data->shaders = malloc(sizeof(struct cgfx_dict_t));
-    data->cameras = malloc(sizeof(struct cgfx_dict_t));
-    data->lights = malloc(sizeof(struct cgfx_dict_t));
-    data->fogs = malloc(sizeof(struct cgfx_dict_t));
-    data->scenes = malloc(sizeof(struct cgfx_dict_t));
-    data->skeletal_animations = malloc(sizeof(struct cgfx_dict_t));
-    data->material_animations = malloc(sizeof(struct cgfx_dict_t));
-    data->visibility_animations = malloc(sizeof(struct cgfx_dict_t));
-    data->camera_animations = malloc(sizeof(struct cgfx_dict_t));
-    data->light_animations = malloc(sizeof(struct cgfx_dict_t));
-    data->emitters = malloc(sizeof(struct cgfx_dict_t));
+    data->models = malloc(sizeof(struct dict_t));
+    data->textures = malloc(sizeof(struct dict_t));
+    data->lookup_tables = malloc(sizeof(struct dict_t));
+    data->materials = malloc(sizeof(struct dict_t));
+    data->shaders = malloc(sizeof(struct dict_t));
+    data->cameras = malloc(sizeof(struct dict_t));
+    data->lights = malloc(sizeof(struct dict_t));
+    data->fogs = malloc(sizeof(struct dict_t));
+    data->scenes = malloc(sizeof(struct dict_t));
+    data->skeletal_animations = malloc(sizeof(struct dict_t));
+    data->material_animations = malloc(sizeof(struct dict_t));
+    data->visibility_animations = malloc(sizeof(struct dict_t));
+    data->camera_animations = malloc(sizeof(struct dict_t));
+    data->light_animations = malloc(sizeof(struct dict_t));
+    data->emitters = malloc(sizeof(struct dict_t));
 
-    cgfx_dict_read(file, data->models);
-    cgfx_dict_read(file, data->textures);
-    cgfx_dict_read(file, data->lookup_tables);
-    cgfx_dict_read(file, data->materials);
-    cgfx_dict_read(file, data->shaders);
-    cgfx_dict_read(file, data->cameras);
-    cgfx_dict_read(file, data->lights);
-    cgfx_dict_read(file, data->fogs);
-    cgfx_dict_read(file, data->scenes);
-    cgfx_dict_read(file, data->skeletal_animations);
-    cgfx_dict_read(file, data->material_animations);
-    cgfx_dict_read(file, data->visibility_animations);
-    cgfx_dict_read(file, data->camera_animations);
-    cgfx_dict_read(file, data->light_animations);
-    cgfx_dict_read(file, data->emitters);
+    dict_open(file, data->models);
+    dict_open(file, data->textures);
+    dict_open(file, data->lookup_tables);
+    dict_open(file, data->materials);
+    dict_open(file, data->shaders);
+    dict_open(file, data->cameras);
+    dict_open(file, data->lights);
+    dict_open(file, data->fogs);
+    dict_open(file, data->scenes);
+    dict_open(file, data->skeletal_animations);
+    dict_open(file, data->material_animations);
+    dict_open(file, data->visibility_animations);
+    dict_open(file, data->camera_animations);
+    dict_open(file, data->light_animations);
+    dict_open(file, data->emitters);
 }
 
 void cgfx_open(const char *path, struct cgfx_t *cgfx)
@@ -175,7 +95,7 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
     cgfx->textures = malloc(cgfx->num_textures * sizeof(struct txob_t *));
     for (int i = 0; i < cgfx->num_textures; i++)
     {
-        struct cgfx_dict_entry_t *entry = cgfx->data->textures->entries[i];
+        struct dict_entry_t *entry = cgfx->data->textures->entries[i];
 
         // read the txob
         // seek +4 to skip the 4 type bytes preceeding the txob
@@ -188,20 +108,6 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
     }
 }
 
-/// Free the given dictionary, releasing all of it's allocated memory.
-/// @param dict The dictionary to free.
-void cgfx_dict_free(struct cgfx_dict_t *dict)
-{
-    for (int i = 0; i < dict->num_entries; i++)
-    {
-        struct cgfx_dict_entry_t *entry = dict->entries[i];
-        free(entry->name);
-        free(entry);
-    }
-
-    free(dict->entries);
-}
-
 void cgfx_close(struct cgfx_t *cgfx)
 {
     for (int i = 0; i < cgfx->num_textures; i++)
@@ -210,21 +116,21 @@ void cgfx_close(struct cgfx_t *cgfx)
         free(cgfx->textures[i]);
     }
 
-    cgfx_dict_free(cgfx->data->models);
-    cgfx_dict_free(cgfx->data->textures);
-    cgfx_dict_free(cgfx->data->lookup_tables);
-    cgfx_dict_free(cgfx->data->materials);
-    cgfx_dict_free(cgfx->data->shaders);
-    cgfx_dict_free(cgfx->data->cameras);
-    cgfx_dict_free(cgfx->data->lights);
-    cgfx_dict_free(cgfx->data->fogs);
-    cgfx_dict_free(cgfx->data->scenes);
-    cgfx_dict_free(cgfx->data->skeletal_animations);
-    cgfx_dict_free(cgfx->data->material_animations);
-    cgfx_dict_free(cgfx->data->visibility_animations);
-    cgfx_dict_free(cgfx->data->camera_animations);
-    cgfx_dict_free(cgfx->data->light_animations);
-    cgfx_dict_free(cgfx->data->emitters);
+    dict_close(cgfx->data->models);
+    dict_close(cgfx->data->textures);
+    dict_close(cgfx->data->lookup_tables);
+    dict_close(cgfx->data->materials);
+    dict_close(cgfx->data->shaders);
+    dict_close(cgfx->data->cameras);
+    dict_close(cgfx->data->lights);
+    dict_close(cgfx->data->fogs);
+    dict_close(cgfx->data->scenes);
+    dict_close(cgfx->data->skeletal_animations);
+    dict_close(cgfx->data->material_animations);
+    dict_close(cgfx->data->visibility_animations);
+    dict_close(cgfx->data->camera_animations);
+    dict_close(cgfx->data->light_animations);
+    dict_close(cgfx->data->emitters);
 
     free(cgfx->data->models);
     free(cgfx->data->textures);
