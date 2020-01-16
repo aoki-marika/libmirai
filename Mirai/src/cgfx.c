@@ -12,8 +12,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include "utils.h"
-
 // MARK: - Functions
 
 /// Read the data section at the current offset of the given file handle into the given data structure.

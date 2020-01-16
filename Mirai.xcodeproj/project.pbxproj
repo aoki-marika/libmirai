@@ -15,6 +15,10 @@
 		EC423FF023CC8B990047CF9E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EC423FEF23CC8B990047CF9E /* main.m */; };
 		EC423FF823CC8D130047CF9E /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FF723CC8D130047CF9E /* spr.c */; };
 		EC423FFD23CCAC970047CF9E /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC423FFC23CCAC970047CF9E /* ctpk.c */; };
+		ECAF37C723D0890A001179B7 /* dict.c in Sources */ = {isa = PBXBuildFile; fileRef = ECAF37C523D083A5001179B7 /* dict.c */; };
+		ECAF37CA23D0961B001179B7 /* sobj.c in Sources */ = {isa = PBXBuildFile; fileRef = ECAF37C923D0961B001179B7 /* sobj.c */; };
+		ECAF37CD23D0E81F001179B7 /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = ECAF37CC23D0E81F001179B7 /* vector.c */; };
+		ECAF37CF23D0E827001179B7 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = ECAF37CE23D0E827001179B7 /* matrix.c */; };
 		ECD640B623CE523000C89360 /* cgfx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECD640B523CE523000C89360 /* cgfx.c */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +58,8 @@
 		ECAF37C523D083A5001179B7 /* dict.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
 		ECAF37C823D09611001179B7 /* sobj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sobj.h; sourceTree = "<group>"; };
 		ECAF37C923D0961B001179B7 /* sobj.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sobj.c; sourceTree = "<group>"; };
+		ECAF37CC23D0E81F001179B7 /* vector.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
+		ECAF37CE23D0E827001179B7 /* matrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		ECD640B223CE521400C89360 /* cgfx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
 		ECD640B523CE523000C89360 /* cgfx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cgfx.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -128,6 +134,8 @@
 				ECAF37C923D0961B001179B7 /* sobj.c */,
 				EC2B8BBC23CF53DD009AA3CE /* texture.c */,
 				EC2B8BB023CF49BF009AA3CE /* utils.c */,
+				ECAF37CC23D0E81F001179B7 /* vector.c */,
+				ECAF37CE23D0E827001179B7 /* matrix.c */,
 			);
 			path = src;
 			sourceTree = "<group>";

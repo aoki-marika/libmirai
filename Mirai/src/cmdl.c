@@ -84,14 +84,14 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
     // read the scale, rotation, and translation vectors
     struct vec3_t scale, rotation, translation;
-    utils_read_vec3(file, &scale);
-    utils_read_vec3(file, &rotation);
-    utils_read_vec3(file, &translation);
+    vec3_read(file, &scale);
+    vec3_read(file, &rotation);
+    vec3_read(file, &translation);
 
     // read the matrices
     struct mat4_t matrix_local, matrix_world;
-    utils_read_mat4(file, &matrix_local);
-    utils_read_mat4(file, &matrix_world);
+    mat4_read43(file, &matrix_local);
+    mat4_read43(file, &matrix_world);
 
     // read the mesh count and pointer
     uint32_t num_meshes;

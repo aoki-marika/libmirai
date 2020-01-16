@@ -139,7 +139,7 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
 
     // read the position offset
     struct vec3_t position_offset;
-    utils_read_vec3(file, &position_offset);
+    vec3_read(file, &position_offset);
 
     // read the face group count and pointer
     #warning TODO: Face group reading.
