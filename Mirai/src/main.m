@@ -26,7 +26,7 @@ int main(int argc, const char *argv[])
                 struct cmdl_t *cmdl = cgfx.models[i];
                 printf("    - cmdl %i:\n", i);
                 printf("       - name: \"%s\"\n", cmdl->name);
-                printf("       - meshes: %u\n", cmdl->num_meshes);
+                printf("       - objects: %u\n", cmdl->num_objects);
 
                 printf("       - %u shapes:\n", cmdl->num_shapes);
                 for (int i = 0; i < cmdl->num_shapes; i++)

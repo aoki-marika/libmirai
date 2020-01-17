@@ -43,15 +43,15 @@ struct cmdl_t
     /// Whether or not this CMDL is visible.
     bool is_visible;
 
-    /// The number of mesh SOBJs within this CMDL.
-    unsigned int num_meshes;
+    /// The number of object SOBJs within this CMDL.
+    unsigned int num_objects;
 
-    /// All the mesh SOBJs within this CMDL.
+    /// All the object SOBJs within this CMDL.
     ///
-    /// The type of each of these SOBJs is always `SOBJ_TYPE_MESH`.
+    /// The type of each of these SOBJs is always `SOBJ_TYPE_OBJECT`.
     ///
     /// The array and each item are allocated.
-    struct sobj_t **meshes;
+    struct sobj_t **objects;
 
     /// The number of shape SOBJs within this CMDL.
     unsigned int num_shapes;

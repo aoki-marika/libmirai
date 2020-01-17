@@ -88,15 +88,15 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     mat4_read43(file, &transform_local);
     mat4_read43(file, &transform_world);
 
-    // read the mesh count and pointer
-    uint32_t num_meshes;
-    fread(&num_meshes, sizeof(num_meshes), 1, file);
+    // read the object count and pointer
+    uint32_t num_objects;
+    fread(&num_objects, sizeof(num_objects), 1, file);
 
-    uint32_t meshes_pointer = utils_read_relative_pointer(file);
+    uint32_t objects_pointer = utils_read_relative_pointer(file);
 
-    // read the mtobs dict
-    struct dict_t mtobs;
-    dict_open(file, &mtobs);
+    // read the materials dict
+    struct dict_t materials;
+    dict_open(file, &materials);
 
     // read the shape count and pointer
     uint32_t num_shapes;
@@ -140,14 +140,14 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     cmdl->transform_world = transform_world;
     cmdl->is_visible = is_visible;
 
-    // read the meshes
-    cmdl->num_meshes = num_meshes;
-    cmdl->meshes = malloc(num_meshes * sizeof(struct sobj_t *));
+    // read the objects
+    cmdl->num_objects = num_objects;
+    cmdl->objects = malloc(num_objects * sizeof(struct sobj_t *));
     cmdl_read_sobj_table(file,
-                         num_meshes,
-                         meshes_pointer,
-                         SOBJ_TYPE_MESH,
-                         cmdl->meshes);
+                         num_objects,
+                         objects_pointer,
+                         SOBJ_TYPE_OBJECT,
+                         cmdl->objects);
 
     // read the shapes
     cmdl->num_shapes = num_shapes;
@@ -172,16 +172,17 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
         cmdl->skeleton = NULL;
     }
 
-    #warning Remove this when MTOB and animation types dict reading is implemented.
-    dict_close(&mtobs);
+    #warning Remove this when material and animation types dict reading is implemented.
+
+    dict_close(&materials);
     dict_close(&animation_types_dict);
 }
 
 void cmdl_close(struct cmdl_t *cmdl)
 {
-    for (int i = 0; i < cmdl->num_meshes; i++)
+    for (int i = 0; i < cmdl->num_objects; i++)
     {
-        struct sobj_t *sobj = cmdl->meshes[i];
+        struct sobj_t *sobj = cmdl->objects[i];
         sobj_close(sobj);
         free(sobj);
     }
@@ -197,6 +198,6 @@ void cmdl_close(struct cmdl_t *cmdl)
         free(cmdl->skeleton);
 
     free(cmdl->shapes);
-    free(cmdl->meshes);
+    free(cmdl->objects);
     free(cmdl->name);
 }

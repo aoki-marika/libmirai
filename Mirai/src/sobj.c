@@ -14,7 +14,6 @@
 #include <assert.h>
 
 #include "utils.h"
-#include "vector.h"
 
 // MARK: - Enumerations
 
@@ -352,18 +351,18 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
 void sobj_open(FILE *file, struct sobj_t *sobj)
 {
     // read the flags
-    //  - bit 24: is mesh
+    //  - bit 24: is object
     //  - bit 25: is skeleton
     //  - bit 28: is shape
     // cant use an enum directly as the type flags are combined with other flags
     uint32_t flags;
     fread(&flags, sizeof(flags), 1, file);
 
-    bool is_mesh     = flags & (0x1 << 24);
+    bool is_object     = flags & (0x1 << 24);
     bool is_skeleton = flags & (0x1 << 25);
     bool is_shape    = flags & (0x1 << 28);
 
-    assert(is_mesh || is_skeleton || is_shape);
+    assert(is_object || is_skeleton || is_shape);
 
     // read the signature
     assert(fgetc(file) == 'S');
@@ -390,9 +389,9 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
     sobj->name = name;
 
     // handle the different data types
-    if (is_mesh)
+    if (is_object)
     {
-        sobj->type = SOBJ_TYPE_MESH;
+        sobj->type = SOBJ_TYPE_OBJECT;
         sobj->shape = NULL;
     }
     else if (is_skeleton)
@@ -412,7 +411,7 @@ void sobj_close(struct sobj_t *sobj)
 {
     switch (sobj->type)
     {
-        case SOBJ_TYPE_MESH:
+        case SOBJ_TYPE_OBJECT:
             break;
         case SOBJ_TYPE_SKELETON:
             break;

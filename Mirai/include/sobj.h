@@ -17,13 +17,22 @@
 /// The different types that an SOBJ file can be.
 enum sobj_type_t
 {
-    /// This SOBJ file contains a mesh.
-    SOBJ_TYPE_MESH,
+    /// This SOBJ file contains an object.
+    ///
+    /// An object is the top level object that combines shapes, materials,
+    /// and other properties within a CMDL to form a usable model.
+    SOBJ_TYPE_OBJECT,
 
     /// This SOBJ file contains a skeleton.
+    ///
+    /// A skeleton is an object that works with geometry to create dynamic
+    /// animations, based around the idea of the model containing a skeleton.
     SOBJ_TYPE_SKELETON,
 
     /// This SOBJ file contains a shape.
+    ///
+    /// A shape is an object that contains raw geometry data, such
+    /// as vertex data and faces, to form a mesh.
     SOBJ_TYPE_SHAPE,
 };
 
