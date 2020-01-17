@@ -19,7 +19,7 @@ enum sobj_type_t
 {
     /// This SOBJ file contains an object.
     ///
-    /// An object is the top level object that combines shapes, materials,
+    /// An object is the top level object that combines meshes, materials,
     /// and other properties within a CMDL to form a usable model.
     SOBJ_TYPE_OBJECT,
 
@@ -29,11 +29,11 @@ enum sobj_type_t
     /// animations, based around the idea of the model containing a skeleton.
     SOBJ_TYPE_SKELETON,
 
-    /// This SOBJ file contains a shape.
+    /// This SOBJ file contains a mesh.
     ///
-    /// A shape is an object that contains raw geometry data, such
-    /// as vertex data and faces, to form a mesh.
-    SOBJ_TYPE_SHAPE,
+    /// A mesh is an object that contains raw geometry data, such
+    /// as vertex data and faces, to form a polygon mesh.
+    SOBJ_TYPE_MESH,
 };
 
 /// The different types that a vertex component's data can be used for.
@@ -99,33 +99,33 @@ struct sobj_t
     /// The type of this SOBJ.
     enum sobj_type_t type;
 
-    /// The shape within this SOBJ file, if any.
+    /// The mesh within this SOBJ file, if any.
     ///
-    /// If `type` is not `SOBJ_TYPE_SHAPE`, then this is `NULL`.
-    /// If `type` is `SOBJ_TYPE_SHAPE`, then this is allocated.
-    struct sobj_shape_t *shape;
+    /// If `type` is not `SOBJ_TYPE_MESH`, then this is `NULL`.
+    /// If `type` is `SOBJ_TYPE_MESH`, then this is allocated.
+    struct sobj_mesh_t *mesh;
 };
 
-/// The data structure for a shape within an SOBJ file.
-struct sobj_shape_t
+/// The data structure for a mesh within an SOBJ file.
+struct sobj_mesh_t
 {
-    /// The 3D vector to offset this SOBJ's position by.
+    /// The 3D vector to offset this mesh's position by.
     struct vec3_t transform_translation;
 
-    /// The number of face groups within this shape.
+    /// The number of face groups within this mesh.
     unsigned int num_face_groups;
 
-    /// All the face groups within this shape.
+    /// All the face groups within this mesh.
     ///
     /// Each of these groups are for the vertex group of the same index.
     ///
     /// The array and each item are allocated.
     struct sobj_face_group_t **face_groups;
 
-    /// The number of vertex groups within this shape.
+    /// The number of vertex groups within this mesh.
     unsigned int num_vertex_groups;
 
-    /// All the vertex groups within this shape.
+    /// All the vertex groups within this mesh.
     ///
     /// Each of these groups are for the face group of the same index.
     ///
@@ -133,7 +133,7 @@ struct sobj_shape_t
     struct sobj_vertex_group_t **vertex_groups;
 };
 
-/// The data structure for a single group of faces within an SOBJ shape.
+/// The data structure for a single group of faces within an SOBJ mesh.
 struct sobj_face_group_t
 {
     /// The number of vertex indices within this group.
@@ -148,7 +148,7 @@ struct sobj_face_group_t
     uint16_t *indices;
 };
 
-/// The data structure for a single group of vertices within an SOBJ shape.
+/// The data structure for a single group of vertices within an SOBJ mesh.
 struct sobj_vertex_group_t
 {
     /// The number of vertices within this group.

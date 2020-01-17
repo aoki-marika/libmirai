@@ -98,11 +98,11 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     struct dict_t materials;
     dict_open(file, &materials);
 
-    // read the shape count and pointer
-    uint32_t num_shapes;
-    fread(&num_shapes, sizeof(num_shapes), 1, file);
+    // read the mesh count and pointer
+    uint32_t num_meshes;
+    fread(&num_meshes, sizeof(num_meshes), 1, file);
 
-    uint32_t shapes_pointer = utils_read_relative_pointer(file);
+    uint32_t meshes_pointer = utils_read_relative_pointer(file);
 
     // dict pointer unknown
     // ohana3ds refers to this dict as object nodes,
@@ -149,14 +149,14 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
                          SOBJ_TYPE_OBJECT,
                          cmdl->objects);
 
-    // read the shapes
-    cmdl->num_shapes = num_shapes;
-    cmdl->shapes = malloc(num_shapes * sizeof(struct sobj_t *));
+    // read the meshes
+    cmdl->num_meshes = num_meshes;
+    cmdl->meshes = malloc(num_meshes * sizeof(struct sobj_t *));
     cmdl_read_sobj_table(file,
-                         num_shapes,
-                         shapes_pointer,
-                         SOBJ_TYPE_SHAPE,
-                         cmdl->shapes);
+                         num_meshes,
+                         meshes_pointer,
+                         SOBJ_TYPE_MESH,
+                         cmdl->meshes);
 
     // read the skeleton
     if (has_skeleton_sobj)
@@ -187,9 +187,9 @@ void cmdl_close(struct cmdl_t *cmdl)
         free(sobj);
     }
 
-    for (int i = 0; i < cmdl->num_shapes; i++)
+    for (int i = 0; i < cmdl->num_meshes; i++)
     {
-        struct sobj_t *sobj = cmdl->shapes[i];
+        struct sobj_t *sobj = cmdl->meshes[i];
         sobj_close(sobj);
         free(sobj);
     }
@@ -197,7 +197,7 @@ void cmdl_close(struct cmdl_t *cmdl)
     if (cmdl->skeleton != NULL)
         free(cmdl->skeleton);
 
-    free(cmdl->shapes);
+    free(cmdl->meshes);
     free(cmdl->objects);
     free(cmdl->name);
 }

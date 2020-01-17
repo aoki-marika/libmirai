@@ -21,32 +21,32 @@ int main(int argc, const char *argv[])
             cgfx_open(argv[i], &cgfx);
 
             printf(" - models:\n");
-            for (int i = 0; i < cgfx.num_models; i++)
+            for (int m = 0; m < cgfx.num_models; m++)
             {
-                struct cmdl_t *cmdl = cgfx.models[i];
-                printf("    - cmdl %i:\n", i);
+                struct cmdl_t *cmdl = cgfx.models[m];
+                printf("    - cmdl %i:\n", m);
                 printf("       - name: \"%s\"\n", cmdl->name);
                 printf("       - objects: %u\n", cmdl->num_objects);
 
-                printf("       - %u shapes:\n", cmdl->num_shapes);
-                for (int i = 0; i < cmdl->num_shapes; i++)
+                printf("       - %u meshes:\n", cmdl->num_meshes);
+                for (int m = 0; m < cmdl->num_meshes; m++)
                 {
-                    struct sobj_shape_t *shape = cmdl->shapes[i]->shape;
+                    struct sobj_mesh_t *mesh = cmdl->meshes[m]->mesh;
 
-                    printf("          - shape %i:\n", i);
-                    printf("             - %i face groups:\n", i);
-                    for (int g = 0; g < shape->num_face_groups; g++)
+                    printf("          - mesh %i:\n", m);
+                    printf("             - %i face groups:\n", mesh->num_face_groups);
+                    for (int g = 0; g < mesh->num_face_groups; g++)
                     {
-                        struct sobj_face_group_t *face_group = shape->face_groups[g];
+                        struct sobj_face_group_t *face_group = mesh->face_groups[g];
 
                         printf("                - face group %i:\n", g);
                         printf("                   - indices: %u\n", face_group->num_indices);
                     }
 
-                    printf("             - %i vertex groups:\n", i);
-                    for (int g = 0; g < shape->num_vertex_groups; g++)
+                    printf("             - %i vertex groups:\n", mesh->num_vertex_groups);
+                    for (int g = 0; g < mesh->num_vertex_groups; g++)
                     {
-                        struct sobj_vertex_group_t *vertex_group = shape->vertex_groups[g];
+                        struct sobj_vertex_group_t *vertex_group = mesh->vertex_groups[g];
 
                         printf("                - vertex group %i:\n", g);
                         printf("                   - components: %ucpv\n", vertex_group->num_components);

@@ -267,10 +267,10 @@ bool sobj_read_vertex_group(FILE *file, struct sobj_vertex_group_t *vertex_group
     return true;
 }
 
-/// Read the shape at the current offset of the given file handle into the given shape.
-/// @param file The file handle to read the shape from.
-/// @param shape The shape to read the file info.
-void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
+/// Read the mesh at the current offset of the given file handle into the given mesh.
+/// @param file The file handle to read the mesh from.
+/// @param mesh The mesh to read the file info.
+void sobj_mesh_read(FILE *file, struct sobj_mesh_t *mesh)
 {
     // two unused values
     //  - u32 flags
@@ -299,12 +299,12 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     // u32 unknown pointer
     fseek(file, 4, SEEK_CUR);
 
-    // initialize the shape
-    shape->transform_translation = transform_translation;
+    // initialize the mesh
+    mesh->transform_translation = transform_translation;
 
     // read the face groups
-    shape->num_face_groups = num_face_groups;
-    shape->face_groups = malloc(num_face_groups * sizeof(struct sobj_face_group_t *));
+    mesh->num_face_groups = num_face_groups;
+    mesh->face_groups = malloc(num_face_groups * sizeof(struct sobj_face_group_t *));
     for (int i = 0; i < num_face_groups; i++)
     {
         // pointer table
@@ -316,7 +316,7 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
         sobj_read_face_group(file, face_group);
 
         // insert the face group
-        shape->face_groups[i] = face_group;
+        mesh->face_groups[i] = face_group;
     }
 
     // read the vertex groups
@@ -324,7 +324,7 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     int vertex_group_index = 0;
     int num_valid_vertex_groups = 0;
 
-    shape->vertex_groups = malloc(num_vertex_groups * sizeof(struct sobj_vertex_group_t *));
+    mesh->vertex_groups = malloc(num_vertex_groups * sizeof(struct sobj_vertex_group_t *));
     for (int i = 0; i < num_vertex_groups; i++)
     {
         // pointer table
@@ -338,14 +338,14 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
             continue;
 
         // insert the vertex group
-        shape->vertex_groups[vertex_group_index] = vertex_group;
+        mesh->vertex_groups[vertex_group_index] = vertex_group;
         vertex_group_index++;
         num_valid_vertex_groups++;
     }
 
     // resize the vertex groups array to only contain the valid ones
-    shape->num_vertex_groups = num_valid_vertex_groups;
-    shape->vertex_groups = realloc(shape->vertex_groups, sizeof(num_valid_vertex_groups * sizeof(struct sobj_vertex_group_t *)));
+    mesh->num_vertex_groups = num_valid_vertex_groups;
+    mesh->vertex_groups = realloc(mesh->vertex_groups, sizeof(num_valid_vertex_groups * sizeof(struct sobj_vertex_group_t *)));
 }
 
 void sobj_open(FILE *file, struct sobj_t *sobj)
@@ -353,16 +353,16 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
     // read the flags
     //  - bit 24: is object
     //  - bit 25: is skeleton
-    //  - bit 28: is shape
+    //  - bit 28: is mesh
     // cant use an enum directly as the type flags are combined with other flags
     uint32_t flags;
     fread(&flags, sizeof(flags), 1, file);
 
     bool is_object     = flags & (0x1 << 24);
     bool is_skeleton = flags & (0x1 << 25);
-    bool is_shape    = flags & (0x1 << 28);
+    bool is_mesh    = flags & (0x1 << 28);
 
-    assert(is_object || is_skeleton || is_shape);
+    assert(is_object || is_skeleton || is_mesh);
 
     // read the signature
     assert(fgetc(file) == 'S');
@@ -392,18 +392,18 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
     if (is_object)
     {
         sobj->type = SOBJ_TYPE_OBJECT;
-        sobj->shape = NULL;
+        sobj->mesh = NULL;
     }
     else if (is_skeleton)
     {
         sobj->type = SOBJ_TYPE_SKELETON;
-        sobj->shape = NULL;
+        sobj->mesh = NULL;
     }
-    else if (is_shape)
+    else if (is_mesh)
     {
-        sobj->type = SOBJ_TYPE_SHAPE;
-        sobj->shape = malloc(sizeof(struct sobj_shape_t));
-        sobj_shape_read(file, sobj->shape);
+        sobj->type = SOBJ_TYPE_MESH;
+        sobj->mesh = malloc(sizeof(struct sobj_mesh_t));
+        sobj_mesh_read(file, sobj->mesh);
     }
 }
 
@@ -415,17 +415,17 @@ void sobj_close(struct sobj_t *sobj)
             break;
         case SOBJ_TYPE_SKELETON:
             break;
-        case SOBJ_TYPE_SHAPE:
-            for (int i = 0; i < sobj->shape->num_face_groups; i++)
+        case SOBJ_TYPE_MESH:
+            for (int i = 0; i < sobj->mesh->num_face_groups; i++)
             {
-                struct sobj_face_group_t *face_group = sobj->shape->face_groups[i];
+                struct sobj_face_group_t *face_group = sobj->mesh->face_groups[i];
                 free(face_group->indices);
                 free(face_group);
             }
 
-            for (int i = 0; i < sobj->shape->num_vertex_groups; i++)
+            for (int i = 0; i < sobj->mesh->num_vertex_groups; i++)
             {
-                struct sobj_vertex_group_t *vertex_group = sobj->shape->vertex_groups[i];
+                struct sobj_vertex_group_t *vertex_group = sobj->mesh->vertex_groups[i];
                 for (int c = 0; c < vertex_group->num_components; c++)
                     free(vertex_group->components[c]);
 
@@ -433,9 +433,9 @@ void sobj_close(struct sobj_t *sobj)
                 free(vertex_group);
             }
 
-            free(sobj->shape->vertex_groups);
-            free(sobj->shape->face_groups);
-            free(sobj->shape);
+            free(sobj->mesh->vertex_groups);
+            free(sobj->mesh->face_groups);
+            free(sobj->mesh);
             break;
     }
 

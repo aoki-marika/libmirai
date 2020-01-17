@@ -53,15 +53,15 @@ struct cmdl_t
     /// The array and each item are allocated.
     struct sobj_t **objects;
 
-    /// The number of shape SOBJs within this CMDL.
-    unsigned int num_shapes;
+    /// The number of mesh SOBJs within this CMDL.
+    unsigned int num_meshes;
 
-    /// All the shape SOBJs within this CMDL.
+    /// All the mesh SOBJs within this CMDL.
     ///
-    /// The type of each of these SOBJs is always `SOBJ_TYPE_SHAPE`.
+    /// The type of each of these SOBJs is always `SOBJ_TYPE_MESH`.
     ///
     /// The array and each item are allocated.
-    struct sobj_t **shapes;
+    struct sobj_t **meshes;
 
     /// The skeleton SOBJ of this CMDL, if any.
     ///
