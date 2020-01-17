@@ -27,7 +27,33 @@ int main(int argc, const char *argv[])
                 printf("    - cmdl %i:\n", i);
                 printf("       - name: \"%s\"\n", cmdl->name);
                 printf("       - meshes: %u\n", cmdl->num_meshes);
-                printf("       - shapes: %u\n", cmdl->num_shapes);
+
+                printf("       - %u shapes:\n", cmdl->num_shapes);
+                for (int i = 0; i < cmdl->num_shapes; i++)
+                {
+                    struct sobj_shape_t *shape = cmdl->shapes[i]->shape;
+
+                    printf("          - shape %i:\n", i);
+                    printf("             - %i face groups:\n", i);
+                    for (int g = 0; g < shape->num_face_groups; g++)
+                    {
+                        struct sobj_face_group_t *face_group = shape->face_groups[g];
+
+                        printf("                - face group %i:\n", g);
+                        printf("                   - indices: %u\n", face_group->num_indices);
+                    }
+
+                    printf("             - %i vertex groups:\n", i);
+                    for (int g = 0; g < shape->num_vertex_groups; g++)
+                    {
+                        struct sobj_vertex_group_t *vertex_group = shape->vertex_groups[g];
+
+                        printf("                - vertex group %i:\n", g);
+                        printf("                   - components: %ucpv\n", vertex_group->num_components);
+                        printf("                   - data: %zu bytes at %zu\n", vertex_group->data_size, vertex_group->data_pointer);
+                    }
+                }
+
                 printf("       - skeletons: %i\n", cmdl->skeleton != NULL);
             }
 

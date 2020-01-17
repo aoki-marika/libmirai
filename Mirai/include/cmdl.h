@@ -42,8 +42,6 @@ struct cmdl_t
     /// The number of mesh SOBJs within this CMDL.
     unsigned int num_meshes;
 
-    #warning TODO: Rename these to have an sobj_ prefix? It's slightly confusing to go cmdl->shapes[i]->shape.
-
     /// All the mesh SOBJs within this CMDL.
     ///
     /// The type of each of these SOBJs is always `SOBJ_TYPE_MESH`.
