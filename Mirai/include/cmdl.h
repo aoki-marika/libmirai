@@ -12,6 +12,7 @@
 
 #include "sobj.h"
 #include "vector.h"
+#include "matrix.h"
 
 // MARK: - Data Structures
 
@@ -31,6 +32,12 @@ struct cmdl_t
 
     /// The 3D vector to offset this CMDL's position by.
     struct vec3_t transform_translation;
+
+    /// The transform applied to this CMDL relative to it's parent.
+    struct mat4_t transform_local;
+
+    /// The transform applied to this CMDL relative to the world.
+    struct mat4_t transform_world;
 
     /// The number of mesh SOBJs within this CMDL.
     unsigned int num_meshes;
