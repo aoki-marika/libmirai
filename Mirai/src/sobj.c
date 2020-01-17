@@ -16,7 +16,132 @@
 #include "utils.h"
 #include "vector.h"
 
+// MARK: - Enumerations
+
+/// The different formats that an SOBJ face's vertex indices can be in.
+enum sobj_face_index_format_t
+{
+    /// An unsigned 8-bit integer.
+    SOBJ_FACE_INDEX_FORMAT_U8  = 0,
+
+    /// An unsigned 16-bit integer.
+    SOBJ_FACE_INDEX_FORMAT_U16 = 1,
+};
+
 // MARK: - Functions
+
+/// Read the face group at the current offset of the given file handle into the given face group.
+/// @param file The file handle to read the face group from.
+/// @param face_group The face group to read the file into.
+void sobj_read_face_group(FILE *file, struct sobj_face_group_t *face_group)
+{
+    // multiple unused values
+    //  - u32 bone node count and pointer
+    //  - u32 skinning mode
+    fseek(file, 4 + 4 + 4, SEEK_CUR);
+
+    // read the face group count and pointer, then each groups indices
+    // faces are grouped on two levels; once in first level groups,
+    // then again in a second level where they are grouped with bone nodes
+    // here they all the first level groups are expanded into the second level
+    // just to simplify the consumer facing api
+    uint32_t num_face_groups;
+    fread(&num_face_groups, sizeof(num_face_groups), 1, file);
+
+    uint32_t face_groups_pointer = utils_read_relative_pointer(file);
+
+    // the indices array is reallocated and appended for each group
+    // malloc(1) is used instead of zero because malloc(0)
+    // returns either null or a pointer that can only be pretend deallocated
+    // depending on the platform
+    int indices_index = 0;
+    int num_indices = 0;
+    uint16_t *indices = malloc(1);
+    for (int g = 0; g < num_face_groups; g++)
+    {
+        // pointer table
+        fseek(file, face_groups_pointer + (g * 4), SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        // read the face count and pointer
+        uint32_t num_faces;
+        fread(&num_faces, sizeof(num_faces), 1, file);
+
+        uint32_t faces_pointer = utils_read_relative_pointer(file);
+
+        // seek to the face data
+        // pointer to a pointer
+        fseek(file, faces_pointer, SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        // read the index format
+        // the format is a flag (bit 1), so mask and shift it
+        // to convert it to the indices used in the enumeration
+        uint32_t index_format_raw;
+        fread(&index_format_raw, sizeof(index_format_raw), 1, file);
+
+        enum sobj_face_index_format_t index_format = (index_format_raw & 0b11) >> 1;
+
+        // u32 unknown
+        fseek(file, 4, SEEK_CUR);
+
+        // read the face indices size and pointer of this group
+        // note that this is the size (in bytes) of the array,
+        // *not* the number of items within it
+        uint32_t group_indices_size;
+        fread(&group_indices_size, sizeof(group_indices_size), 1, file);
+
+        uint32_t indices_pointer = utils_read_relative_pointer(file);
+
+        // ensure there are any indices to read
+        // this is to avoid having to specially handle appending empty indices
+        if (group_indices_size <= 0)
+            continue;
+
+        // get the size of a single index within the indices
+        int group_index_size;
+        switch (index_format)
+        {
+            case SOBJ_FACE_INDEX_FORMAT_U8:  group_index_size = sizeof(uint8_t);  break;
+            case SOBJ_FACE_INDEX_FORMAT_U16: group_index_size = sizeof(uint16_t); break;
+        }
+
+        // read the face indices in this group
+        int num_group_indices = group_indices_size / group_index_size;
+        fseek(file, indices_pointer, SEEK_SET);
+
+        uint16_t group_indices[num_group_indices];
+        for (int i = 0; i < num_group_indices; i++)
+        {
+            switch (index_format)
+            {
+                case SOBJ_FACE_INDEX_FORMAT_U8:
+                {
+                    uint8_t raw;
+                    fread(&raw, sizeof(raw), 1, file);
+                    group_indices[i] = (uint16_t)raw;
+                    break;
+                }
+                case SOBJ_FACE_INDEX_FORMAT_U16:
+                {
+                    uint16_t raw;
+                    fread(&raw, sizeof(raw), 1, file);
+                    group_indices[i] = raw;
+                    break;
+                }
+            }
+        }
+
+        // insert the indices into the total array
+        num_indices += num_group_indices;
+        indices = realloc(indices, num_indices * sizeof(uint16_t));
+        memcpy(&indices[indices_index], group_indices, num_group_indices * sizeof(uint16_t));
+        indices_index += num_group_indices;
+    }
+
+    face_group->num_indices = num_indices;
+    face_group->indices = indices;
+}
 
 /// Read the vertex component at the current offset of the given file handle into the given component.
 /// @param file The file handle to read the vertex component from.
@@ -158,13 +283,10 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     vec3_read(file, &transform_translation);
 
     // read the face group count and pointer
-    #warning TODO: Face group reading.
-    fseek(file, 4 + 4, SEEK_CUR);
+    uint32_t num_face_groups;
+    fread(&num_face_groups, sizeof(num_face_groups), 1, file);
 
-//    uint32_t num_face_groups;
-//    fread(&num_face_groups, sizeof(num_face_groups), 1, file);
-//
-//    uint32_t face_groups_pointer = utils_read_relative_pointer(file);
+    uint32_t face_groups_pointer = utils_read_relative_pointer(file);
 
     // u32 unknown
     fseek(file, 4, SEEK_CUR);
@@ -180,6 +302,23 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
 
     // initialize the shape
     shape->transform_translation = transform_translation;
+
+    // read the face groups
+    shape->num_face_groups = num_face_groups;
+    shape->face_groups = malloc(num_face_groups * sizeof(struct sobj_face_group_t *));
+    for (int i = 0; i < num_face_groups; i++)
+    {
+        // pointer table
+        fseek(file, face_groups_pointer + (i * 4), SEEK_SET);
+        fseek(file, utils_read_relative_pointer(file), SEEK_SET);
+
+        // read the face group
+        struct sobj_face_group_t *face_group = malloc(sizeof(struct sobj_face_group_t));
+        sobj_read_face_group(file, face_group);
+
+        // insert the face group
+        shape->face_groups[i] = face_group;
+    }
 
     // read the vertex groups
     // the vertex groups need to be inserted such that the invalid ones dont leave gaps in the array
@@ -278,6 +417,13 @@ void sobj_close(struct sobj_t *sobj)
         case SOBJ_TYPE_SKELETON:
             break;
         case SOBJ_TYPE_SHAPE:
+            for (int i = 0; i < sobj->shape->num_face_groups; i++)
+            {
+                struct sobj_face_group_t *face_group = sobj->shape->face_groups[i];
+                free(face_group->indices);
+                free(face_group);
+            }
+
             for (int i = 0; i < sobj->shape->num_vertex_groups; i++)
             {
                 struct sobj_vertex_group_t *vertex_group = sobj->shape->vertex_groups[i];
@@ -289,6 +435,7 @@ void sobj_close(struct sobj_t *sobj)
             }
 
             free(sobj->shape->vertex_groups);
+            free(sobj->shape->face_groups);
             free(sobj->shape);
             break;
     }

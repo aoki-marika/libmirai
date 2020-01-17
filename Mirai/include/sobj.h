@@ -54,6 +54,8 @@ enum sobj_component_type_t
 /// The different formats that a vertex component's values can be in.
 enum sobj_component_data_type_t
 {
+    #warning TODO: Rename these to reflect their C type names (U18, S32, etc.)
+
     /// A signed 8-bit integer.
     SOBJ_COMPONENT_DATA_TYPE_SBYTE =  0x00,
 
@@ -102,13 +104,40 @@ struct sobj_shape_t
     /// The 3D vector to offset this SOBJ's position by.
     struct vec3_t transform_translation;
 
+    /// The number of face groups within this shape.
+    unsigned int num_face_groups;
+
+    /// All the face groups within this shape.
+    ///
+    /// Each of these groups are for the vertex group of the same index.
+    ///
+    /// The array and each item are allocated.
+    struct sobj_face_group_t **face_groups;
+
     /// The number of vertex groups within this shape.
     unsigned int num_vertex_groups;
 
     /// All the vertex groups within this shape.
     ///
+    /// Each of these groups are for the face group of the same index.
+    ///
     /// The array and each item are allocated.
     struct sobj_vertex_group_t **vertex_groups;
+};
+
+/// The data structure for a single group of faces within an SOBJ shape.
+struct sobj_face_group_t
+{
+    /// The number of vertex indices within this group.
+    unsigned int num_indices;
+
+    /// All the vertex indices within this group.
+    ///
+    /// These indices are layed out to form triangle strips,
+    /// and each index refers to an index within the vertices of the vertex group this group is for.
+    ///
+    /// Allocated.
+    uint16_t *indices;
 };
 
 /// The data structure for a single group of vertices within an SOBJ shape.
