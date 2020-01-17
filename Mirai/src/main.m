@@ -31,7 +31,7 @@ int main(int argc, const char *argv[])
                 printf("       - %u meshes:\n", cmdl->num_meshes);
                 for (int m = 0; m < cmdl->num_meshes; m++)
                 {
-                    struct sobj_mesh_t *mesh = cmdl->meshes[m]->mesh;
+                    struct sobj_mesh_t *mesh = cmdl->mesh_sobjs[m]->mesh;
 
                     printf("          - mesh %i:\n", m);
                     printf("             - %i face groups:\n", mesh->num_face_groups);
@@ -54,7 +54,7 @@ int main(int argc, const char *argv[])
                     }
                 }
 
-                printf("       - skeletons: %i\n", cmdl->skeleton != NULL);
+                printf("       - skeletons: %i\n", cmdl->skeleton_sobj != NULL);
             }
 
             printf(" - textures:\n");

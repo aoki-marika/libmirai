@@ -142,21 +142,21 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
     // read the objects
     cmdl->num_objects = num_objects;
-    cmdl->objects = malloc(num_objects * sizeof(struct sobj_t *));
+    cmdl->object_sobjs = malloc(num_objects * sizeof(struct sobj_t *));
     cmdl_read_sobj_table(file,
                          num_objects,
                          objects_pointer,
                          SOBJ_TYPE_OBJECT,
-                         cmdl->objects);
+                         cmdl->object_sobjs);
 
     // read the meshes
     cmdl->num_meshes = num_meshes;
-    cmdl->meshes = malloc(num_meshes * sizeof(struct sobj_t *));
+    cmdl->mesh_sobjs = malloc(num_meshes * sizeof(struct sobj_t *));
     cmdl_read_sobj_table(file,
                          num_meshes,
                          meshes_pointer,
                          SOBJ_TYPE_MESH,
-                         cmdl->meshes);
+                         cmdl->mesh_sobjs);
 
     // read the skeleton
     if (has_skeleton_sobj)
@@ -165,11 +165,11 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
         struct sobj_t *sobj = malloc(sizeof(struct sobj_t));
         sobj_open(file, sobj);
-        cmdl->skeleton = sobj;
+        cmdl->skeleton_sobj = sobj;
     }
     else
     {
-        cmdl->skeleton = NULL;
+        cmdl->skeleton_sobj = NULL;
     }
 
     #warning Remove this when material and animation types dict reading is implemented.
@@ -182,22 +182,22 @@ void cmdl_close(struct cmdl_t *cmdl)
 {
     for (int i = 0; i < cmdl->num_objects; i++)
     {
-        struct sobj_t *sobj = cmdl->objects[i];
+        struct sobj_t *sobj = cmdl->object_sobjs[i];
         sobj_close(sobj);
         free(sobj);
     }
 
     for (int i = 0; i < cmdl->num_meshes; i++)
     {
-        struct sobj_t *sobj = cmdl->meshes[i];
+        struct sobj_t *sobj = cmdl->mesh_sobjs[i];
         sobj_close(sobj);
         free(sobj);
     }
 
-    if (cmdl->skeleton != NULL)
-        free(cmdl->skeleton);
+    if (cmdl->skeleton_sobj != NULL)
+        free(cmdl->skeleton_sobj);
 
-    free(cmdl->meshes);
-    free(cmdl->objects);
+    free(cmdl->mesh_sobjs);
+    free(cmdl->object_sobjs);
     free(cmdl->name);
 }

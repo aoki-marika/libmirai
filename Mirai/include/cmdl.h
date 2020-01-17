@@ -43,7 +43,7 @@ struct cmdl_t
     /// Whether or not this CMDL is visible.
     bool is_visible;
 
-    /// The number of object SOBJs within this CMDL.
+    /// The number of objects within this CMDL.
     unsigned int num_objects;
 
     /// All the object SOBJs within this CMDL.
@@ -51,9 +51,9 @@ struct cmdl_t
     /// The type of each of these SOBJs is always `SOBJ_TYPE_OBJECT`.
     ///
     /// The array and each item are allocated.
-    struct sobj_t **objects;
+    struct sobj_t **object_sobjs;
 
-    /// The number of mesh SOBJs within this CMDL.
+    /// The number of meshes within this CMDL.
     unsigned int num_meshes;
 
     /// All the mesh SOBJs within this CMDL.
@@ -61,7 +61,7 @@ struct cmdl_t
     /// The type of each of these SOBJs is always `SOBJ_TYPE_MESH`.
     ///
     /// The array and each item are allocated.
-    struct sobj_t **meshes;
+    struct sobj_t **mesh_sobjs;
 
     /// The skeleton SOBJ of this CMDL, if any.
     ///
@@ -69,7 +69,7 @@ struct cmdl_t
     ///
     /// If this is `NULL`, then this CMDL has no skeleton.
     /// If this is not `NULL`, then this is allocated.
-    struct sobj_t *skeleton;
+    struct sobj_t *skeleton_sobj;
 };
 
 // MARK: - Functions
