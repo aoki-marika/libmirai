@@ -153,9 +153,9 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
     //  - u32 bounding box pointer
     fseek(file, 4 + 4, SEEK_CUR);
 
-    // read the position offset
-    struct vec3_t position_offset;
-    vec3_read(file, &position_offset);
+    // read the translation transform
+    struct vec3_t transform_translation;
+    vec3_read(file, &transform_translation);
 
     // read the face group count and pointer
     #warning TODO: Face group reading.
@@ -177,6 +177,9 @@ void sobj_shape_read(FILE *file, struct sobj_shape_t *shape)
 
     // u32 unknown pointer
     fseek(file, 4, SEEK_CUR);
+
+    // initialize the shape
+    shape->transform_translation = transform_translation;
 
     // read the vertex groups
     // the vertex groups need to be inserted such that the invalid ones dont leave gaps in the array

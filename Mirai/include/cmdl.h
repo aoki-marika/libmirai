@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "sobj.h"
+#include "vector.h"
 
 // MARK: - Data Structures
 
@@ -22,8 +23,19 @@ struct cmdl_t
     /// Allocated.
     char *name;
 
+    /// The 3D vector to multiply this CMDL's scale by.
+    struct vec3_t transform_scale;
+
+    /// The 3D vector to rotate this CMDL by.
+    struct vec3_t transform_rotation;
+
+    /// The 3D vector to offset this CMDL's position by.
+    struct vec3_t transform_translation;
+
     /// The number of mesh SOBJs within this CMDL.
     unsigned int num_meshes;
+
+    #warning TODO: Rename these to have an sobj_ prefix? It's slightly confusing to go cmdl->shapes[i]->shape.
 
     /// All the mesh SOBJs within this CMDL.
     ///

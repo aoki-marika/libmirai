@@ -14,7 +14,6 @@
 
 #include "dict.h"
 #include "utils.h"
-#include "vector.h"
 #include "matrix.h"
 
 // MARK: - Functions
@@ -83,10 +82,10 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     dict_open(file, &animation_types_dict);
 
     // read the scale, rotation, and translation vectors
-    struct vec3_t scale, rotation, translation;
-    vec3_read(file, &scale);
-    vec3_read(file, &rotation);
-    vec3_read(file, &translation);
+    struct vec3_t transform_scale, transform_rotation, transform_translation;
+    vec3_read(file, &transform_scale);
+    vec3_read(file, &transform_rotation);
+    vec3_read(file, &transform_translation);
 
     // read the matrices
     struct mat4_t matrix_local, matrix_world;
@@ -126,6 +125,9 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
     // initialize the cmdl
     cmdl->name = name;
+    cmdl->transform_scale = transform_scale;
+    cmdl->transform_rotation = transform_rotation;
+    cmdl->transform_translation = transform_translation;
 
     // read the meshes
     cmdl->num_meshes = num_meshes;

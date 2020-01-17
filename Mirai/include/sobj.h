@@ -10,6 +10,8 @@
 
 #include <stdio.h>
 
+#include "vector.h"
+
 // MARK: - Enumerations
 
 /// The different types that an SOBJ file can be.
@@ -97,6 +99,9 @@ struct sobj_t
 /// The data structure for a shape within an SOBJ file.
 struct sobj_shape_t
 {
+    /// The 3D vector to offset this SOBJ's position by.
+    struct vec3_t transform_translation;
+
     /// The number of vertex groups within this shape.
     unsigned int num_vertex_groups;
 
