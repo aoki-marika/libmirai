@@ -482,13 +482,13 @@ float *sobj_vertex_group_decode(const struct sobj_vertex_group_t *vertex_group, 
                 // handle the size of the different data types
                 switch (component->data_type)
                 {
-                    case SOBJ_COMPONENT_DATA_TYPE_SBYTE:  SOBJ_DATA_TYPE_DECODE(int8_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_BYTE:   SOBJ_DATA_TYPE_DECODE(uint8_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_SHORT:  SOBJ_DATA_TYPE_DECODE(int16_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_USHORT: SOBJ_DATA_TYPE_DECODE(uint16_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_INT:    SOBJ_DATA_TYPE_DECODE(int32_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_UINT:   SOBJ_DATA_TYPE_DECODE(uint32_t);
-                    case SOBJ_COMPONENT_DATA_TYPE_FLOAT:  SOBJ_DATA_TYPE_DECODE(float);
+                    case SOBJ_COMPONENT_DATA_TYPE_S8:    SOBJ_DATA_TYPE_DECODE(int8_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_U8:    SOBJ_DATA_TYPE_DECODE(uint8_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_S16:   SOBJ_DATA_TYPE_DECODE(int16_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_U16:   SOBJ_DATA_TYPE_DECODE(uint16_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_S32:   SOBJ_DATA_TYPE_DECODE(int32_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_U32:   SOBJ_DATA_TYPE_DECODE(uint32_t);
+                    case SOBJ_COMPONENT_DATA_TYPE_FLOAT: SOBJ_DATA_TYPE_DECODE(float);
                 }
 
                 decoded_data[decoded_index] = value * component->multiplier;

@@ -30,11 +30,10 @@ enum sobj_type_t
 /// The different types that a vertex component's data can be used for.
 enum sobj_component_type_t
 {
-    #warning TODO: Come back and document these all.
-
     /// The X, Y, and Z position of the vertex in 3D space.
     SOBJ_COMPONENT_TYPE_POSITION = 0x00,
 
+    /// The X, Y, and Z normal of this vertex.
     SOBJ_COMPONENT_TYPE_NORMAL   = 0x01,
 
     /// The red, green, blue, and alpha channels of the vertex's colour.
@@ -46,36 +45,36 @@ enum sobj_component_type_t
     /// The second UV texture coordinate of the vertex.
     SOBJ_COMPONENT_TYPE_UV1      = 0x05,
 
+    /// The weight of this vertex within the skeleton.
     SOBJ_COMPONENT_TYPE_WEIGHT   = 0x07,
 
+    /// The index of this vertex within the index buffer.
     SOBJ_COMPONENT_TYPE_INDEX    = 0x08,
 };
 
 /// The different formats that a vertex component's values can be in.
 enum sobj_component_data_type_t
 {
-    #warning TODO: Rename these to reflect their C type names (U18, S32, etc.)
-
     /// A signed 8-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_SBYTE =  0x00,
+    SOBJ_COMPONENT_DATA_TYPE_S8    = 0x00,
 
     /// An unsigned 8-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_BYTE  =  0x01,
+    SOBJ_COMPONENT_DATA_TYPE_U8    = 0x01,
 
     /// A signed 16-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_SHORT =  0x02,
+    SOBJ_COMPONENT_DATA_TYPE_S16   = 0x02,
 
     /// An unsigned 16-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_USHORT = 0x03,
+    SOBJ_COMPONENT_DATA_TYPE_U16   = 0x03,
 
     /// A signed 32-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_INT =    0x04,
+    SOBJ_COMPONENT_DATA_TYPE_S32   = 0x04,
 
     /// An unsigned 32-bit integer.
-    SOBJ_COMPONENT_DATA_TYPE_UINT =   0x05,
+    SOBJ_COMPONENT_DATA_TYPE_U32   = 0x05,
 
     /// A 32-bit floating point number.
-    SOBJ_COMPONENT_DATA_TYPE_FLOAT =  0x06,
+    SOBJ_COMPONENT_DATA_TYPE_FLOAT = 0x06,
 };
 
 // MARK: - Data Structures
