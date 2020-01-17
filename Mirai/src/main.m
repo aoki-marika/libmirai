@@ -26,7 +26,18 @@ int main(int argc, const char *argv[])
                 struct cmdl_t *cmdl = cgfx.models[m];
                 printf("    - cmdl %i:\n", m);
                 printf("       - name: \"%s\"\n", cmdl->name);
-                printf("       - objects: %u\n", cmdl->num_objects);
+
+                printf("       - %u objects:\n", cmdl->num_objects);
+                for (int o = 0; o < cmdl->num_objects; o++)
+                {
+                    struct sobj_object_t *object = cmdl->object_sobjs[o]->object;
+
+                    printf("          - object %i:\n", o);
+                    printf("             - mesh: %u\n", object->mesh_index);
+                    printf("             - material: %u\n", object->material_index);
+                    printf("             - visible: %i\n", object->is_visible);
+                    printf("             - rendering priority: %u\n", object->rendering_priority);
+                }
 
                 printf("       - %u meshes:\n", cmdl->num_meshes);
                 for (int m = 0; m < cmdl->num_meshes; m++)

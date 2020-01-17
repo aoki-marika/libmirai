@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "vector.h"
 
@@ -99,11 +100,36 @@ struct sobj_t
     /// The type of this SOBJ.
     enum sobj_type_t type;
 
+    /// The object within this SOBJ file, if any.
+    ///
+    /// If `type` is not `SOBJ_TYPE_OBJECT`, then this is `NULL`.
+    /// If `type` is `SOBJ_TYPE_OBJECT`, then this is allocated.
+    struct sobj_object_t *object;
+
     /// The mesh within this SOBJ file, if any.
     ///
     /// If `type` is not `SOBJ_TYPE_MESH`, then this is `NULL`.
     /// If `type` is `SOBJ_TYPE_MESH`, then this is allocated.
     struct sobj_mesh_t *mesh;
+};
+
+/// The data structure for an object within an SOBJ file.
+struct sobj_object_t
+{
+    /// The index of this object's mesh within the parent CMDL's meshes.
+    unsigned int mesh_index;
+
+    /// The index of this object's material within the parent CMDL's materials.
+    unsigned int material_index;
+
+    /// Whether or not this object is visible.
+    bool is_visible;
+
+    /// The rendering priority of this object.
+    ///
+    /// Objects with a greater rendering priority are rendered last,
+    /// rendering on top of other objects.
+    unsigned int rendering_priority;
 };
 
 /// The data structure for a mesh within an SOBJ file.

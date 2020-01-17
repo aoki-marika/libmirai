@@ -172,8 +172,9 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
         cmdl->skeleton_sobj = NULL;
     }
 
-    #warning Remove this when material and animation types dict reading is implemented.
+    #warning TODO: Remove this when material and animation types dict reading is implemented.
 
+    // close the dicts only needed for reading the file
     dict_close(&materials);
     dict_close(&animation_types_dict);
 }

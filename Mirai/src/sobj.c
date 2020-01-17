@@ -9,7 +9,6 @@
 #include "sobj.h"
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include <assert.h>
 
@@ -28,6 +27,63 @@ enum sobj_face_index_format_t
 };
 
 // MARK: - Functions
+
+/// Read the object at the current offset of the given file handle into the given object.
+/// @param file The file handle to read the object from.
+/// @param object The object to read the file info.
+void sobj_object_read(FILE *file, struct sobj_object_t *object)
+{
+    // read the mesh and material indices
+    // these are the indices, in their respective array
+    // properties of the parent cmdl, for this object to use
+    uint32_t mesh_index;
+    fread(&mesh_index, sizeof(mesh_index), 1, file);
+
+    uint32_t material_index;
+    fread(&material_index, sizeof(material_index), 1, file);
+
+    // u32 unknown
+    // ohana refers to this is an "owner model offset"
+    // but never uses it
+    fseek(file, 4, SEEK_CUR);
+
+    // read the flags
+    //  - bit 0: is visible
+    uint8_t flags;
+    fread(&flags, sizeof(flags), 1, file);
+
+    bool is_visible = flags & 0b1;
+
+    // read the rendering priority
+    // this is the order that this objects mesh is drawn,
+    // relative to other meshes
+    // objects with greater rendering orders are rendered last
+    uint8_t rendering_priority;
+    fread(&rendering_priority, sizeof(rendering_priority), 1, file);
+
+    // u32 visibility index, unused
+    // for whatever reason, despite objects having a visibility flag,
+    // objects can use an additional dictionary in the cmdl that contains
+    // whether or not each object is visible
+    // this u32 is the index inside that dictionary for the visibility of this object
+    // implementing this would be so annoying that its just getting ignored
+    fseek(file, 4, SEEK_CUR);
+
+    // u16 "current primitive index", unused
+    // another property that ohana reads and does not use
+    // unsure of what this is, could be referring to the
+    // index of the vertex group within the mesh of this object
+    // for this object to render with
+    fseek(file, 2, SEEK_CUR);
+
+    // there are many more properties but none of them are useful here
+
+    // initialize the object
+    object->mesh_index = mesh_index;
+    object->material_index = material_index;
+    object->is_visible = is_visible;
+    object->rendering_priority = rendering_priority;
+}
 
 /// Read the face group at the current offset of the given file handle into the given face group.
 /// @param file The file handle to read the face group from.
@@ -392,16 +448,20 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
     if (is_object)
     {
         sobj->type = SOBJ_TYPE_OBJECT;
+        sobj->object = malloc(sizeof(struct sobj_object_t *));
         sobj->mesh = NULL;
+        sobj_object_read(file, sobj->object);
     }
     else if (is_skeleton)
     {
         sobj->type = SOBJ_TYPE_SKELETON;
+        sobj->object = NULL;
         sobj->mesh = NULL;
     }
     else if (is_mesh)
     {
         sobj->type = SOBJ_TYPE_MESH;
+        sobj->object = NULL;
         sobj->mesh = malloc(sizeof(struct sobj_mesh_t));
         sobj_mesh_read(file, sobj->mesh);
     }
@@ -412,9 +472,14 @@ void sobj_close(struct sobj_t *sobj)
     switch (sobj->type)
     {
         case SOBJ_TYPE_OBJECT:
+        {
+            free(sobj->object);
             break;
+        }
         case SOBJ_TYPE_SKELETON:
+        {
             break;
+        }
         case SOBJ_TYPE_MESH:
             for (int i = 0; i < sobj->mesh->num_face_groups; i++)
             {
