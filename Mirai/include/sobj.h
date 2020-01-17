@@ -167,7 +167,7 @@ struct sobj_face_group_t
 
     /// All the vertex indices within this group.
     ///
-    /// These indices are layed out to form triangle strips,
+    /// These indices are layed out to form triangles, three indices per triangle,
     /// and each index refers to an index within the vertices of the vertex group this group is for.
     ///
     /// Allocated.
