@@ -9,7 +9,6 @@
 #include "cmdl.h"
 
 #include <stdlib.h>
-#include <stdbool.h>
 #include <assert.h>
 
 #include "dict.h"
@@ -105,10 +104,22 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 
     uint32_t shapes_pointer = utils_read_relative_pointer(file);
 
-    // dict unknown and 12 unknown bytes
+    // dict pointer unknown
     // ohana3ds refers to this dict as object nodes,
     // each entry is a name and visibility flag
-    fseek(file, 8 + 12, SEEK_CUR);
+    fseek(file, 8, SEEK_CUR);
+
+    // read the flags
+    //  - bit 0: is visible
+    //  - bit 8: is non-uniform scalable, unused
+    fread(&flags, sizeof(flags), 1, file);
+
+    bool is_visible = flags & 0b1;
+
+    // two unused values
+    //  - u32 culling mode
+    //  - u32 layer id
+    fseek(file, 4 + 4, SEEK_CUR);
 
     // read the skeleton sobj pointer
     // only present if the skeleton sobj flag was set
@@ -127,6 +138,7 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     cmdl->transform_translation = transform_translation;
     cmdl->transform_local = transform_local;
     cmdl->transform_world = transform_world;
+    cmdl->is_visible = is_visible;
 
     // read the meshes
     cmdl->num_meshes = num_meshes;
