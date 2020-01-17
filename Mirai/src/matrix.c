@@ -26,4 +26,10 @@ void mat4_read43(FILE *file, struct mat4_t *matrix)
     fread(&matrix->data[1][2], sizeof(float), 1, file);
     fread(&matrix->data[2][2], sizeof(float), 1, file);
     fread(&matrix->data[3][2], sizeof(float), 1, file);
+
+    // initialize the last column
+    matrix->data[0][3] = 0;
+    matrix->data[1][3] = 0;
+    matrix->data[2][3] = 0;
+    matrix->data[3][3] = 0;
 }
