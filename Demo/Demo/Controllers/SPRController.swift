@@ -14,6 +14,7 @@ class SPRController: NSViewController {
     // MARK: - Private Properties
 
     private let nameColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "NameColumn")
+    private let sizeColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "SizeColumn")
     private let formatColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "FormatColumn")
 
     /// The currently selected texture in this controller, if any.
@@ -67,8 +68,15 @@ extension SPRController: NSTableViewDataSource {
 
             let name = String(cString: cName)
             return name
-        case formatColumnIdentifier:
+        case sizeColumnIdentifier:
             // mirai ctpks only ever use one texture as images are handled at the spr level
+            guard let texture = spr.ctpks[row]?.pointee.textures[0]?.pointee else {
+                return nil
+            }
+
+            let size = "\(texture.width)x\(texture.height)"
+            return size
+        case formatColumnIdentifier:
             guard let texture = spr.ctpks[row]?.pointee.textures[0]?.pointee else {
                 return nil
             }
