@@ -1,4 +1,6 @@
 //
-//  Use this file to import your target's public headers that you would like to expose to Swift.
+// libmirai includes
 //
 
+#include <mirai/spr.h>
+#include <mirai/cgfx.h>

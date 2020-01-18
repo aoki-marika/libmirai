@@ -13,6 +13,8 @@
 		EC2DB3BF23D3242A00A5FA6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC2DB3BD23D3242A00A5FA6C /* Main.storyboard */; };
 		EC2DB3CF23D3247F00A5FA6C /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */; };
 		EC2DB3D023D3247F00A5FA6C /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74315E23D32FBF00586E48 /* SPRController.swift */; };
+		EC74316123D32FD800586E48 /* CGFXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316023D32FD800586E48 /* CGFXController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +40,9 @@
 		EC2DB3C023D3242A00A5FA6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC2DB3C123D3242A00A5FA6C /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
 		EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC74315923D3299800586E48 /* Mirai.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mirai.h; sourceTree = "<group>"; };
+		EC74315E23D32FBF00586E48 /* SPRController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPRController.swift; sourceTree = "<group>"; };
+		EC74316023D32FD800586E48 /* CGFXController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +83,7 @@
 				EC2DB3D423D324B500A5FA6C /* Objects */,
 				EC2DB3BB23D3242A00A5FA6C /* Assets.xcassets */,
 				EC2DB3C023D3242A00A5FA6C /* Info.plist */,
+				EC74315923D3299800586E48 /* Mirai.h */,
 				EC2DB3C123D3242A00A5FA6C /* Demo.entitlements */,
 			);
 			path = Demo;
@@ -94,6 +100,8 @@
 		EC2DB3D223D324A800A5FA6C /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				EC74315E23D32FBF00586E48 /* SPRController.swift */,
+				EC74316023D32FD800586E48 /* CGFXController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -147,6 +155,7 @@
 				TargetAttributes = {
 					EC2DB3B123D3242800A5FA6C = {
 						CreatedOnToolsVersion = 11.3;
+						LastSwiftMigration = 1130;
 					};
 				};
 			};
@@ -186,7 +195,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC2DB3B623D3242800A5FA6C /* AppDelegate.swift in Sources */,
+				EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */,
 				EC2DB3BA23D3242800A5FA6C /* Document.swift in Sources */,
+				EC74316123D32FD800586E48 /* CGFXController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,11 +332,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Demo/Demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = ZPZL835757;
 				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../include";
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -333,6 +346,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = marika.libmirai.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Demo/Mirai.h;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -341,11 +356,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Demo/Demo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = ZPZL835757;
 				ENABLE_HARDENED_RUNTIME = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../include";
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -353,6 +370,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = marika.libmirai.Demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = Demo/Mirai.h;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;

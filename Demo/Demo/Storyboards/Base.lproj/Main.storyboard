@@ -680,53 +680,101 @@
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
-        <!--Window Controller-->
-        <scene sceneID="R2V-B0-nI4">
+        <!--SPR Window Controller-->
+        <scene sceneID="kC1-hg-MDS">
             <objects>
-                <windowController storyboardIdentifier="Document Window Controller" id="jGA-0Y-lOj" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="Ckk-yw-fiv">
+                <windowController storyboardIdentifier="SPRWindowController" id="rfP-gR-MFi" userLabel="SPR Window Controller" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="1UH-tZ-nMk">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="196" y="240" width="480" height="270"/>
-                        <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
+                        <rect key="contentRect" x="294" y="323" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
                         <connections>
-                            <outlet property="delegate" destination="jGA-0Y-lOj" id="98r-iN-zZc"/>
+                            <outlet property="delegate" destination="rfP-gR-MFi" id="3I2-3X-2B2"/>
                         </connections>
                     </window>
                     <connections>
-                        <segue destination="5gI-5U-AMq" kind="relationship" relationship="window.shadowedContentViewController" id="nsd-lR-9xd"/>
+                        <segue destination="r4L-Lr-zhC" kind="relationship" relationship="window.shadowedContentViewController" id="laT-fE-3BY"/>
                     </connections>
                 </windowController>
-                <customObject id="6f7-a7-6o1" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="6Vr-kb-3CQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="250"/>
+            <point key="canvasLocation" x="-265" y="473"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="hIz-AP-VOD">
+        <!--SPR Controller-->
+        <scene sceneID="HVL-Pl-V7f">
             <objects>
-                <viewController id="5gI-5U-AMq" sceneMemberID="viewController">
-                    <view key="view" id="ERx-hH-rdd">
+                <viewController id="r4L-Lr-zhC" userLabel="SPR Controller" customClass="SPRController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Jcf-iA-mGO">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" preferredMaxLayoutWidth="246" translatesAutoresizingMaskIntoConstraints="NO" id="TyV-c9-G0C">
-                                <rect key="frame" x="116" y="125" width="248" height="21"/>
-                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="center" title="Your document contents here" id="Cc7-nU-5Mv">
-                                    <font key="font" metaFont="system" size="18"/>
-                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lQD-2T-qAM">
+                                <rect key="frame" x="226" y="127" width="29" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="SPR" id="ZJV-ro-wBx">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="TyV-c9-G0C" secondAttribute="centerY" id="Rxv-Yd-F43"/>
-                            <constraint firstAttribute="centerX" secondItem="TyV-c9-G0C" secondAttribute="centerX" id="Zn4-Y4-lbg"/>
+                            <constraint firstItem="lQD-2T-qAM" firstAttribute="centerY" secondItem="Jcf-iA-mGO" secondAttribute="centerY" id="Eh8-tm-KKd"/>
+                            <constraint firstItem="lQD-2T-qAM" firstAttribute="centerX" secondItem="Jcf-iA-mGO" secondAttribute="centerX" id="vyy-in-teJ"/>
                         </constraints>
                     </view>
                 </viewController>
-                <customObject id="2Tp-Fl-jBw" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="A0r-jG-6Vg" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="-265" y="923"/>
+        </scene>
+        <!--CGFX Window Controller-->
+        <scene sceneID="lOE-dM-9KS">
+            <objects>
+                <windowController storyboardIdentifier="CGFXWindowController" id="BC7-O6-9Vv" userLabel="CGFX Window Controller" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="git-QC-krK">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="323" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <connections>
+                            <outlet property="delegate" destination="BC7-O6-9Vv" id="TdD-O5-H10"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="53h-QH-sfz" kind="relationship" relationship="window.shadowedContentViewController" id="cF2-AU-688"/>
+                    </connections>
+                </windowController>
+                <customObject id="vdh-u1-tML" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="416" y="473"/>
+        </scene>
+        <!--CGFX Controller-->
+        <scene sceneID="d4J-Sy-6Gp">
+            <objects>
+                <viewController id="53h-QH-sfz" userLabel="CGFX Controller" customClass="CGFXController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="9R4-6M-f3w">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AWl-do-a5N">
+                                <rect key="frame" x="221" y="127" width="39" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="CGFX" id="jdP-7U-d9W">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="AWl-do-a5N" firstAttribute="centerY" secondItem="9R4-6M-f3w" secondAttribute="centerY" id="TO2-M3-qST"/>
+                            <constraint firstItem="AWl-do-a5N" firstAttribute="centerX" secondItem="9R4-6M-f3w" secondAttribute="centerX" id="awC-OA-JIN"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="TYh-HN-1eW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="416" y="923"/>
         </scene>
     </scenes>
 </document>
