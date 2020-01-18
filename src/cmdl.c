@@ -173,6 +173,8 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     }
 
     #warning TODO: Remove this when material and animation types dict reading is implemented.
+//    for (int i = 0; i < materials.num_entries; i++)
+//        printf(" - mtob %i: \"%s\"\n", i, materials.entries[i]->name);
 
     // close the dicts only needed for reading the file
     dict_close(&materials);
