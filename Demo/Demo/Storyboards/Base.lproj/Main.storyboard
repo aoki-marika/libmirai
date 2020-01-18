@@ -728,7 +728,7 @@
                                                     <tableColumns>
                                                         <tableColumn identifier="NameColumn" editable="NO" width="200" minWidth="10" maxWidth="3.4028234663852886e+38" id="QzG-j2-7mu">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
-                                                                <font key="font" metaFont="label" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -741,7 +741,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="SizeColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="wos-DT-xlO">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Size">
-                                                                <font key="font" metaFont="label" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -754,7 +754,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="FormatColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="HhZ-n9-r3j">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Format">
-                                                                <font key="font" metaFont="label" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -837,18 +837,46 @@
         <!--CGFX Window Controller-->
         <scene sceneID="lOE-dM-9KS">
             <objects>
-                <windowController storyboardIdentifier="CGFXWindowController" id="BC7-O6-9Vv" userLabel="CGFX Window Controller" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="CGFXWindowController" id="BC7-O6-9Vv" userLabel="CGFX Window Controller" customClass="CGFXWindowController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="git-QC-krK">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="323" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <toolbar key="toolbar" implicitIdentifier="3638BBD4-4E7B-4F1C-A783-52FF9836BE75" centeredItem="aW4-lN-YtE" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconOnly" sizeMode="regular" id="mGb-nG-i1c">
+                            <allowedToolbarItems>
+                                <toolbarItem implicitItemIdentifier="FFB8D12A-A3CB-4BFB-BF76-5CDAD277C06C" label="View" paletteLabel="View" sizingBehavior="auto" id="aW4-lN-YtE">
+                                    <nil key="toolTip"/>
+                                    <segmentedControl key="view" verticalHuggingPriority="750" id="Id8-Jz-nig">
+                                        <rect key="frame" x="0.0" y="14" width="221" height="24"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="texturedSquare" trackingMode="selectOne" id="Det-ds-ecN">
+                                            <font key="font" metaFont="system"/>
+                                            <segments>
+                                                <segment label="Textures" selected="YES"/>
+                                                <segment label="Materials" tag="1"/>
+                                                <segment label="Models"/>
+                                            </segments>
+                                        </segmentedCell>
+                                        <connections>
+                                            <action selector="viewChanged:" target="BC7-O6-9Vv" id="KOI-2e-4mJ"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </toolbarItem>
+                                <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="OFN-UO-8av"/>
+                                <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="LUD-8J-ePu"/>
+                            </allowedToolbarItems>
+                            <defaultToolbarItems>
+                                <toolbarItem reference="aW4-lN-YtE"/>
+                            </defaultToolbarItems>
+                        </toolbar>
                         <connections>
                             <outlet property="delegate" destination="BC7-O6-9Vv" id="TdD-O5-H10"/>
                         </connections>
                     </window>
                     <connections>
-                        <segue destination="53h-QH-sfz" kind="relationship" relationship="window.shadowedContentViewController" id="cF2-AU-688"/>
+                        <outlet property="viewControl" destination="Id8-Jz-nig" id="RnR-Dh-d79"/>
+                        <segue destination="NhS-Cg-edo" kind="relationship" relationship="window.shadowedContentViewController" id="Zwn-9R-n9U"/>
                     </connections>
                 </windowController>
                 <customObject id="vdh-u1-tML" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -856,16 +884,44 @@
             <point key="canvasLocation" x="416" y="473"/>
         </scene>
         <!--CGFX Controller-->
-        <scene sceneID="d4J-Sy-6Gp">
+        <scene sceneID="hef-0o-0rs">
             <objects>
-                <viewController id="53h-QH-sfz" userLabel="CGFX Controller" customClass="CGFXController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="9R4-6M-f3w">
+                <tabViewController selectedTabViewItemIndex="0" tabStyle="unspecified" canPropagateSelectedChildViewControllerTitle="NO" id="NhS-Cg-edo" userLabel="CGFX Controller" customClass="CGFXController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tabViewItems>
+                        <tabViewItem id="eiB-pT-W7j"/>
+                        <tabViewItem id="5Yz-kE-EfE"/>
+                        <tabViewItem id="T2e-kU-LYM"/>
+                    </tabViewItems>
+                    <tabView key="tabView" type="noTabsNoBorder" id="niY-Qg-HsB">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <font key="font" metaFont="system"/>
+                        <connections>
+                            <outlet property="delegate" destination="NhS-Cg-edo" id="EYt-ft-n2J"/>
+                        </connections>
+                    </tabView>
+                    <connections>
+                        <outlet property="tabView" destination="niY-Qg-HsB" id="QRj-kg-D4d"/>
+                        <segue destination="gzX-Mh-Zfg" kind="relationship" relationship="tabItems" id="OCO-Vl-8ZS"/>
+                        <segue destination="fMZ-B9-Aa7" kind="relationship" relationship="tabItems" id="TTJ-rF-nQ9"/>
+                        <segue destination="Qnq-7s-Dqz" kind="relationship" relationship="tabItems" id="y3n-1G-2Tl"/>
+                    </connections>
+                </tabViewController>
+                <customObject id="MWd-eH-64o" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="416" y="923"/>
+        </scene>
+        <!--CGFX Textures Controller-->
+        <scene sceneID="dag-wY-gg2">
+            <objects>
+                <viewController id="gzX-Mh-Zfg" userLabel="CGFX Textures Controller" sceneMemberID="viewController">
+                    <view key="view" id="3fj-ND-9Pt">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AWl-do-a5N">
-                                <rect key="frame" x="221" y="127" width="39" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="CGFX" id="jdP-7U-d9W">
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tzb-ai-V3l">
+                                <rect key="frame" x="212" y="127" width="56" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Textures" id="qlU-kf-7tl">
                                     <font key="font" usesAppearanceFont="YES"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -873,14 +929,68 @@
                             </textField>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="AWl-do-a5N" firstAttribute="centerY" secondItem="9R4-6M-f3w" secondAttribute="centerY" id="TO2-M3-qST"/>
-                            <constraint firstItem="AWl-do-a5N" firstAttribute="centerX" secondItem="9R4-6M-f3w" secondAttribute="centerX" id="awC-OA-JIN"/>
+                            <constraint firstItem="tzb-ai-V3l" firstAttribute="centerY" secondItem="3fj-ND-9Pt" secondAttribute="centerY" id="9c1-3S-jPf"/>
+                            <constraint firstItem="tzb-ai-V3l" firstAttribute="centerX" secondItem="3fj-ND-9Pt" secondAttribute="centerX" id="UxO-9p-03H"/>
                         </constraints>
                     </view>
                 </viewController>
-                <customObject id="TYh-HN-1eW" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <customObject id="7OP-Fc-qON" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="416" y="923"/>
+            <point key="canvasLocation" x="-184" y="1453"/>
+        </scene>
+        <!--CGFX Materials Controller-->
+        <scene sceneID="zBd-dr-Obs">
+            <objects>
+                <viewController id="fMZ-B9-Aa7" userLabel="CGFX Materials Controller" sceneMemberID="viewController">
+                    <view key="view" id="qkJ-sr-tcT">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="vga-it-LGl">
+                                <rect key="frame" x="210" y="127" width="60" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Materials" id="e1e-2F-1ba">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="vga-it-LGl" firstAttribute="centerX" secondItem="qkJ-sr-tcT" secondAttribute="centerX" id="DvQ-8f-mvl"/>
+                            <constraint firstItem="vga-it-LGl" firstAttribute="centerY" secondItem="qkJ-sr-tcT" secondAttribute="centerY" id="Vli-vH-pJt"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="5Ch-PS-QKl" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="416" y="1453"/>
+        </scene>
+        <!--CGFX Models Controller-->
+        <scene sceneID="F2H-5f-rjX">
+            <objects>
+                <viewController id="Qnq-7s-Dqz" userLabel="CGFX Models Controller" sceneMemberID="viewController">
+                    <view key="view" id="qpW-4C-B11">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-sr-euj">
+                                <rect key="frame" x="216" y="127" width="49" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Models" id="pfw-hu-j4v">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="9xO-sr-euj" firstAttribute="centerY" secondItem="qpW-4C-B11" secondAttribute="centerY" id="Vo0-tF-4Ng"/>
+                            <constraint firstItem="9xO-sr-euj" firstAttribute="centerX" secondItem="qpW-4C-B11" secondAttribute="centerX" id="dwk-NE-n7h"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <customObject id="jgf-ze-gWz" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1019" y="1453"/>
         </scene>
     </scenes>
 </document>

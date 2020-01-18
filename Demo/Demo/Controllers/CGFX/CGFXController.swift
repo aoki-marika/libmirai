@@ -9,7 +9,7 @@
 import Cocoa
 
 /// The controller used for displaying CGFXs.
-class CGFXController: NSViewController {
+class CGFXController: NSTabViewController {
 
     // MARK: - Public Properties
 
