@@ -23,7 +23,7 @@ const int max_image_name_length = 71;
 
 // MARK: - Data Structures
 
-/// The data structure for the header of an spr file.
+/// The data structure for the header of an SPR file.
 struct spr_header_t
 {
     /// The signature for this file, must be `0x0000`.
@@ -50,9 +50,9 @@ struct spr_header_t
 
 // MARK: - Functions
 
-/// Read an spr name from the given file handle, of the given max length.
+/// Read an SPR name from the given file handle, of the given max length.
 ///
-/// Sprs store names in a semi-odd way where they allocate a fixed amount of space,
+/// SPRs store names in a semi-odd way where they allocate a fixed amount of space,
 /// then all whitespace is replaced by terminator characters.
 ///
 /// The name is read starting from the current position of the given file handle.
