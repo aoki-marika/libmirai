@@ -16,6 +16,16 @@ class SPRController: NSViewController {
     private let nameColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "NameColumn")
     private let formatColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "FormatColumn")
 
+    /// The currently selected texture in this controller, if any.
+    private var selectedTexture: texture_t? {
+        let selectedRow = tableView.selectedRow
+        guard selectedRow >= 0 else {
+            return nil
+        }
+
+        return spr?.ctpks[selectedRow]?.pointee.textures[0]?.pointee
+    }
+
     // MARK: - Public Properties
 
     /// The SPR that this controller is currently displaying, if any.
@@ -28,6 +38,7 @@ class SPRController: NSViewController {
     // MARK: - Outlets
 
     @IBOutlet private weak var tableView: NSTableView!
+    @IBOutlet private weak var imageView: NSImageView!
 }
 
 // MARK: - NSTableViewDataSource
@@ -67,5 +78,21 @@ extension SPRController: NSTableViewDataSource {
         default:
             fatalError("unknown spr table column: \(identifier)")
         }
+    }
+}
+
+// MARK: - NSTableViewDelegate
+
+extension SPRController: NSTableViewDelegate {
+
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        guard let spr = spr, let selectedTexture = selectedTexture else {
+            imageView.image = nil
+            return
+        }
+
+        var texture = Texture(backing: selectedTexture)
+        let image = texture.getImage(from: spr.file)
+        imageView.image = image
     }
 }
