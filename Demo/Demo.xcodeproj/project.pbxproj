@@ -15,6 +15,7 @@
 		EC2DB3D023D3247F00A5FA6C /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74315E23D32FBF00586E48 /* SPRController.swift */; };
 		EC74316123D32FD800586E48 /* CGFXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316023D32FD800586E48 /* CGFXController.swift */; };
+		EC74316323D338CD00586E48 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316223D338CD00586E48 /* Texture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -43,6 +44,7 @@
 		EC74315923D3299800586E48 /* Mirai.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mirai.h; sourceTree = "<group>"; };
 		EC74315E23D32FBF00586E48 /* SPRController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPRController.swift; sourceTree = "<group>"; };
 		EC74316023D32FD800586E48 /* CGFXController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXController.swift; sourceTree = "<group>"; };
+		EC74316223D338CD00586E48 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				EC2DB3B923D3242800A5FA6C /* Document.swift */,
+				EC74316223D338CD00586E48 /* Texture.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC2DB3B623D3242800A5FA6C /* AppDelegate.swift in Sources */,
+				EC74316323D338CD00586E48 /* Texture.swift in Sources */,
 				EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */,
 				EC2DB3BA23D3242800A5FA6C /* Document.swift in Sources */,
 				EC74316123D32FD800586E48 /* CGFXController.swift in Sources */,

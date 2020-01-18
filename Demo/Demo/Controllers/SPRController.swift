@@ -62,26 +62,8 @@ extension SPRController: NSTableViewDataSource {
                 return nil
             }
 
-            let formatName: String
-            switch texture.data_format {
-            case TEXTURE_FORMAT_RGBA8888: formatName = "RGBA8888"
-            case TEXTURE_FORMAT_RGB888:   formatName = "RGB888"
-            case TEXTURE_FORMAT_RGBA5551: formatName = "RGBA5551"
-            case TEXTURE_FORMAT_RGB565:   formatName = "RGB565"
-            case TEXTURE_FORMAT_RGBA4444: formatName = "RGBA4444"
-            case TEXTURE_FORMAT_LA88:     formatName = "LA88"
-            case TEXTURE_FORMAT_HL8:      formatName = "HL8"
-            case TEXTURE_FORMAT_L8:       formatName = "L8"
-            case TEXTURE_FORMAT_A8:       formatName = "A8"
-            case TEXTURE_FORMAT_LA44:     formatName = "LA44"
-            case TEXTURE_FORMAT_L4:       formatName = "L4"
-            case TEXTURE_FORMAT_A4:       formatName = "A4"
-            case TEXTURE_FORMAT_ETC1:     formatName = "ETC1"
-            case TEXTURE_FORMAT_ETC1_A4:  formatName = "ETC1 A4"
-            default: fatalError()
-            }
-
-            return formatName
+            let format = Texture.Format(rawValue: texture.data_format.rawValue)!
+            return format.name
         default:
             fatalError("unknown spr table column: \(identifier)")
         }
