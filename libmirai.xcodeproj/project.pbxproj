@@ -1,0 +1,398 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EC2DB38123D31F8800A5FA6C /* utils.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37323D31F8700A5FA6C /* utils.h */; };
+		EC2DB38223D31F8800A5FA6C /* cmdl.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37423D31F8700A5FA6C /* cmdl.h */; };
+		EC2DB38323D31F8800A5FA6C /* ctpk.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37523D31F8700A5FA6C /* ctpk.h */; };
+		EC2DB38423D31F8800A5FA6C /* db.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37623D31F8700A5FA6C /* db.h */; };
+		EC2DB38523D31F8800A5FA6C /* etcdec.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37823D31F8700A5FA6C /* etcdec.h */; };
+		EC2DB38623D31F8800A5FA6C /* matrix.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37923D31F8700A5FA6C /* matrix.h */; };
+		EC2DB38723D31F8800A5FA6C /* dict.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37A23D31F8700A5FA6C /* dict.h */; };
+		EC2DB38823D31F8800A5FA6C /* txob.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37B23D31F8700A5FA6C /* txob.h */; };
+		EC2DB38923D31F8800A5FA6C /* cgfx.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37C23D31F8700A5FA6C /* cgfx.h */; };
+		EC2DB38A23D31F8800A5FA6C /* texture.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37D23D31F8700A5FA6C /* texture.h */; };
+		EC2DB38B23D31F8800A5FA6C /* spr.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37E23D31F8700A5FA6C /* spr.h */; };
+		EC2DB38C23D31F8800A5FA6C /* vector.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37F23D31F8700A5FA6C /* vector.h */; };
+		EC2DB38D23D31F8800A5FA6C /* sobj.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB38023D31F8700A5FA6C /* sobj.h */; };
+		EC2DB39C23D31F9300A5FA6C /* dict.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB38F23D31F9300A5FA6C /* dict.c */; };
+		EC2DB39D23D31F9300A5FA6C /* cgfx.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39023D31F9300A5FA6C /* cgfx.c */; };
+		EC2DB39E23D31F9300A5FA6C /* txob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39123D31F9300A5FA6C /* txob.c */; };
+		EC2DB39F23D31F9300A5FA6C /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39223D31F9300A5FA6C /* vector.c */; };
+		EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39323D31F9300A5FA6C /* spr.c */; };
+		EC2DB3A123D31F9300A5FA6C /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39423D31F9300A5FA6C /* texture.c */; };
+		EC2DB3A223D31F9300A5FA6C /* sobj.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39523D31F9300A5FA6C /* sobj.c */; };
+		EC2DB3A323D31F9300A5FA6C /* cmdl.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39623D31F9300A5FA6C /* cmdl.c */; };
+		EC2DB3A423D31F9300A5FA6C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39723D31F9300A5FA6C /* utils.c */; };
+		EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39923D31F9300A5FA6C /* ctpk.c */; };
+		EC2DB3A723D31F9300A5FA6C /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39A23D31F9300A5FA6C /* db.c */; };
+		EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39B23D31F9300A5FA6C /* matrix.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC2DB37323D31F8700A5FA6C /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		EC2DB37423D31F8700A5FA6C /* cmdl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmdl.h; sourceTree = "<group>"; };
+		EC2DB37523D31F8700A5FA6C /* ctpk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctpk.h; sourceTree = "<group>"; };
+		EC2DB37623D31F8700A5FA6C /* db.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = db.h; sourceTree = "<group>"; };
+		EC2DB37823D31F8700A5FA6C /* etcdec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = etcdec.h; sourceTree = "<group>"; };
+		EC2DB37923D31F8700A5FA6C /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		EC2DB37A23D31F8700A5FA6C /* dict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
+		EC2DB37B23D31F8700A5FA6C /* txob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txob.h; sourceTree = "<group>"; };
+		EC2DB37C23D31F8700A5FA6C /* cgfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
+		EC2DB37D23D31F8700A5FA6C /* texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
+		EC2DB37E23D31F8700A5FA6C /* spr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
+		EC2DB37F23D31F8700A5FA6C /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
+		EC2DB38023D31F8700A5FA6C /* sobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sobj.h; sourceTree = "<group>"; };
+		EC2DB38F23D31F9300A5FA6C /* dict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
+		EC2DB39023D31F9300A5FA6C /* cgfx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cgfx.c; sourceTree = "<group>"; };
+		EC2DB39123D31F9300A5FA6C /* txob.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txob.c; sourceTree = "<group>"; };
+		EC2DB39223D31F9300A5FA6C /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
+		EC2DB39323D31F9300A5FA6C /* spr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = spr.c; sourceTree = "<group>"; };
+		EC2DB39423D31F9300A5FA6C /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
+		EC2DB39523D31F9300A5FA6C /* sobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sobj.c; sourceTree = "<group>"; };
+		EC2DB39623D31F9300A5FA6C /* cmdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmdl.c; sourceTree = "<group>"; };
+		EC2DB39723D31F9300A5FA6C /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
+		EC2DB39923D31F9300A5FA6C /* ctpk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
+		EC2DB39A23D31F9300A5FA6C /* db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = db.c; sourceTree = "<group>"; };
+		EC2DB39B23D31F9300A5FA6C /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EC01727723D31F3B00D4E2AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EC01727023D31F3B00D4E2AD = {
+			isa = PBXGroup;
+			children = (
+				EC2DB37223D31F8700A5FA6C /* include */,
+				EC2DB38E23D31F9300A5FA6C /* src */,
+				EC01727A23D31F3B00D4E2AD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EC01727A23D31F3B00D4E2AD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC2DB37223D31F8700A5FA6C /* include */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DB37723D31F8700A5FA6C /* etc */,
+				EC2DB37E23D31F8700A5FA6C /* spr.h */,
+				EC2DB37523D31F8700A5FA6C /* ctpk.h */,
+				EC2DB37623D31F8700A5FA6C /* db.h */,
+				EC2DB37C23D31F8700A5FA6C /* cgfx.h */,
+				EC2DB37A23D31F8700A5FA6C /* dict.h */,
+				EC2DB37B23D31F8700A5FA6C /* txob.h */,
+				EC2DB37423D31F8700A5FA6C /* cmdl.h */,
+				EC2DB38023D31F8700A5FA6C /* sobj.h */,
+				EC2DB37D23D31F8700A5FA6C /* texture.h */,
+				EC2DB37323D31F8700A5FA6C /* utils.h */,
+				EC2DB37F23D31F8700A5FA6C /* vector.h */,
+				EC2DB37923D31F8700A5FA6C /* matrix.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		EC2DB37723D31F8700A5FA6C /* etc */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DB37823D31F8700A5FA6C /* etcdec.h */,
+			);
+			path = etc;
+			sourceTree = "<group>";
+		};
+		EC2DB38E23D31F9300A5FA6C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DB39323D31F9300A5FA6C /* spr.c */,
+				EC2DB39923D31F9300A5FA6C /* ctpk.c */,
+				EC2DB39A23D31F9300A5FA6C /* db.c */,
+				EC2DB39023D31F9300A5FA6C /* cgfx.c */,
+				EC2DB38F23D31F9300A5FA6C /* dict.c */,
+				EC2DB39123D31F9300A5FA6C /* txob.c */,
+				EC2DB39623D31F9300A5FA6C /* cmdl.c */,
+				EC2DB39523D31F9300A5FA6C /* sobj.c */,
+				EC2DB39423D31F9300A5FA6C /* texture.c */,
+				EC2DB39723D31F9300A5FA6C /* utils.c */,
+				EC2DB39223D31F9300A5FA6C /* vector.c */,
+				EC2DB39B23D31F9300A5FA6C /* matrix.c */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		EC01727523D31F3B00D4E2AD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC2DB38D23D31F8800A5FA6C /* sobj.h in Headers */,
+				EC2DB38B23D31F8800A5FA6C /* spr.h in Headers */,
+				EC2DB38423D31F8800A5FA6C /* db.h in Headers */,
+				EC2DB38823D31F8800A5FA6C /* txob.h in Headers */,
+				EC2DB38223D31F8800A5FA6C /* cmdl.h in Headers */,
+				EC2DB38123D31F8800A5FA6C /* utils.h in Headers */,
+				EC2DB38623D31F8800A5FA6C /* matrix.h in Headers */,
+				EC2DB38523D31F8800A5FA6C /* etcdec.h in Headers */,
+				EC2DB38A23D31F8800A5FA6C /* texture.h in Headers */,
+				EC2DB38723D31F8800A5FA6C /* dict.h in Headers */,
+				EC2DB38C23D31F8800A5FA6C /* vector.h in Headers */,
+				EC2DB38923D31F8800A5FA6C /* cgfx.h in Headers */,
+				EC2DB38323D31F8800A5FA6C /* ctpk.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		EC01727823D31F3B00D4E2AD /* libmirai */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EC01727D23D31F3B00D4E2AD /* Build configuration list for PBXNativeTarget "libmirai" */;
+			buildPhases = (
+				EC01727523D31F3B00D4E2AD /* Headers */,
+				EC01727623D31F3B00D4E2AD /* Sources */,
+				EC01727723D31F3B00D4E2AD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libmirai;
+			productName = libmirai;
+			productReference = EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EC01727123D31F3B00D4E2AD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = Marika;
+				TargetAttributes = {
+					EC01727823D31F3B00D4E2AD = {
+						CreatedOnToolsVersion = 11.3;
+					};
+				};
+			};
+			buildConfigurationList = EC01727423D31F3B00D4E2AD /* Build configuration list for PBXProject "libmirai" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EC01727023D31F3B00D4E2AD;
+			productRefGroup = EC01727A23D31F3B00D4E2AD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EC01727823D31F3B00D4E2AD /* libmirai */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EC01727623D31F3B00D4E2AD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */,
+				EC2DB39F23D31F9300A5FA6C /* vector.c in Sources */,
+				EC2DB3A723D31F9300A5FA6C /* db.c in Sources */,
+				EC2DB39C23D31F9300A5FA6C /* dict.c in Sources */,
+				EC2DB39E23D31F9300A5FA6C /* txob.c in Sources */,
+				EC2DB3A423D31F9300A5FA6C /* utils.c in Sources */,
+				EC2DB3A223D31F9300A5FA6C /* sobj.c in Sources */,
+				EC2DB39D23D31F9300A5FA6C /* cgfx.c in Sources */,
+				EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */,
+				EC2DB3A123D31F9300A5FA6C /* texture.c in Sources */,
+				EC2DB3A323D31F9300A5FA6C /* cmdl.c in Sources */,
+				EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EC01727B23D31F3B00D4E2AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EC01727C23D31F3B00D4E2AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EC01727E23D31F3B00D4E2AD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZPZL835757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		EC01727F23D31F3B00D4E2AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZPZL835757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EC01727423D31F3B00D4E2AD /* Build configuration list for PBXProject "libmirai" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC01727B23D31F3B00D4E2AD /* Debug */,
+				EC01727C23D31F3B00D4E2AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EC01727D23D31F3B00D4E2AD /* Build configuration list for PBXNativeTarget "libmirai" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC01727E23D31F3B00D4E2AD /* Debug */,
+				EC01727F23D31F3B00D4E2AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EC01727123D31F3B00D4E2AD /* Project object */;
+}
