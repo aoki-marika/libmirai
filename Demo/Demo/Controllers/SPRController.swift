@@ -39,7 +39,8 @@ class SPRController: NSViewController {
     // MARK: - Outlets
 
     @IBOutlet private weak var tableView: NSTableView!
-    @IBOutlet private weak var imageView: NSImageView!
+    @IBOutlet private weak var textureView: NSImageView!
+    @IBOutlet private weak var imagesView: NSImageView!
 }
 
 // MARK: - NSTableViewDataSource
@@ -95,12 +96,58 @@ extension SPRController: NSTableViewDelegate {
 
     func tableViewSelectionDidChange(_ notification: Notification) {
         guard let spr = spr, let selectedTexture = selectedTexture else {
-            imageView.image = nil
+            textureView.image = nil
+            imagesView.image = nil
             return
         }
 
+        // load and display the texture
         var texture = Texture(backing: selectedTexture)
-        let image = texture.getImage(from: spr.file)
-        imageView.image = image
+        textureView.image = texture.getImage(from: spr.file)
+
+        // load the images into a separate overlay image
+        // this is done so they can be toggled off and on
+        let w = CGFloat(selectedTexture.width)
+        let h = CGFloat(selectedTexture.height)
+        let size = NSSize(width: w, height: h)
+        let images = NSImage(size: size)
+        images.lockFocus()
+
+        for index in 0..<Int(spr.num_images) {
+            guard let image = spr.images[index]?.pointee else {
+                continue
+            }
+
+            // ensure the image is for the selected texture
+            guard image.ctpk_index == tableView.selectedRow else {
+                continue
+            }
+
+            // get the corners of the image
+            // images are top left origin, while cg is bottom left
+            // so convert from top to bottom for the y positions
+            // as nsbezierpath draws paths centered on the points,
+            // 0.5 is added/subtracted to ensure that the 1px line is
+            // drawn on the pixel grid, not between it
+            let topLeft = CGPoint(x: (CGFloat(image.start_x) * w) + 0.5, y: (CGFloat(1.0 - image.start_y) * h) - 0.5)
+            let topRight = CGPoint(x: (CGFloat(image.end_x) * w) - 0.5, y: (CGFloat(1.0 - image.start_y) * h) - 0.5)
+            let bottomLeft = CGPoint(x: (CGFloat(image.start_x) * w) + 0.5, y: (CGFloat(1.0 - image.end_y) * h) + 0.5)
+            let bottomRight = CGPoint(x: (CGFloat(image.end_x) * w) - 0.5, y: (CGFloat(1.0 - image.end_y) * h) + 0.5)
+
+            // create the outline path for the image
+            let path = NSBezierPath()
+            path.move(to: topLeft)
+            path.line(to: topRight)
+            path.line(to: bottomRight)
+            path.line(to: bottomLeft)
+            path.close()
+
+            // draw the image outline
+            NSColor.controlAccentColor.set()
+            path.stroke()
+        }
+
+        images.unlockFocus()
+        imagesView.image = images
     }
 }
