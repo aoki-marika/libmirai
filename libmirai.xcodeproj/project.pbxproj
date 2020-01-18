@@ -107,18 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				EC2DB37723D31F8700A5FA6C /* etc */,
-				EC2DB37E23D31F8700A5FA6C /* spr.h */,
-				EC2DB37523D31F8700A5FA6C /* ctpk.h */,
-				EC2DB37623D31F8700A5FA6C /* db.h */,
-				EC2DB37C23D31F8700A5FA6C /* cgfx.h */,
-				EC2DB37A23D31F8700A5FA6C /* dict.h */,
-				EC2DB37B23D31F8700A5FA6C /* txob.h */,
-				EC2DB37423D31F8700A5FA6C /* cmdl.h */,
-				EC2DB38023D31F8700A5FA6C /* sobj.h */,
-				EC2DB37D23D31F8700A5FA6C /* texture.h */,
-				EC2DB37323D31F8700A5FA6C /* utils.h */,
-				EC2DB37F23D31F8700A5FA6C /* vector.h */,
-				EC2DB37923D31F8700A5FA6C /* matrix.h */,
+				EC74315C23D32A7F00586E48 /* mirai */,
 			);
 			path = include;
 			sourceTree = "<group>";
@@ -156,6 +145,25 @@
 				EC2DB3CC23D3242B00A5FA6C /* Demo.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EC74315C23D32A7F00586E48 /* mirai */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DB37E23D31F8700A5FA6C /* spr.h */,
+				EC2DB37523D31F8700A5FA6C /* ctpk.h */,
+				EC2DB37623D31F8700A5FA6C /* db.h */,
+				EC2DB37C23D31F8700A5FA6C /* cgfx.h */,
+				EC2DB37A23D31F8700A5FA6C /* dict.h */,
+				EC2DB37B23D31F8700A5FA6C /* txob.h */,
+				EC2DB37423D31F8700A5FA6C /* cmdl.h */,
+				EC2DB38023D31F8700A5FA6C /* sobj.h */,
+				EC2DB37D23D31F8700A5FA6C /* texture.h */,
+				EC2DB37323D31F8700A5FA6C /* utils.h */,
+				EC2DB37F23D31F8700A5FA6C /* vector.h */,
+				EC2DB37923D31F8700A5FA6C /* matrix.h */,
+			);
+			path = mirai;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
