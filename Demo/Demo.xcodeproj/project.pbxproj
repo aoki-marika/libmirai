@@ -16,6 +16,7 @@
 		EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74315E23D32FBF00586E48 /* SPRController.swift */; };
 		EC74316123D32FD800586E48 /* CGFXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316023D32FD800586E48 /* CGFXController.swift */; };
 		EC74316323D338CD00586E48 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316223D338CD00586E48 /* Texture.swift */; };
+		EC970A7323D34B99005D7A27 /* CGFXModelsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC970A7223D34B99005D7A27 /* CGFXModelsController.swift */; };
 		ECE6F59B23D3446B0016DD65 /* CGFXWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE6F59A23D3446B0016DD65 /* CGFXWindowController.swift */; };
 		ECE6F59D23D346FA0016DD65 /* CGFXTexturesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE6F59C23D346FA0016DD65 /* CGFXTexturesController.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +48,7 @@
 		EC74315E23D32FBF00586E48 /* SPRController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPRController.swift; sourceTree = "<group>"; };
 		EC74316023D32FD800586E48 /* CGFXController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXController.swift; sourceTree = "<group>"; };
 		EC74316223D338CD00586E48 /* Texture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texture.swift; sourceTree = "<group>"; };
+		EC970A7223D34B99005D7A27 /* CGFXModelsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXModelsController.swift; sourceTree = "<group>"; };
 		ECE6F59A23D3446B0016DD65 /* CGFXWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXWindowController.swift; sourceTree = "<group>"; };
 		ECE6F59C23D346FA0016DD65 /* CGFXTexturesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXTexturesController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,6 +137,7 @@
 				ECE6F59A23D3446B0016DD65 /* CGFXWindowController.swift */,
 				EC74316023D32FD800586E48 /* CGFXController.swift */,
 				ECE6F59C23D346FA0016DD65 /* CGFXTexturesController.swift */,
+				EC970A7223D34B99005D7A27 /* CGFXModelsController.swift */,
 			);
 			path = CGFX;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */,
 				ECE6F59D23D346FA0016DD65 /* CGFXTexturesController.swift in Sources */,
 				EC2DB3BA23D3242800A5FA6C /* Document.swift in Sources */,
+				EC970A7323D34B99005D7A27 /* CGFXModelsController.swift in Sources */,
 				EC74316123D32FD800586E48 /* CGFXController.swift in Sources */,
 				ECE6F59B23D3446B0016DD65 /* CGFXWindowController.swift in Sources */,
 			);

@@ -16,11 +16,11 @@ class CGFXController: NSTabViewController {
     /// The CGFX that this controller is currently displaying, if any.
     var cgfx: cgfx_t? {
         didSet {
-            if tabViewItems[selectedTabViewItemIndex] == texturesItem {
-                guard let controller = texturesItem.viewController as? CGFXTexturesController else {
-                    fatalError("unable to get cgfx textures controller")
-                }
+            if let controller = texturesItem.viewController as? CGFXTexturesController {
+                controller.cgfx = cgfx
+            }
 
+            if let controller = modelsItem.viewController as? CGFXModelsController {
                 controller.cgfx = cgfx
             }
         }
@@ -29,4 +29,5 @@ class CGFXController: NSTabViewController {
     // MARK: - Outlets
 
     @IBOutlet private weak var texturesItem: NSTabViewItem!
+    @IBOutlet private weak var modelsItem: NSTabViewItem!
 }
