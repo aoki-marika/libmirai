@@ -34,6 +34,16 @@
 		EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39B23D31F9300A5FA6C /* matrix.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		EC2DB3CB23D3242B00A5FA6C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EC2DB3B223D3242800A5FA6C;
+			remoteInfo = Demo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC2DB37323D31F8700A5FA6C /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
@@ -61,6 +71,7 @@
 		EC2DB39923D31F9300A5FA6C /* ctpk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
 		EC2DB39A23D31F9300A5FA6C /* db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = db.c; sourceTree = "<group>"; };
 		EC2DB39B23D31F9300A5FA6C /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
+		EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Demo.xcodeproj; path = Demo/Demo.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +88,7 @@
 		EC01727023D31F3B00D4E2AD = {
 			isa = PBXGroup;
 			children = (
+				EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */,
 				EC2DB37223D31F8700A5FA6C /* include */,
 				EC2DB38E23D31F9300A5FA6C /* src */,
 				EC01727A23D31F3B00D4E2AD /* Products */,
@@ -136,6 +148,14 @@
 				EC2DB39B23D31F9300A5FA6C /* matrix.c */,
 			);
 			path = src;
+			sourceTree = "<group>";
+		};
+		EC2DB3C823D3242A00A5FA6C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EC2DB3CC23D3242B00A5FA6C /* Demo.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,12 +226,28 @@
 			mainGroup = EC01727023D31F3B00D4E2AD;
 			productRefGroup = EC01727A23D31F3B00D4E2AD /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = EC2DB3C823D3242A00A5FA6C /* Products */;
+					ProjectRef = EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				EC01727823D31F3B00D4E2AD /* libmirai */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		EC2DB3CC23D3242B00A5FA6C /* Demo.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = Demo.app;
+			remoteRef = EC2DB3CB23D3242B00A5FA6C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EC01727623D31F3B00D4E2AD /* Sources */ = {
