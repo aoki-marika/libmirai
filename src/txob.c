@@ -17,6 +17,9 @@
 
 void txob_open(FILE *file, struct txob_t *txob)
 {
+    // u32 type, unused
+    fseek(file, 4, SEEK_CUR);
+
     // read the signature
     assert(fgetc(file) == 'T');
     assert(fgetc(file) == 'X');

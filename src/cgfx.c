@@ -112,9 +112,8 @@ void cgfx_open(const char *path, struct cgfx_t *cgfx)
         struct dict_entry_t *entry = cgfx->data->textures->entries[i];
 
         // read the txob
-        // seek +4 to skip the 4 type bytes preceding the txob
         struct txob_t *txob = malloc(sizeof(struct txob_t));
-        fseek(cgfx->file, entry->data_pointer + 4, SEEK_SET);
+        fseek(cgfx->file, entry->data_pointer, SEEK_SET);
         txob_open(cgfx->file, txob);
 
         // insert the txob
