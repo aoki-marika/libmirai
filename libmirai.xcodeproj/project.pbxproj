@@ -32,6 +32,7 @@
 		EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39923D31F9300A5FA6C /* ctpk.c */; };
 		EC2DB3A723D31F9300A5FA6C /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39A23D31F9300A5FA6C /* db.c */; };
 		EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39B23D31F9300A5FA6C /* matrix.c */; };
+		EC47097323D47159004863D0 /* mtob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097223D47159004863D0 /* mtob.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,8 @@
 		EC2DB39A23D31F9300A5FA6C /* db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = db.c; sourceTree = "<group>"; };
 		EC2DB39B23D31F9300A5FA6C /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Demo.xcodeproj; path = Demo/Demo.xcodeproj; sourceTree = "<group>"; };
+		EC47097023D4714C004863D0 /* mtob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mtob.h; sourceTree = "<group>"; };
+		EC47097223D47159004863D0 /* mtob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mtob.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +134,7 @@
 				EC2DB39123D31F9300A5FA6C /* txob.c */,
 				EC2DB39623D31F9300A5FA6C /* cmdl.c */,
 				EC2DB39523D31F9300A5FA6C /* sobj.c */,
+				EC47097223D47159004863D0 /* mtob.c */,
 				EC2DB39423D31F9300A5FA6C /* texture.c */,
 				EC2DB39723D31F9300A5FA6C /* utils.c */,
 				EC2DB39223D31F9300A5FA6C /* vector.c */,
@@ -158,6 +162,7 @@
 				EC2DB37B23D31F8700A5FA6C /* txob.h */,
 				EC2DB37423D31F8700A5FA6C /* cmdl.h */,
 				EC2DB38023D31F8700A5FA6C /* sobj.h */,
+				EC47097023D4714C004863D0 /* mtob.h */,
 				EC2DB37D23D31F8700A5FA6C /* texture.h */,
 				EC2DB37323D31F8700A5FA6C /* utils.h */,
 				EC2DB37F23D31F8700A5FA6C /* vector.h */,
@@ -262,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC47097323D47159004863D0 /* mtob.c in Sources */,
 				EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */,
 				EC2DB39F23D31F9300A5FA6C /* vector.c in Sources */,
 				EC2DB3A723D31F9300A5FA6C /* db.c in Sources */,
