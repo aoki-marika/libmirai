@@ -33,6 +33,7 @@
 		EC2DB3A723D31F9300A5FA6C /* db.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39A23D31F9300A5FA6C /* db.c */; };
 		EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39B23D31F9300A5FA6C /* matrix.c */; };
 		EC47097323D47159004863D0 /* mtob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097223D47159004863D0 /* mtob.c */; };
+		EC47097623D47666004863D0 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097523D47666004863D0 /* color.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,8 @@
 		EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Demo.xcodeproj; path = Demo/Demo.xcodeproj; sourceTree = "<group>"; };
 		EC47097023D4714C004863D0 /* mtob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mtob.h; sourceTree = "<group>"; };
 		EC47097223D47159004863D0 /* mtob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mtob.c; sourceTree = "<group>"; };
+		EC47097423D47604004863D0 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
+		EC47097523D47666004863D0 /* color.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = color.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +142,7 @@
 				EC2DB39723D31F9300A5FA6C /* utils.c */,
 				EC2DB39223D31F9300A5FA6C /* vector.c */,
 				EC2DB39B23D31F9300A5FA6C /* matrix.c */,
+				EC47097523D47666004863D0 /* color.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -167,6 +171,7 @@
 				EC2DB37323D31F8700A5FA6C /* utils.h */,
 				EC2DB37F23D31F8700A5FA6C /* vector.h */,
 				EC2DB37923D31F8700A5FA6C /* matrix.h */,
+				EC47097423D47604004863D0 /* color.h */,
 			);
 			path = mirai;
 			sourceTree = "<group>";
@@ -278,6 +283,7 @@
 				EC2DB39D23D31F9300A5FA6C /* cgfx.c in Sources */,
 				EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */,
 				EC2DB3A123D31F9300A5FA6C /* texture.c in Sources */,
+				EC47097623D47666004863D0 /* color.c in Sources */,
 				EC2DB3A323D31F9300A5FA6C /* cmdl.c in Sources */,
 				EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */,
 			);
