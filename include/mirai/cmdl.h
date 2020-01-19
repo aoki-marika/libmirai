@@ -12,6 +12,7 @@
 #include <stdbool.h>
 
 #include "sobj.h"
+#include "mtob.h"
 #include "vector.h"
 #include "matrix.h"
 
@@ -70,6 +71,14 @@ struct cmdl_t
     /// If this is `NULL`, then this CMDL has no skeleton.
     /// If this is not `NULL`, then this is allocated.
     struct sobj_t *skeleton_sobj;
+
+    /// The number of materials within this CMDL.
+    unsigned int num_materials;
+
+    /// All the materials within this CMDL.
+    ///
+    /// The array and each item are allocated.
+    struct mtob_t **materials;
 };
 
 // MARK: - Functions

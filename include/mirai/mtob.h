@@ -10,11 +10,17 @@
 
 #include <stdio.h>
 
+#include "color.h"
+
 // MARK: - Data Structures
 
 /// The data structure for an MTOB file that has been opened.
 struct mtob_t
 {
+    /// The name of this MTOB.
+    ///
+    /// Allocated.
+    char *name;
 };
 
 // MARK: - Functions

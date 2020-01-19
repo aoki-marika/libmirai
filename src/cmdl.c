@@ -48,7 +48,7 @@ void cmdl_read_sobj_table(FILE *file,
 
 void cmdl_open(FILE *file, struct cmdl_t *cmdl)
 {
-    // read the preceeding flags
+    // read the preceding flags
     //  - bit 7: whether there is an sobj for a skeleton
     uint32_t flags;
     fread(&flags, sizeof(flags), 1, file);
@@ -172,9 +172,21 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
         cmdl->skeleton_sobj = NULL;
     }
 
-    #warning TODO: Remove this when material and animation types dict reading is implemented.
-//    for (int i = 0; i < materials.num_entries; i++)
-//        printf(" - mtob %i: \"%s\"\n", i, materials.entries[i]->name);
+    // read the materials
+    cmdl->num_materials = materials.num_entries;
+    cmdl->materials = malloc(cmdl->num_materials * sizeof(struct mtob_t *));
+    for (int i = 0; i < materials.num_entries; i++)
+    {
+        struct dict_entry_t *entry = materials.entries[i];
+        fseek(file, entry->data_pointer, SEEK_SET);
+
+        // read the material
+        struct mtob_t *material = malloc(sizeof(struct mtob_t));
+        mtob_open(file, material);
+
+        // insert the material
+        cmdl->materials[i] = material;
+    }
 
     // close the dicts only needed for reading the file
     dict_close(&materials);
@@ -200,6 +212,14 @@ void cmdl_close(struct cmdl_t *cmdl)
     if (cmdl->skeleton_sobj != NULL)
         free(cmdl->skeleton_sobj);
 
+    for (int i = 0; i < cmdl->num_materials; i++)
+    {
+        struct mtob_t *material = cmdl->materials[i];
+        mtob_close(material);
+        free(material);
+    }
+
+    free(cmdl->materials);
     free(cmdl->mesh_sobjs);
     free(cmdl->object_sobjs);
     free(cmdl->name);
