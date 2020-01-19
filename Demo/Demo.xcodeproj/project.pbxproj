@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC2192C223D3874800EDF78A /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2192C123D3874800EDF78A /* Model.swift */; };
 		EC2DB3B623D3242800A5FA6C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB3B523D3242800A5FA6C /* AppDelegate.swift */; };
 		EC2DB3BA23D3242800A5FA6C /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB3B923D3242800A5FA6C /* Document.swift */; };
 		EC2DB3BC23D3242A00A5FA6C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC2DB3BB23D3242A00A5FA6C /* Assets.xcassets */; };
@@ -36,6 +37,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EC2192C123D3874800EDF78A /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		EC2DB3B223D3242800A5FA6C /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC2DB3B523D3242800A5FA6C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC2DB3B923D3242800A5FA6C /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -127,6 +129,7 @@
 			children = (
 				EC2DB3B923D3242800A5FA6C /* Document.swift */,
 				EC74316223D338CD00586E48 /* Texture.swift */,
+				EC2192C123D3874800EDF78A /* Model.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC2192C223D3874800EDF78A /* Model.swift in Sources */,
 				EC2DB3B623D3242800A5FA6C /* AppDelegate.swift in Sources */,
 				EC74316323D338CD00586E48 /* Texture.swift in Sources */,
 				EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */,
