@@ -10,6 +10,9 @@
 
 #include "ctpk.h"
 
+#warning TODO: A lot of this needs rewording and refactoring to be up to spec with the other formats.
+// spr ctpks should be named like cmdl sobjs, e.g. `spr_t.num_textures`, `spr_t.texture_ctpks`, etc.
+
 // MARK: - Data Structures
 
 /// The data structure for an SPR file that has been opened.
