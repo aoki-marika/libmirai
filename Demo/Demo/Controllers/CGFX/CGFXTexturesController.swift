@@ -17,7 +17,7 @@ class CGFXTexturesController: NSViewController {
     private let sizeColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "SizeColumn")
     private let formatColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "FormatColumn")
 
-    /// The currently selected texture in this controller, if any.
+    /// The currently selected texture within this controller, if any.
     private var selectedTexture: texture_t? {
         let selectedRow = tableView.selectedRow
         guard selectedRow >= 0 else {

@@ -37,7 +37,12 @@ struct Model {
                 continue
             }
 
-            let objectNode = getNode(for: object, in: backing, file: file)
+            guard let materialMtob = backing.materials[Int(object.material_index)]?.pointee else {
+                continue
+            }
+
+            let material = Material(backing: materialMtob).getMaterial()
+            let objectNode = getNode(for: object, in: backing, material: material, file: file)
             node.addChildNode(objectNode)
         }
 
@@ -59,13 +64,14 @@ struct Model {
 
     // MARK: - Private Methods
 
-    /// Get the SceneKit node representation of the given object from the given CMDL in the given file.
+    /// Get the SceneKit node representation of the given object from the given CMDL in the given file with the given material.
     /// - Parameters:
     ///   - object: The object to get the representation of.
     ///   - model: The CMDL that contains the given object.
+    ///   - material: The material to use for the given object's geometry.
     ///   - file: The pointer to the file handle to read the mesh vertex data from.
     /// - Returns: The SceneKit node representation of the given object.
-    private func getNode(for object: sobj_object_t, in model: cmdl_t, file: UnsafeMutablePointer<FILE>) -> SCNNode {
+    private func getNode(for object: sobj_object_t, in model: cmdl_t, material: SCNMaterial, file: UnsafeMutablePointer<FILE>) -> SCNNode {
         guard let mesh = model.mesh_sobjs[Int(object.mesh_index)]?.pointee.mesh?.pointee else {
             fatalError()
         }
@@ -109,6 +115,8 @@ struct Model {
 
         // create the geometry and node
         let geometry = SCNGeometry(sources: sources, elements: elements)
+        geometry.firstMaterial = material
+
         let node = SCNNode(geometry: geometry)
         let translation = SCNVector3(mesh.transform_translation)
         node.position = translation

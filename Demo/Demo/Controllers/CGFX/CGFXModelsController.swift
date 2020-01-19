@@ -20,7 +20,7 @@ class CGFXModelsController: NSViewController {
     /// The node of the currently displayed model within this controller, if any.
     private var modelNode: SCNNode?
 
-    /// The currently selected model in this controller, if any.
+    /// The currently selected model within this controller, if any.
     private var selectedModel: cmdl_t? {
         let selectedRow = tableView.selectedRow
         guard selectedRow >= 0 else {

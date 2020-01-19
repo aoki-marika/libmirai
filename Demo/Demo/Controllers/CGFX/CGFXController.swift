@@ -20,6 +20,10 @@ class CGFXController: NSTabViewController {
                 controller.cgfx = cgfx
             }
 
+            if let controller = materialsItem.viewController as? CGFXMaterialsController {
+                controller.cgfx = cgfx
+            }
+
             if let controller = modelsItem.viewController as? CGFXModelsController {
                 controller.cgfx = cgfx
             }
@@ -29,5 +33,6 @@ class CGFXController: NSTabViewController {
     // MARK: - Outlets
 
     @IBOutlet private weak var texturesItem: NSTabViewItem!
+    @IBOutlet private weak var materialsItem: NSTabViewItem!
     @IBOutlet private weak var modelsItem: NSTabViewItem!
 }

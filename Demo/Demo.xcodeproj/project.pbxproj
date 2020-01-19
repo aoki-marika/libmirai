@@ -14,6 +14,8 @@
 		EC2DB3BF23D3242A00A5FA6C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC2DB3BD23D3242A00A5FA6C /* Main.storyboard */; };
 		EC2DB3CF23D3247F00A5FA6C /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */; };
 		EC2DB3D023D3247F00A5FA6C /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EC47097823D47C9F004863D0 /* Material.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC47097723D47C9F004863D0 /* Material.swift */; };
+		EC47097A23D47D77004863D0 /* CGFXMaterialsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC47097923D47D77004863D0 /* CGFXMaterialsController.swift */; };
 		EC74315F23D32FBF00586E48 /* SPRController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74315E23D32FBF00586E48 /* SPRController.swift */; };
 		EC74316123D32FD800586E48 /* CGFXController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316023D32FD800586E48 /* CGFXController.swift */; };
 		EC74316323D338CD00586E48 /* Texture.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC74316223D338CD00586E48 /* Texture.swift */; };
@@ -46,6 +48,8 @@
 		EC2DB3C023D3242A00A5FA6C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EC2DB3C123D3242A00A5FA6C /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
 		EC2DB3CE23D3247F00A5FA6C /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC47097723D47C9F004863D0 /* Material.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Material.swift; sourceTree = "<group>"; };
+		EC47097923D47D77004863D0 /* CGFXMaterialsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXMaterialsController.swift; sourceTree = "<group>"; };
 		EC74315923D3299800586E48 /* Mirai.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mirai.h; sourceTree = "<group>"; };
 		EC74315E23D32FBF00586E48 /* SPRController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPRController.swift; sourceTree = "<group>"; };
 		EC74316023D32FD800586E48 /* CGFXController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFXController.swift; sourceTree = "<group>"; };
@@ -130,6 +134,7 @@
 				EC2DB3B923D3242800A5FA6C /* Document.swift */,
 				EC74316223D338CD00586E48 /* Texture.swift */,
 				EC2192C123D3874800EDF78A /* Model.swift */,
+				EC47097723D47C9F004863D0 /* Material.swift */,
 			);
 			path = Objects;
 			sourceTree = "<group>";
@@ -140,6 +145,7 @@
 				ECE6F59A23D3446B0016DD65 /* CGFXWindowController.swift */,
 				EC74316023D32FD800586E48 /* CGFXController.swift */,
 				ECE6F59C23D346FA0016DD65 /* CGFXTexturesController.swift */,
+				EC47097923D47D77004863D0 /* CGFXMaterialsController.swift */,
 				EC970A7223D34B99005D7A27 /* CGFXModelsController.swift */,
 			);
 			path = CGFX;
@@ -217,6 +223,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC47097A23D47D77004863D0 /* CGFXMaterialsController.swift in Sources */,
+				EC47097823D47C9F004863D0 /* Material.swift in Sources */,
 				EC2192C223D3874800EDF78A /* Model.swift in Sources */,
 				EC2DB3B623D3242800A5FA6C /* AppDelegate.swift in Sources */,
 				EC74316323D338CD00586E48 /* Texture.swift in Sources */,
