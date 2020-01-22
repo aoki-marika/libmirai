@@ -216,6 +216,99 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
         mapper->wrap_v = wrap_v;
         texture_mapper_index++;
     }
+
+    // seek back to the end of the texture mappers pointer table
+    fseek(file, texture_table_pointer + (4 * 4), SEEK_SET);
+
+    // u32 shader pointer, unused
+    fseek(file, 4, SEEK_CUR);
+
+    // read the fragment shader pointer and seek to it
+    uint32_t fragment_shader_pointer = utils_read_relative_pointer(file);
+    fseek(file, fragment_shader_pointer, SEEK_SET);
+
+    // 7x u32 various lighting information, unused at the moment
+    fseek(file, 4 * 7, SEEK_CUR);
+
+    // read the fragment shader and its steps
+    struct mtob_fragment_shader_t *fragment_shader = &mtob->fragment_shader;
+
+    struct color4_t fragment_base_color;
+    color4_readf(file, &fragment_base_color);
+    fragment_shader->base_color = fragment_base_color;
+
+    for (int i = 0; i < 6; i++)
+    {
+        // there appears to be more properties here
+        // potentially come back and revisit these later?
+        // https://github.com/gdkchan/Ohana3DS-Rebirth/blob/master/Ohana3DS%20Rebirth/Ohana/Models/PICA200/PICACommandReader.cs#L259
+
+        // u32 constant colour type, unused
+        fseek(file, 4, SEEK_CUR);
+
+        // read the channel sources
+        // these values contain the bits for the sources of each value
+        uint16_t rgb_sources, alpha_sources;
+        fread(&rgb_sources, sizeof(rgb_sources), 1, file);
+        fread(&alpha_sources, sizeof(alpha_sources), 1, file);
+
+        // u32 command header, unused
+        fseek(file, 4, SEEK_CUR);
+
+        // read the rgb and alpha operations
+        // these values contain the bits for the operations of each value
+        uint16_t rgb_operations;
+        uint16_t alpha_operations;
+        fread(&rgb_operations, sizeof(rgb_operations), 1, file);
+        fread(&alpha_operations, sizeof(alpha_operations), 1, file);
+
+        // read the rgb and alpha combines
+        // init 0x0 and fread sizeof(u16) as sizeof(enum) is u32
+        enum mtob_fragment_rgb_combine_t rgb_combine = 0x0;
+        enum mtob_fragment_alpha_combine_t alpha_combine = 0x0;
+        fread(&rgb_combine, sizeof(uint16_t), 1, file);
+        fread(&alpha_combine, sizeof(uint16_t), 1, file);
+
+        // read the constant colour
+        struct color4_t constant_color;
+        color4_readu8(file, &constant_color);
+
+        // read the rgb and alpha scales
+        // not entirely sure why but these values seem to use zero as a base
+        // so +1 to be able to multiply by them
+        uint16_t rgb_scale, alpha_scale;
+        fread(&rgb_scale, sizeof(rgb_scale), 1, file);
+        fread(&alpha_scale, sizeof(alpha_scale), 1, file);
+
+        rgb_scale += 1;
+        alpha_scale += 1;
+
+        // insert the step
+        struct mtob_fragment_step_t *step = &mtob->fragment_shader.steps[i];
+        step->constant_color = constant_color;
+        step->rgb_combine = rgb_combine;
+        step->alpha_combine = alpha_combine;
+        step->rgb_scale = rgb_scale;
+        step->alpha_scale = alpha_scale;
+
+        // read the inputs
+        for (int i = 0; i < 3; i++)
+        {
+            int shift = i * 4;
+            const int mask = 0xf;
+            enum mtob_fragment_source_t rgb_source = (rgb_sources >> shift) & mask;
+            enum mtob_fragment_rgb_operation_t rgb_operation = (rgb_operations >> shift) & mask;
+            enum mtob_fragment_source_t alpha_source = (alpha_sources >> shift) & mask;
+            enum mtob_fragment_alpha_operation_t alpha_operation = (alpha_operations >> shift) & mask;
+
+            // insert the input
+            struct mtob_fragment_step_input_t *input = &step->inputs[i];
+            input->rgb_source = rgb_source;
+            input->rgb_operation = rgb_operation;
+            input->alpha_source = alpha_source;
+            input->alpha_operation = alpha_operation;
+        }
+    }
 }
 
 void mtob_close(struct mtob_t *mtob)

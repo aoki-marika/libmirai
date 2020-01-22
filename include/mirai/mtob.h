@@ -268,6 +268,67 @@ struct mtob_texture_coordinator_t
     struct mtob_texture_mapper_t mapper;
 };
 
+/// The data structure for describing the operations to perform to get the colour of a single input within a fragment shader step.
+struct mtob_fragment_step_input_t
+{
+    /// The source of the red, green, and alpha channels of this input's colour.
+    enum mtob_fragment_source_t rgb_source;
+
+    /// The operation to perform on the red, green, and blue channels of this input's colour.
+    enum mtob_fragment_rgb_operation_t rgb_operation;
+
+    /// The source of the alpha channel of this input's colour.
+    enum mtob_fragment_source_t alpha_source;
+
+    /// The operation to perform on the alpha channel of this input's colour.
+    enum mtob_fragment_alpha_operation_t alpha_operation;
+};
+
+/// The data structure for describing the operations to perform within a single step of a fragment shader.
+struct mtob_fragment_step_t
+{
+    /// The constant colour value of this step.
+    ///
+    /// This value is used when the an input inside this step queries the
+    /// `MTOB_FRAGMENT_SOURCE_CONSTANT` source.
+    struct color4_t constant_color;
+
+    /// All the inputs to retrieve within this step.
+    ///
+    /// Each of these inputs are combined once retrieved using the operations
+    /// described by the `rgb_combine` and `alpha_combine` properties to get the
+    /// colour of this step.
+    struct mtob_fragment_step_input_t inputs[3];
+
+    /// The operation used to combine all the inputs within this step to get
+    /// the red, green, and blue channels of this step's colour.
+    enum mtob_fragment_rgb_combine_t rgb_combine;
+
+    /// The operation used to combine all the inputs within this step to get
+    /// the alpha channel of this step's colour.
+    enum mtob_fragment_alpha_combine_t alpha_combine;
+
+    /// The value to multiply this step's red, green, and blue channels by.
+    unsigned int rgb_scale;
+
+    /// The value to multiply this step's alpha channel by.
+    unsigned int alpha_scale;
+};
+
+/// The data structure for describing the fragment shader of an MTOB.
+struct mtob_fragment_shader_t
+{
+    /// The colour to use for buffer input to the first step within this fragment shader.
+    struct color4_t base_color;
+
+    /// All the steps within this fragment shader.
+    ///
+    /// Each of these steps perform a combination operation on multiple inputs,
+    /// and then this combination is stored inside a variable which is overwritten for each step.
+    /// The fragment colour is decided by the last assigned value to said variable.
+    struct mtob_fragment_step_t steps[6];
+};
+
 /// The data structure for an MTOB file that has been opened.
 struct mtob_t
 {
@@ -287,6 +348,9 @@ struct mtob_t
 
     /// All the texture coordinators within this MTOB.
     struct mtob_texture_coordinator_t texture_coordinators[3];
+
+    /// The fragment shader of this MTOB.
+    struct mtob_fragment_shader_t fragment_shader;
 };
 
 // MARK: - Functions
