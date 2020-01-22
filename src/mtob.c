@@ -88,11 +88,44 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
     //  - 4x u32 pica command
     fseek(file, 5 * 4, SEEK_CUR);
 
-    // blend, unused
-    //  - u32 mode
-    //  - rgba floats blend color
-    //  - 6x u32 pica command
-    fseek(file, 11 * 4, SEEK_CUR);
+    // blend
+    // u32 mode, unused
+    fseek(file, 4, SEEK_CUR);
+
+    // read the blend colour
+    struct color4_t blend_color;
+    color4_readf(file, &blend_color);
+
+    // read the blend commands
+    // there are 6x u32 pica commands, but only some are used
+    uint32_t blend_cmd1, blend_cmd3;
+    fread(&blend_cmd1, sizeof(blend_cmd1), 1, file); //1
+    fseek(file, 4, SEEK_CUR); //2
+    fread(&blend_cmd3, sizeof(blend_cmd3), 1, file); //3
+    fseek(file, 3 * 4, SEEK_CUR); //4, 5, 6
+
+    // read the blending information
+    bool blend_enabled = ((blend_cmd1 >> 8) & 0xff) == 1;
+    mtob->blend_enabled = blend_enabled;
+
+    if (blend_enabled)
+    {
+        enum mtob_blend_function_t function_destination_alpha = (blend_cmd3 >> 28) & 0xf;
+        enum mtob_blend_function_t function_source_alpha = (blend_cmd3 >> 24) & 0xf;
+        enum mtob_blend_function_t function_destination_rgb = (blend_cmd3 >> 20) & 0xf;
+        enum mtob_blend_function_t function_source_rgb = (blend_cmd3 >> 16) & 0xf;
+        enum mtob_blend_equation_t equation_alpha = (blend_cmd3 >> 8) & 0xf;
+        enum mtob_blend_equation_t equation_rgb = (blend_cmd3 >> 0) & 0xf;
+
+        // initialize the mtobs blend values
+        mtob->blend_color = blend_color;
+        mtob->blend_function_destination_alpha = function_destination_alpha;
+        mtob->blend_function_source_alpha = function_source_alpha;
+        mtob->blend_function_destination_rgb = function_destination_rgb;
+        mtob->blend_function_source_rgb = function_source_rgb;
+        mtob->blend_equation_alpha = equation_alpha;
+        mtob->blend_equation_rgb = equation_rgb;
+    }
 
     // stencil, unused
     //  - 4x u32 pica command
@@ -223,20 +256,26 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
     // u32 shader pointer, unused
     fseek(file, 4, SEEK_CUR);
 
-    // read the fragment shader pointer and seek to it
+    // read the fragment shader pointer
     uint32_t fragment_shader_pointer = utils_read_relative_pointer(file);
+
+    // 19x various u32 values, all unused
+    fseek(file, 19 * 4, SEEK_CUR);
+
+    // read the fragment shader
     fseek(file, fragment_shader_pointer, SEEK_SET);
+
+    struct mtob_fragment_shader_t *fragment_shader = &mtob->fragment_shader;
 
     // 7x u32 various lighting information, unused at the moment
     fseek(file, 4 * 7, SEEK_CUR);
 
-    // read the fragment shader and its steps
-    struct mtob_fragment_shader_t *fragment_shader = &mtob->fragment_shader;
-
+    // read the fragment base colour
     struct color4_t fragment_base_color;
     color4_readf(file, &fragment_base_color);
     fragment_shader->base_color = fragment_base_color;
 
+    // read the fragment steps
     for (int i = 0; i < 6; i++)
     {
         // there appears to be more properties here

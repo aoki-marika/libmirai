@@ -9,12 +9,47 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "color.h"
 #include "vector.h"
 #include "matrix.h"
 
 // MARK: - Enumerations
+
+/// The different blend functions that an MTOB can use.
+///
+/// Each of these correspond to the OpenGL blend function of the same name.
+enum mtob_blend_function_t
+{
+    MTOB_BLEND_FUNCTION_ZERO                     = 0x0,
+    MTOB_BLEND_FUNCTION_ONE                      = 0x1,
+    MTOB_BLEND_FUNCTION_SRC_COLOR                = 0x2,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_SRC_COLOR      = 0x3,
+    MTOB_BLEND_FUNCTION_DST_COLOR                = 0x4,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_DST_COLOR      = 0x5,
+    MTOB_BLEND_FUNCTION_SRC_ALPHA                = 0x6,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_SRC_ALPHA      = 0x7,
+    MTOB_BLEND_FUNCTION_DST_ALPHA                = 0x8,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_DST_ALPHA      = 0x9,
+    MTOB_BLEND_FUNCTION_CONSTANT_COLOR           = 0xa,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_CONSTANT_COLOR = 0xb,
+    MTOB_BLEND_FUNCTION_CONSTANT_ALPHA           = 0xc,
+    MTOB_BLEND_FUNCTION_ONE_MINUS_CONSTANT_ALPHA = 0xd,
+    MTOB_BLEND_FUNCTION_SRC_ALPHA_SATURATE       = 0xe,
+};
+
+/// The different blend equations that an MTOB can use.
+///
+/// Each of these correspond to the OpenGL blend equation of the same name.
+enum mtob_blend_equation_t
+{
+    MTOB_BLEND_EQUATION_ADD              = 0x0,
+    MTOB_BLEND_EQUATION_SUBTRACT         = 0x1,
+    MTOB_BLEND_EQUATION_REVERSE_SUBTRACT = 0x2,
+    MTOB_BLEND_EQUATION_MIN              = 0x3,
+    MTOB_BLEND_EQUATION_MAX              = 0x4,
+};
 
 /// The different methods that a texture coordinator can use to map it's texture onto vertices.
 ///
@@ -339,6 +374,46 @@ struct mtob_t
 
     /// The colours within this MTOB.
     struct mtob_colors_t colors;
+
+    /// Whether or not this MTOB uses blending.
+    bool blend_enabled;
+
+    /// The blend colour of this MTOB.
+    ///
+    /// This can be applied in OpenGL using `glBlendColor`.
+    ///
+    /// Only set if blending is enabled.
+    struct color4_t blend_color;
+
+    /// Specifies how the red, green, and blue channels of this MTOB's blending factors are computed.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the first argument to `glBlendFuncSeparate`.
+    enum mtob_blend_function_t blend_function_source_rgb;
+
+    /// Specifies how the destination red, green, and blue channels of this MTOB's blending factors are computed.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the second argument to `glBlendFuncSeparate`.
+    enum mtob_blend_function_t blend_function_destination_rgb;
+
+    /// Specifies how the alpha channel of this MTOB's blending factors are computed.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the third argument to `glBlendFuncSeparate`.
+    enum mtob_blend_function_t blend_function_source_alpha;
+
+    /// Specifies how the destination alpha channel of this MTOB's blending factors are computed.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the fourth argument to `glBlendFuncSeparate`.
+    enum mtob_blend_function_t blend_function_destination_alpha;
+
+    /// Specifies how the red, green, and blue channels of this MTOB's source and destination colours are combined.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the first argument to `glBlendEquationSeparate`.
+    enum mtob_blend_equation_t blend_equation_rgb;
+
+    /// Specifies how the alpha channels of this MTOB's source and destination colours are combined.
+    ///
+    /// If using OpenGL, then the OpenGL representation of this value is the second argument to `glBlendEquationSeparate`.
+    enum mtob_blend_equation_t blend_equation_alpha;
 
     /// The number of active texture coordinators within this MTOB.
     ///
