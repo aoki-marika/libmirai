@@ -146,6 +146,7 @@ struct Model {
             case SOBJ_COMPONENT_TYPE_COLOR:    semantic = .color
             case SOBJ_COMPONENT_TYPE_UV0:      semantic = .texcoord
             case SOBJ_COMPONENT_TYPE_UV1:      semantic = .texcoord
+            case SOBJ_COMPONENT_TYPE_UV2:      semantic = .texcoord
             case SOBJ_COMPONENT_TYPE_WEIGHT:   semantic = .boneWeights
             case SOBJ_COMPONENT_TYPE_INDEX:    componentOffset += size; continue
             default: continue

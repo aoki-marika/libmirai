@@ -55,6 +55,9 @@ enum sobj_component_type_t
     /// The second UV texture coordinate of the vertex.
     SOBJ_COMPONENT_TYPE_UV1      = 0x05,
 
+    /// The third UV texture coordinate of the vertex.
+    SOBJ_COMPONENT_TYPE_UV2      = 0x06,
+
     /// The weight of this vertex within the skeleton.
     SOBJ_COMPONENT_TYPE_WEIGHT   = 0x07,
 
