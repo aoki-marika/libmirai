@@ -40,29 +40,32 @@ enum sobj_type_t
 /// The different types that a vertex component's data can be used for.
 enum sobj_component_type_t
 {
-    /// The X, Y, and Z position of the vertex in 3D space.
-    SOBJ_COMPONENT_TYPE_POSITION = 0x00,
+    /// The X, Y, and Z position of this vertex in 3D space.
+    SOBJ_COMPONENT_TYPE_POSITION    = 0x00,
 
-    /// The X, Y, and Z normal of this vertex.
-    SOBJ_COMPONENT_TYPE_NORMAL   = 0x01,
+    /// The normal of this vertex.
+    SOBJ_COMPONENT_TYPE_NORMAL      = 0x01,
+
+    /// The tangent of this vertex.
+    SOBJ_COMPONENT_TYPE_TANGENT     = 0x02,
 
     /// The red, green, blue, and alpha channels of the vertex's colour.
-    SOBJ_COMPONENT_TYPE_COLOR    = 0x03,
+    SOBJ_COMPONENT_TYPE_COLOR       = 0x03,
 
-    /// The first UV texture coordinate of the vertex.
-    SOBJ_COMPONENT_TYPE_UV0      = 0x04,
+    /// The UV coordinates of this vertex within the first texture of the material.
+    SOBJ_COMPONENT_TYPE_TEXCOORD0   = 0x04,
 
-    /// The second UV texture coordinate of the vertex.
-    SOBJ_COMPONENT_TYPE_UV1      = 0x05,
+    /// The UV coordinates of this vertex within the second texture of the material.
+    SOBJ_COMPONENT_TYPE_TEXCOORD1   = 0x05,
 
-    /// The third UV texture coordinate of the vertex.
-    SOBJ_COMPONENT_TYPE_UV2      = 0x06,
+    /// The UV coordinates of this vertex within the third texture of the material.
+    SOBJ_COMPONENT_TYPE_TEXCOORD2   = 0x06,
 
-    /// The weight of this vertex within the skeleton.
-    SOBJ_COMPONENT_TYPE_WEIGHT   = 0x07,
+    /// The index of this vertex's bone.
+    SOBJ_COMPONENT_TYPE_BONE_INDEX  = 0x07,
 
-    /// The index of this vertex within the index buffer.
-    SOBJ_COMPONENT_TYPE_INDEX    = 0x08,
+    /// The weight of this vertex's bone.
+    SOBJ_COMPONENT_TYPE_BONE_WEIGHT = 0x08,
 };
 
 /// The different formats that a vertex component's values can be in.

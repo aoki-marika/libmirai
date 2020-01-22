@@ -141,15 +141,16 @@ struct Model {
             let size = Int(component.num_values) * 4
             let semantic: SCNGeometrySource.Semantic
             switch component.type {
-            case SOBJ_COMPONENT_TYPE_POSITION: semantic = .vertex
-            case SOBJ_COMPONENT_TYPE_NORMAL:   semantic = .normal
-            case SOBJ_COMPONENT_TYPE_COLOR:    semantic = .color
-            case SOBJ_COMPONENT_TYPE_UV0:      semantic = .texcoord
-            case SOBJ_COMPONENT_TYPE_UV1:      semantic = .texcoord
-            case SOBJ_COMPONENT_TYPE_UV2:      semantic = .texcoord
-            case SOBJ_COMPONENT_TYPE_WEIGHT:   semantic = .boneWeights
-            case SOBJ_COMPONENT_TYPE_INDEX:    componentOffset += size; continue
-            default: continue
+            case SOBJ_COMPONENT_TYPE_POSITION:    semantic = .vertex
+            case SOBJ_COMPONENT_TYPE_NORMAL:      semantic = .normal
+            case SOBJ_COMPONENT_TYPE_TANGENT:     semantic = .tangent
+            case SOBJ_COMPONENT_TYPE_COLOR:       semantic = .color
+            case SOBJ_COMPONENT_TYPE_TEXCOORD0:   semantic = .texcoord
+            case SOBJ_COMPONENT_TYPE_TEXCOORD1:   semantic = .texcoord
+            case SOBJ_COMPONENT_TYPE_TEXCOORD2:   semantic = .texcoord
+            case SOBJ_COMPONENT_TYPE_BONE_INDEX:  semantic = .boneIndices
+            case SOBJ_COMPONENT_TYPE_BONE_WEIGHT: semantic = .boneWeights
+            default: fatalError()
             }
 
             let source = SCNGeometrySource(
