@@ -17,14 +17,26 @@
 // MARK: - Enumerations
 
 /// The different methods that a texture coordinator can use to map it's texture onto vertices.
+///
+/// Each of these correspond to the method of the same name within OpenGL and other graphics frameworks.
 enum mtob_texture_coordinator_mapping_method_t
 {
-    #warning TODO: Come back and document these when it's better known what they do.
     MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_UV         = 0x0,
     MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_CUBE       = 0x1,
     MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_SPHERE     = 0x2,
     MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_PROJECTION = 0x3,
     MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_SHADOW     = 0x4,
+};
+
+/// The different methods that a texture mapper can use for wrapping drawn textures.
+///
+/// Each of these correspond to the method of the same name within OpenGL and other graphics frameworks.
+enum mtob_texture_mapper_wrap_mode_t
+{
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_CLAMP_TO_EDGE = 0x0,
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_CLAMP_TO_BORDER = 0x1,
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_REPEAT = 0x2,
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_MIRRORED_REPEAT = 0x3,
 };
 
 /// The different sources that a fragment step can get a base input from.
@@ -212,9 +224,26 @@ struct mtob_colors_t
     struct color4_t constant0, constant1, constant2, constant3, constant4, constant5;
 };
 
+/// The data structure for a texture mapper within an MTOB.
+///
+/// Texture mappers are used to determine how to load raw bitmap data into OpenGL and other graphics frameworks.
+struct mtob_texture_mapper_t
+{
+    /// The name of the texture that this mapper is using within the containing CGFX of this mapper's MTOB.
+    ///
+    /// Allocated.
+    char *texture_name;
+
+    /// The wrap mode for the U axis of this mapper's texture.
+    enum mtob_texture_mapper_wrap_mode_t wrap_u;
+
+    /// The wrap mode for the V axis of this mapper's texture.
+    enum mtob_texture_mapper_wrap_mode_t wrap_v;
+};
+
 /// The data structure for a texture coordinator within an MTOB.
 ///
-/// Texture coordinators are used to determine how to display textures within an MTOB onto geometry.
+/// Texture coordinators are used to determine how to coordinate texture mappers onto geometry.
 struct mtob_texture_coordinator_t
 {
     /// The index of the texture coordinates within a vertex that this coordinator uses.
@@ -234,6 +263,9 @@ struct mtob_texture_coordinator_t
 
     /// The transform to apply to this coordinator's texture.
     struct mat4_t transform;
+
+    /// The mapper for this coordinator's texture.
+    struct mtob_texture_mapper_t mapper;
 };
 
 /// The data structure for an MTOB file that has been opened.

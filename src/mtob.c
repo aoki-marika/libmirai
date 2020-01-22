@@ -154,9 +154,74 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
         coordinator->translate = translate;
         coordinator->transform = transform;
     }
+
+    // read the texture mappers
+    // keep a pointer to the pointer table to be able to continue reading after each texture
+    long texture_table_pointer = ftell(file);
+    int texture_mapper_index = 0;
+    for (int i = 0; i < 3; i++)
+    {
+        // read the pointer from the table
+        // if the relative pointer is zero then there is no texture at this index
+        fseek(file, texture_table_pointer + (i * 4), SEEK_SET);
+
+        uint32_t relative_pointer;
+        fread(&relative_pointer, sizeof(relative_pointer), 1, file);
+        if (relative_pointer == 0)
+            continue;
+
+        fseek(file, -4, SEEK_CUR);
+        uint32_t pointer = utils_read_relative_pointer(file);
+        fseek(file, pointer, SEEK_SET);
+
+        // u32 type and dynamic allocator, unused
+        fseek(file, 2 * 4, SEEK_CUR);
+
+        // read the texture pointer
+        uint32_t texture_pointer = utils_read_relative_pointer(file);
+
+        // multiple unused values
+        //  - u32 sampler pointer
+        //  - 5x u32 pica command
+        fseek(file, 6 * 4, SEEK_CUR);
+
+        // read the wrap modes
+        uint32_t wrap_flags;
+        fread(&wrap_flags, sizeof(wrap_flags), 1, file);
+
+        enum mtob_texture_mapper_wrap_mode_t wrap_u = (wrap_flags >> 12) & 0xf;
+        enum mtob_texture_mapper_wrap_mode_t wrap_v = (wrap_flags >> 8) & 0xf;
+
+        // 8x u32 pica command and u32 "command size to send"
+        fseek(file, 9 * 4, SEEK_CUR);
+
+        // read the texture txob
+        // txobs have support for different types, one of which being a reference
+        // which then refers to another txob by name
+        // this is what mtobs use to refer to their textures
+        // so instead of updating txob with all the clutter of supporting these types,
+        // instead just read the referenced name here and store it in the mtob to be handled by the cgfx consumer
+        // +6x u32 to skip the header and go straight to the txob name
+        fseek(file, texture_pointer + (6 * 4), SEEK_SET);
+        uint32_t texture_name_pointer = utils_read_relative_pointer(file);
+        long texture_name_return = ftell(file);
+        fseek(file, texture_name_pointer, SEEK_SET);
+        char *texture_name = utils_read_string(file);
+        fseek(file, texture_name_return, SEEK_SET);
+
+        // insert the texture mapper
+        struct mtob_texture_mapper_t *mapper = &mtob->texture_coordinators[texture_mapper_index].mapper;
+        mapper->texture_name = texture_name;
+        mapper->wrap_u = wrap_u;
+        mapper->wrap_v = wrap_v;
+        texture_mapper_index++;
+    }
 }
 
 void mtob_close(struct mtob_t *mtob)
 {
+    for (int i = 0; i < mtob->num_active_texture_coordinators; i++)
+        free(mtob->texture_coordinators[i].mapper.texture_name);
+
     free(mtob->name);
 }
