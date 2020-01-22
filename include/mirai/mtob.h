@@ -189,6 +189,16 @@ enum mtob_fragment_alpha_combine_t
 
 // MARK: - Data Structures
 
+/// The data structure for the colours within an MTOB.
+struct mtob_colors_t
+{
+    struct color4_t emission;
+    struct color4_t ambient;
+    struct color4_t diffuse;
+    struct color4_t specular0, specular1;
+    struct color4_t constant0, constant1, constant2, constant3, constant4, constant5;
+};
+
 /// The data structure for an MTOB file that has been opened.
 struct mtob_t
 {
@@ -196,6 +206,9 @@ struct mtob_t
     ///
     /// Allocated.
     char *name;
+
+    /// The colours within this MTOB.
+    struct mtob_colors_t colors;
 };
 
 // MARK: - Functions
