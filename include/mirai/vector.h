@@ -12,6 +12,12 @@
 
 // MARK: - Data Structures
 
+/// A data structure to represent a two-dimensional vector.
+struct vec2_t
+{
+    float x, y;
+};
+
 /// A data structure to represent a three-dimensional vector.
 struct vec3_t
 {
@@ -19,6 +25,11 @@ struct vec3_t
 };
 
 // MARK: - Functions
+
+/// Read the 2D vector at the current offset of the given file handle into the given 2D vector.
+/// @param file The file handle to read the 2D vector from.
+/// @param vector The 2D vector to read the file into.
+void vec2_read(FILE *file, struct vec2_t *vector);
 
 /// Read the 3D vector at the current offset of the given file handle into the given 3D vector.
 /// @param file The file handle to read the 3D vector from.
