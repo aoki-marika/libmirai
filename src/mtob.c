@@ -111,6 +111,49 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
     mtob->colors.constant3 = constant3;
     mtob->colors.constant4 = constant4;
     mtob->colors.constant5 = constant5;
+
+    // read the active texture coordinator count
+    uint32_t num_active_texture_coordinators;
+    fread(&num_active_texture_coordinators, sizeof(num_active_texture_coordinators), 1, file);
+
+    // read the texture coordinators
+    mtob->num_active_texture_coordinators = num_active_texture_coordinators;
+    for (int i = 0; i < 3; i++)
+    {
+        // read the source index
+        uint32_t source_index;
+        fread(&source_index, sizeof(source_index), 1, file);
+
+        // read the mapping method
+        enum mtob_texture_coordinator_mapping_method_t mapping_method;
+        fread(&mapping_method, sizeof(mapping_method), 1, file);
+
+        // u32 reference camera and matrix mode, unused
+        fseek(file, 2 * 4, SEEK_CUR);
+
+        // read the scale, rotation, and translate
+        struct vec2_t scale, translate;
+        float rotation;
+        vec2_read(file, &scale);
+        fread(&rotation, sizeof(rotation), 1, file);
+        vec2_read(file, &translate);
+
+        // u32 flags, unused
+        fseek(file, 4, SEEK_CUR);
+
+        // read the transform
+        struct mat4_t transform;
+        mat4_read43(file, &transform);
+
+        // insert the coordinator
+        struct mtob_texture_coordinator_t *coordinator = &mtob->texture_coordinators[i];
+        coordinator->source_index = source_index;
+        coordinator->mapping_method = mapping_method;
+        coordinator->scale = scale;
+        coordinator->rotation = rotation;
+        coordinator->translate = translate;
+        coordinator->transform = transform;
+    }
 }
 
 void mtob_close(struct mtob_t *mtob)

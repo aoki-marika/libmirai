@@ -11,8 +11,21 @@
 #include <stdio.h>
 
 #include "color.h"
+#include "vector.h"
+#include "matrix.h"
 
 // MARK: - Enumerations
+
+/// The different methods that a texture coordinator can use to map it's texture onto vertices.
+enum mtob_texture_coordinator_mapping_method_t
+{
+    #warning TODO: Come back and document these when it's better known what they do.
+    MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_UV         = 0x0,
+    MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_CUBE       = 0x1,
+    MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_SPHERE     = 0x2,
+    MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_PROJECTION = 0x3,
+    MTOB_TEXTURE_COORDINATOR_MAPPING_METHOD_SHADOW     = 0x4,
+};
 
 /// The different sources that a fragment step can get a base input from.
 enum mtob_fragment_source_t
@@ -199,6 +212,30 @@ struct mtob_colors_t
     struct color4_t constant0, constant1, constant2, constant3, constant4, constant5;
 };
 
+/// The data structure for a texture coordinator within an MTOB.
+///
+/// Texture coordinators are used to determine how to display textures within an MTOB onto geometry.
+struct mtob_texture_coordinator_t
+{
+    /// The index of the texture coordinates within a vertex that this coordinator uses.
+    unsigned int source_index;
+
+    /// The mapping method that this texture coordinator is using.
+    enum mtob_texture_coordinator_mapping_method_t mapping_method;
+
+    /// The values to multiply this coordinator's texture's size by.
+    struct vec2_t scale;
+
+    /// The value to rotate this coordinator's texture by, in radians.
+    float rotation;
+
+    /// The values to translate this coordinator's texture's position by.
+    struct vec2_t translate;
+
+    /// The transform to apply to this coordinator's texture.
+    struct mat4_t transform;
+};
+
 /// The data structure for an MTOB file that has been opened.
 struct mtob_t
 {
@@ -209,6 +246,15 @@ struct mtob_t
 
     /// The colours within this MTOB.
     struct mtob_colors_t colors;
+
+    /// The number of active texture coordinators within this MTOB.
+    ///
+    /// MTOBs always contain three texture coordinators, but a variable amount of
+    /// them are actually active. This value determines how many are.
+    unsigned int num_active_texture_coordinators;
+
+    /// All the texture coordinators within this MTOB.
+    struct mtob_texture_coordinator_t texture_coordinators[3];
 };
 
 // MARK: - Functions
