@@ -15,6 +15,7 @@ class CGFXMaterialsController: NSViewController {
     // MARK: - Private Properties
 
     private let nameColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "NameColumn")
+    private let blendingColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "BlendingColumn")
     private let activeTextureCoordinatorsColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "ActiveTextureCoordinatorsColumn")
 
     /// The scene of this controller used to display materials.
@@ -129,6 +130,12 @@ extension CGFXMaterialsController: NSOutlineViewDataSource {
             else {
                 return nil
             }
+        case blendingColumnIdentifier:
+            guard let material = item as? mtob_t else {
+                return nil
+            }
+
+            return (material.blend_enabled) ? "Yes" : "No"
         case activeTextureCoordinatorsColumnIdentifier:
             guard let material = item as? mtob_t else {
                 return nil
