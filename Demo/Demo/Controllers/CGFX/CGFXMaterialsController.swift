@@ -14,6 +14,9 @@ class CGFXMaterialsController: NSViewController {
 
     // MARK: - Private Properties
 
+    private let nameColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "NameColumn")
+    private let activeTextureCoordinatorsColumnIdentifier = NSUserInterfaceItemIdentifier(rawValue: "ActiveTextureCoordinatorsColumn")
+
     /// The scene of this controller used to display materials.
     private let scene = SCNScene()
 
@@ -113,15 +116,26 @@ extension CGFXMaterialsController: NSOutlineViewDataSource {
     }
 
     func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
-        if let model = item as? cmdl_t, let cName = model.name {
-            let name = String(cString: cName)
-            return name
-        }
-        else if let material = item as? mtob_t, let cName = material.name {
-            let name = String(cString: cName)
-            return name
-        }
-        else {
+        switch tableColumn!.identifier {
+        case nameColumnIdentifier:
+            if let model = item as? cmdl_t, let cName = model.name {
+                let name = String(cString: cName)
+                return name
+            }
+            else if let material = item as? mtob_t, let cName = material.name {
+                let name = String(cString: cName)
+                return name
+            }
+            else {
+                return nil
+            }
+        case activeTextureCoordinatorsColumnIdentifier:
+            guard let material = item as? mtob_t else {
+                return nil
+            }
+
+            return Int(material.num_active_texture_coordinators)
+        default:
             return nil
         }
     }
