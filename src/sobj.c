@@ -404,6 +404,13 @@ void sobj_mesh_read(FILE *file, struct sobj_mesh_t *mesh)
     mesh->vertex_groups = realloc(mesh->vertex_groups, sizeof(num_valid_vertex_groups * sizeof(struct sobj_vertex_group_t *)));
 }
 
+/// Read the skeleton at the current offset of the given file handle into the given skeleton.
+/// @param file The file handle to read the skeleton from.
+/// @param skeleton The skeleton to read the file info.
+void sobj_skeleton_read(FILE *file, struct sobj_skeleton_t *skeleton)
+{
+}
+
 void sobj_open(FILE *file, struct sobj_t *sobj)
 {
     // read the flags
@@ -450,6 +457,7 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
         sobj->type = SOBJ_TYPE_OBJECT;
         sobj->object = malloc(sizeof(struct sobj_object_t *));
         sobj->mesh = NULL;
+        sobj->skeleton = NULL;
         sobj_object_read(file, sobj->object);
     }
     else if (is_skeleton)
@@ -457,12 +465,15 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
         sobj->type = SOBJ_TYPE_SKELETON;
         sobj->object = NULL;
         sobj->mesh = NULL;
+        sobj->skeleton = malloc(sizeof(struct sobj_skeleton_t *));;
+        sobj_skeleton_read(file, sobj->skeleton);
     }
     else if (is_mesh)
     {
         sobj->type = SOBJ_TYPE_MESH;
         sobj->object = NULL;
         sobj->mesh = malloc(sizeof(struct sobj_mesh_t));
+        sobj->skeleton = NULL;
         sobj_mesh_read(file, sobj->mesh);
     }
 }
@@ -478,6 +489,7 @@ void sobj_close(struct sobj_t *sobj)
         }
         case SOBJ_TYPE_SKELETON:
         {
+            free(sobj->skeleton);
             break;
         }
         case SOBJ_TYPE_MESH:

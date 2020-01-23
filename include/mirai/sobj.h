@@ -117,6 +117,12 @@ struct sobj_t
     /// If `type` is not `SOBJ_TYPE_MESH`, then this is `NULL`.
     /// If `type` is `SOBJ_TYPE_MESH`, then this is allocated.
     struct sobj_mesh_t *mesh;
+
+    /// The skeleton within this SOBJ file, if any.
+    ///
+    /// If `type` is not `SOBJ_TYPE_SKELETON`, then this is `NULL`.
+    /// If `type` is `SOBJ_TYPE_SKELETON`, then this is allocated.
+    struct sobj_skeleton_t *skeleton;
 };
 
 /// The data structure for an object within an SOBJ file.
@@ -229,6 +235,11 @@ struct sobj_component_t
 
     /// The offset of this component's values within a single stride.
     unsigned int offset;
+};
+
+/// The data structure for a skeleton within an SOBJ file.
+struct sobj_skeleton_t
+{
 };
 
 // MARK: - Functions
