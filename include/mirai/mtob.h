@@ -17,6 +17,8 @@
 
 // MARK: - Enumerations
 
+#warning TODO: mtob_blend_function_t -> mtob_blend_factor_t
+
 /// The different blend functions that an MTOB can use.
 ///
 /// Each of these correspond to the OpenGL blend function of the same name.
@@ -95,9 +97,6 @@ enum mtob_fragment_source_t
     /// The third texture within the containing material, sampled from the third texture coordinate of the vertex.
     MTOB_FRAGMENT_SOURCE_TEXTURE2           = 0x5,
 
-    /// The fourth texture within the containing material, sampled from the fourth texture coordinate of the vertex.
-    MTOB_FRAGMENT_SOURCE_TEXTURE3           = 0x6,
-
     /// The previous value within the fragment shader's step buffer.
     MTOB_FRAGMENT_SOURCE_BUFFER             = 0xd,
 
@@ -174,6 +173,24 @@ enum mtob_fragment_alpha_operation_t
 
     /// `1.0 - input.g`
     MTOB_FRAGMENT_ALPHA_OPERATION_B_INVERTED = 0x7,
+};
+
+/// The different sources for a fragment step's constant.
+///
+/// Each of these map to the property of the same name within the `mtob_colors_t` of the MTOB that contains this fragment step.
+enum mtob_fragment_step_constant_t
+{
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT0 = 0x0,
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT1 = 0x1,
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT2 = 0x2,
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT3 = 0x3,
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT4 = 0x4,
+    MTOB_FRAGMENT_STEP_CONSTANT_CONSTANT5 = 0x5,
+    MTOB_FRAGMENT_STEP_CONSTANT_EMISSION  = 0x6,
+    MTOB_FRAGMENT_STEP_CONSTANT_AMBIENT   = 0x7,
+    MTOB_FRAGMENT_STEP_CONSTANT_DIFFUSE   = 0x8,
+    MTOB_FRAGMENT_STEP_CONSTANT_SPECULAR0 = 0x9,
+    MTOB_FRAGMENT_STEP_CONSTANT_SPECULAR1 = 0xa,
 };
 
 /// The different operations that can be performed on a fragment step's inputs to get the red, green, and blue channels of said step's colour.
@@ -322,11 +339,11 @@ struct mtob_fragment_step_input_t
 /// The data structure for describing the operations to perform within a single step of a fragment shader.
 struct mtob_fragment_step_t
 {
-    /// The constant colour value of this step.
+    /// The constant of this step.
     ///
-    /// This value is used when the an input inside this step queries the
-    /// `MTOB_FRAGMENT_SOURCE_CONSTANT` source.
-    struct color4_t constant_color;
+    /// The value that this refers to is used when the an input inside
+    /// this step queries the `MTOB_FRAGMENT_SOURCE_CONSTANT` source.
+    enum mtob_fragment_step_constant_t constant;
 
     /// All the inputs to retrieve within this step.
     ///

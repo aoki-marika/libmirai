@@ -282,8 +282,10 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
         // potentially come back and revisit these later?
         // https://github.com/gdkchan/Ohana3DS-Rebirth/blob/master/Ohana3DS%20Rebirth/Ohana/Models/PICA200/PICACommandReader.cs#L259
 
-        // u32 constant colour type, unused
-        fseek(file, 4, SEEK_CUR);
+        // read the constant
+        // this is the constant that this fragment step uses when its inputs source from constant
+        uint32_t constant;
+        fread(&constant, sizeof(constant), 1, file);
 
         // read the channel sources
         // these values contain the bits for the sources of each value
@@ -308,9 +310,8 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
         fread(&rgb_combine, sizeof(uint16_t), 1, file);
         fread(&alpha_combine, sizeof(uint16_t), 1, file);
 
-        // read the constant colour
-        struct color4_t constant_color;
-        color4_readu8(file, &constant_color);
+        // rgba u8s constant colour, unused
+        fseek(file, 4, SEEK_CUR);
 
         // read the rgb and alpha scales
         // not entirely sure why but these values seem to use zero as a base
@@ -324,7 +325,7 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
 
         // insert the step
         struct mtob_fragment_step_t *step = &mtob->fragment_shader.steps[i];
-        step->constant_color = constant_color;
+        step->constant = constant;
         step->rgb_combine = rgb_combine;
         step->alpha_combine = alpha_combine;
         step->rgb_scale = rgb_scale;
