@@ -12,6 +12,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "dict.h"
 #include "utils.h"
 
 // MARK: - Enumerations
@@ -90,12 +91,23 @@ void sobj_object_read(FILE *file, struct sobj_object_t *object)
 /// @param face_group The face group to read the file into.
 void sobj_read_face_group(FILE *file, struct sobj_face_group_t *face_group)
 {
-    // multiple unused values
+    // read the joint indices count and pointer
+    // this an array of joint indices within this face groups
+    // enclosing cmdls skeleton that each of this face groups
+    // vertices are connected to
+    // these act as an alternative to SOBJ_COMPONENT_TYPE_BONE_INDEX
+    // which mirai seems to always use
+    uint32_t num_joint_indices;
+    fread(&num_joint_indices, sizeof(num_joint_indices), 1, file);
+
+    uint32_t joint_indices_pointer = utils_read_relative_pointer(file);
+
+    // u32 skinning mode, unused
     //  - u32 bone node count and pointer
     //  - u32 skinning mode
-    fseek(file, 4 + 4 + 4, SEEK_CUR);
+    fseek(file, 4, SEEK_CUR);
 
-    // read the face group count and pointer, then each groups indices
+    // read the face group count and pointer
     // faces are grouped on two levels; once in first level groups,
     // then again in a second level where they are grouped with bone nodes
     // here they all the first level groups are expanded into the second level
@@ -105,6 +117,18 @@ void sobj_read_face_group(FILE *file, struct sobj_face_group_t *face_group)
 
     uint32_t face_groups_pointer = utils_read_relative_pointer(file);
 
+    // read the joint indices
+    fseek(file, joint_indices_pointer, SEEK_SET);
+    face_group->num_joint_indices = num_joint_indices;
+    face_group->joint_indices = malloc(num_joint_indices * sizeof(unsigned int));
+    for (int i = 0; i < num_joint_indices; i++)
+    {
+        uint32_t index;
+        fread(&index, sizeof(index), 1, file);
+        face_group->joint_indices[i] = index;
+    }
+
+    // reach the indices of each face group
     // the indices array is reallocated and appended for each group
     // malloc(1) is used instead of zero because malloc(0)
     // returns either null or a pointer that can only be pretend deallocated
@@ -409,6 +433,99 @@ void sobj_mesh_read(FILE *file, struct sobj_mesh_t *mesh)
 /// @param skeleton The skeleton to read the file info.
 void sobj_skeleton_read(FILE *file, struct sobj_skeleton_t *skeleton)
 {
+    // read the joints dict
+    struct dict_t joints;
+    dict_open(file, &joints);
+
+    // multiple unused values
+    //  - u32 root joint pointer
+    //  - u32 scaling rule
+    //  - u32 flags
+    //     - bit 0: skeleton translate animation enabled
+    fseek(file, 3 * 4, SEEK_CUR);
+
+    // read the joints
+    skeleton->num_joints = joints.num_entries;
+    skeleton->joints = malloc(skeleton->num_joints * sizeof(struct sobj_skeleton_joint_t *));
+    for (int i = 0; i < joints.num_entries; i++)
+    {
+        struct dict_entry_t *entry = joints.entries[i];
+        fseek(file, entry->data_pointer, SEEK_SET);
+
+        // read the name and seek back
+        uint32_t name_pointer = utils_read_relative_pointer(file);
+        long name_return = ftell(file);
+        fseek(file, name_pointer, SEEK_SET);
+        char *name = utils_read_string(file);
+        fseek(file, name_return, SEEK_SET);
+
+        // u32 flags, unused
+        //  - bit 0: identity
+        //  - bit 1: translate zero
+        //  - bit 2: rotate zero
+        //  - bit 3: scale one
+        //  - bit 4: uniform scale
+        //  - bit 5: segment scale compensate
+        //  - bit 6: need rendering
+        //  - bit 7: local transform calculate
+        //  - bit 8: world transform calculate
+        //  - bit 9: has skinning transform
+        fseek(file, 4, SEEK_CUR);
+
+        // u32 id, unused
+        // this id always lines up with the index of this joint within the joints array
+        // so its useless and instead parent ids can just index the array
+        fseek(file, 4, SEEK_CUR);
+
+        // read the parent index
+        // this is the index of this joints parent joint within
+        // the enclosing skeletons joints array
+        // if this is equal to 0xffffffff (u32 max) then this joint has no parent
+        uint32_t parent_index;
+        fread(&parent_index, sizeof(parent_index), 1, file);
+
+        // u32 parent, child, previous sibling, and next sibiling pointers, unused
+        // these are assumingly used with the root joint, which is unused here
+        fseek(file, 4 * 4, SEEK_CUR);
+
+        // read the transforms
+        //  - scale
+        //  - rotation
+        //  - translation
+        //  - absolute scale
+        //  - local
+        //  - world
+        //  - inverse bind
+        struct vec3_t transform_scale, transform_rotation, transform_translation, absolute_scale;
+        vec3_read(file, &transform_scale);
+        vec3_read(file, &transform_rotation);
+        vec3_read(file, &transform_translation);
+        vec3_read(file, &absolute_scale);
+
+        struct mat4_t transform_local, transform_world, transform_inverse_bind;
+        mat4_read43(file, &transform_local);
+        mat4_read43(file, &transform_world);
+        mat4_read43(file, &transform_inverse_bind);
+
+        // u32 user data dict, unused
+        fseek(file, 2 * 4, SEEK_CUR);
+
+        // insert the joint
+        struct sobj_skeleton_joint_t *joint = malloc(sizeof(struct sobj_skeleton_joint_t));
+        joint->name = name;
+        joint->parent_index = (parent_index == UINT32_MAX) ? -1 : parent_index;
+        joint->transform_scale = transform_scale;
+        joint->transform_rotation = transform_rotation;
+        joint->transform_translation = transform_translation;
+        joint->absolute_scale = absolute_scale;
+        joint->transform_local = transform_local;
+        joint->transform_world = transform_world;
+        joint->transform_inverse_bind = transform_inverse_bind;
+        skeleton->joints[i] = joint;
+    }
+
+    // close the dicts only needed for reading
+    dict_close(&joints);
 }
 
 void sobj_open(FILE *file, struct sobj_t *sobj)
@@ -489,6 +606,14 @@ void sobj_close(struct sobj_t *sobj)
         }
         case SOBJ_TYPE_SKELETON:
         {
+            for (int i = 0; i < sobj->skeleton->num_joints; i++)
+            {
+                struct sobj_skeleton_joint_t *joint = sobj->skeleton->joints[i];
+                free(joint->name);
+                free(joint);
+            }
+
+            free(sobj->skeleton->joints);
             free(sobj->skeleton);
             break;
         }
@@ -497,6 +622,7 @@ void sobj_close(struct sobj_t *sobj)
             {
                 struct sobj_face_group_t *face_group = sobj->mesh->face_groups[i];
                 free(face_group->indices);
+                free(face_group->joint_indices);
                 free(face_group);
             }
 

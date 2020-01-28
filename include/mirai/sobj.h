@@ -12,6 +12,7 @@
 #include <stdbool.h>
 
 #include "vector.h"
+#include "matrix.h"
 
 // MARK: - Enumerations
 
@@ -174,6 +175,14 @@ struct sobj_mesh_t
 /// The data structure for a single group of faces within an SOBJ mesh.
 struct sobj_face_group_t
 {
+    /// The number of joint indices that this group connects it's vertices to.
+    unsigned int num_joint_indices;
+
+    /// The indices of each of the joints that this group connect's it's vertices to.
+    ///
+    /// Allocated.
+    unsigned int *joint_indices;
+
     /// The number of vertex indices within this group.
     unsigned int num_indices;
 
@@ -240,6 +249,50 @@ struct sobj_component_t
 /// The data structure for a skeleton within an SOBJ file.
 struct sobj_skeleton_t
 {
+    /// The number of joints within this skeleton.
+    unsigned int num_joints;
+
+    /// All the joints within this skeleton.
+    ///
+    /// The array and each item are allocated
+    struct sobj_skeleton_joint_t **joints;
+};
+
+/// The data structure for a single joint within a skeleton.
+struct sobj_skeleton_joint_t
+{
+    /// The name of this joint.
+    ///
+    /// Allocated.
+    char *name;
+
+    /// The index of this joint's parent joint within the enclosing skeleton's joints array, if any.
+    ///
+    /// If this index is less than `0` then this joint has no parent.
+    int parent_index;
+
+    /// The scale transform of this joint.
+    struct vec3_t transform_scale;
+
+    /// The rotation transform of this joint.
+    struct vec3_t transform_rotation;
+
+    /// The translation transform of this joint.
+    struct vec3_t transform_translation;
+
+    /// The absolute scale of this joint.
+    ///
+    /// This scale is applied to all the other transforms of this joint.
+    struct vec3_t absolute_scale;
+
+    /// The local transform of this joint.
+    struct mat4_t transform_local;
+
+    /// The world transform of this joint.
+    struct mat4_t transform_world;
+
+    /// The inverse bind transform of this joint.
+    struct mat4_t transform_inverse_bind;
 };
 
 // MARK: - Functions
