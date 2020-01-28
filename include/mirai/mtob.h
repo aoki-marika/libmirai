@@ -83,9 +83,9 @@ enum mtob_texture_coordinator_mapping_method_t
 /// Each of these correspond to the method of the same name within OpenGL and other graphics frameworks.
 enum mtob_texture_mapper_wrap_mode_t
 {
-    MTOB_TEXTURE_MAPPER_WRAP_MODE_CLAMP_TO_EDGE = 0x0,
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_CLAMP_TO_EDGE   = 0x0,
     MTOB_TEXTURE_MAPPER_WRAP_MODE_CLAMP_TO_BORDER = 0x1,
-    MTOB_TEXTURE_MAPPER_WRAP_MODE_REPEAT = 0x2,
+    MTOB_TEXTURE_MAPPER_WRAP_MODE_REPEAT          = 0x2,
     MTOB_TEXTURE_MAPPER_WRAP_MODE_MIRRORED_REPEAT = 0x3,
 };
 
