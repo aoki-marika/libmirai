@@ -491,17 +491,16 @@ void sobj_skeleton_read(FILE *file, struct sobj_skeleton_t *skeleton)
         //  - absolute scale
         //  - local
         //  - world
-        //  - inverse bind
-        struct vec3_t transform_scale, transform_rotation, transform_translation, absolute_scale;
+        //  - inverse base
+        struct vec3_t transform_scale, transform_rotation, transform_translation;
         vec3_read(file, &transform_scale);
         vec3_read(file, &transform_rotation);
         vec3_read(file, &transform_translation);
-        vec3_read(file, &absolute_scale);
 
-        struct mat4_t transform_local, transform_world, transform_inverse_bind;
+        struct mat4_t transform_local, transform_world, transform_inverse_base;
         mat4_read43(file, &transform_local);
         mat4_read43(file, &transform_world);
-        mat4_read43(file, &transform_inverse_bind);
+        mat4_read43(file, &transform_inverse_base);
 
         // u32 user data dict, unused
         fseek(file, 2 * 4, SEEK_CUR);
@@ -513,10 +512,9 @@ void sobj_skeleton_read(FILE *file, struct sobj_skeleton_t *skeleton)
         joint->transform_scale = transform_scale;
         joint->transform_rotation = transform_rotation;
         joint->transform_translation = transform_translation;
-        joint->absolute_scale = absolute_scale;
         joint->transform_local = transform_local;
         joint->transform_world = transform_world;
-        joint->transform_inverse_bind = transform_inverse_bind;
+        joint->transform_inverse_base = transform_inverse_base;
         skeleton->joints[i] = joint;
     }
 
@@ -534,9 +532,9 @@ void sobj_open(FILE *file, struct sobj_t *sobj)
     uint32_t flags;
     fread(&flags, sizeof(flags), 1, file);
 
-    bool is_object     = flags & (0x1 << 24);
+    bool is_object   = flags & (0x1 << 24);
     bool is_skeleton = flags & (0x1 << 25);
-    bool is_mesh    = flags & (0x1 << 28);
+    bool is_mesh     = flags & (0x1 << 28);
 
     assert(is_object || is_skeleton || is_mesh);
 

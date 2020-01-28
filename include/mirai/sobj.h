@@ -277,19 +277,14 @@ struct sobj_skeleton_joint_t
     /// The translation transform of this joint.
     struct vec3_t transform_translation;
 
-    /// The absolute scale of this joint.
-    ///
-    /// This scale is applied to all the other transforms of this joint.
-    struct vec3_t absolute_scale;
-
     /// The local transform of this joint.
     struct mat4_t transform_local;
 
     /// The world transform of this joint.
     struct mat4_t transform_world;
 
-    /// The inverse bind transform of this joint.
-    struct mat4_t transform_inverse_bind;
+    /// The inverse base transform of this joint.
+    struct mat4_t transform_inverse_base;
 };
 
 // MARK: - Functions
