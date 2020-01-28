@@ -145,6 +145,22 @@ extension SPRController: NSTableViewDelegate {
             // draw the image outline
             NSColor.controlAccentColor.set()
             path.stroke()
+
+            // draw the name
+            let name = String(cString: image.name)
+            NSString(string: name).draw(
+                in: NSRect(
+                    x: bottomLeft.x,
+                    y: bottomLeft.y,
+                    width: topRight.x - topLeft.x,
+                    height: topLeft.y - bottomLeft.y
+                ),
+                withAttributes: [
+                    .font: NSFont.labelFont(ofSize: NSFont.labelFontSize),
+                    .foregroundColor: NSColor.controlAccentColor,
+                    .backgroundColor: NSColor.black,
+                ]
+            )
         }
 
         images.unlockFocus()
