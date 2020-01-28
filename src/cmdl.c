@@ -115,7 +115,7 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     fseek(file, 4, SEEK_CUR);
 
     // two unused values
-    //  - u32 culling mode
+    //  - u32 cull mode
     //  - u32 layer id
     fseek(file, 4 + 4, SEEK_CUR);
 

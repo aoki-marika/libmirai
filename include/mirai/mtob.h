@@ -19,6 +19,19 @@
 
 #warning TODO: mtob_blend_function_t -> mtob_blend_factor_t
 
+/// The different cull modes that an MTOB can use for the geometry it is applied to.
+enum mtob_cull_mode_t
+{
+    /// Never cull any faces.
+    MTOB_CULL_MODE_NEVER = 0x0,
+
+    /// Only cull the front face.
+    MTOB_CULL_MODE_FRONT_FACE = 0x1,
+
+    /// Only cull the back face.
+    MTOB_CULL_MODE_BACK_FACE = 0x2,
+};
+
 /// The different blend functions that an MTOB can use.
 ///
 /// Each of these correspond to the OpenGL blend function of the same name.
@@ -391,6 +404,9 @@ struct mtob_t
 
     /// The colours within this MTOB.
     struct mtob_colors_t colors;
+
+    /// The cull mode that this MTOB uses for geometry that is applied to.
+    enum mtob_cull_mode_t cull_mode;
 
     /// Whether or not this MTOB uses blending.
     bool blend_enabled;

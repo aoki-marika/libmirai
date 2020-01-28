@@ -71,16 +71,17 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
     // 1 byte per channel, 4 channels, 11 colours
     fseek(file, 11 * 4, SEEK_CUR);
 
-    // u32 command cache, unused
+    // rasterization options
+    // u32 flags, unused
+    //  - bit 0: is polygon offset enabled
     fseek(file, 4, SEEK_CUR);
 
-    // rasterization options, unused
-    //  - u32 flags
-    //  - u32 culling mode
-    //  - u32 polygon offset unit
-    //  - u32 command 1
-    //  - u32 command 2
-    fseek(file, 5 * 4, SEEK_CUR);
+    // read the cull mode
+    enum mtob_cull_mode_t cull_mode;
+    fread(&cull_mode, sizeof(cull_mode), 1, file);
+
+    // float polygon offset unit and 12 unknown bytes, unused
+    fseek(file, 4 + 12, SEEK_CUR);
 
     // fragment operation
     // depth, unused
@@ -144,6 +145,7 @@ void mtob_open(FILE *file, struct mtob_t *mtob)
     mtob->colors.constant3 = constant3;
     mtob->colors.constant4 = constant4;
     mtob->colors.constant5 = constant5;
+    mtob->cull_mode = cull_mode;
 
     // read the active texture coordinator count
     uint32_t num_active_texture_coordinators;
