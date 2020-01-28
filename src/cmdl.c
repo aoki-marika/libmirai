@@ -109,12 +109,10 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     // each entry is a name and visibility flag
     fseek(file, 8, SEEK_CUR);
 
-    // read the flags
+    // u32 flags, unused
     //  - bit 0: is visible
-    //  - bit 8: is non-uniform scalable, unused
-    fread(&flags, sizeof(flags), 1, file);
-
-    bool is_visible = flags & 0b1;
+    //  - bit 8: is non-uniform scalable
+    fseek(file, 4, SEEK_CUR);
 
     // two unused values
     //  - u32 culling mode
@@ -138,7 +136,6 @@ void cmdl_open(FILE *file, struct cmdl_t *cmdl)
     cmdl->transform_translation = transform_translation;
     cmdl->transform_local = transform_local;
     cmdl->transform_world = transform_world;
-    cmdl->is_visible = is_visible;
 
     // read the objects
     cmdl->num_objects = num_objects;

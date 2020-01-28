@@ -135,9 +135,6 @@ struct sobj_object_t
     /// The index of this object's material within the parent CMDL's materials.
     unsigned int material_index;
 
-    /// Whether or not this object is visible.
-    bool is_visible;
-
     /// The rendering priority of this object.
     ///
     /// Objects with a greater rendering priority are rendered last,

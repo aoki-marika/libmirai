@@ -48,12 +48,9 @@ void sobj_object_read(FILE *file, struct sobj_object_t *object)
     // but never uses it
     fseek(file, 4, SEEK_CUR);
 
-    // read the flags
+    // u32 flags, unused
     //  - bit 0: is visible
-    uint8_t flags;
-    fread(&flags, sizeof(flags), 1, file);
-
-    bool is_visible = flags & 0b1;
+    fseek(file, 4, SEEK_CUR);
 
     // read the rendering priority
     // this is the order that this objects mesh is drawn,
@@ -82,7 +79,6 @@ void sobj_object_read(FILE *file, struct sobj_object_t *object)
     // initialize the object
     object->mesh_index = mesh_index;
     object->material_index = material_index;
-    object->is_visible = is_visible;
     object->rendering_priority = rendering_priority;
 }
 

@@ -41,9 +41,6 @@ struct cmdl_t
     /// The transform applied to this CMDL relative to the world.
     struct mat4_t transform_world;
 
-    /// Whether or not this CMDL is visible.
-    bool is_visible;
-
     /// The number of objects within this CMDL.
     unsigned int num_objects;
 
