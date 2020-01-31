@@ -700,7 +700,7 @@
                 </windowController>
                 <customObject id="6Vr-kb-3CQ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-265" y="473"/>
+            <point key="canvasLocation" x="-515" y="421"/>
         </scene>
         <!--SPR Controller-->
         <scene sceneID="HVL-Pl-V7f">
@@ -729,7 +729,7 @@
                                                     <tableColumns>
                                                         <tableColumn identifier="NameColumn" editable="NO" width="200" minWidth="10" maxWidth="3.4028234663852886e+38" id="QzG-j2-7mu">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -742,7 +742,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="SizeColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="wos-DT-xlO">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Size">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -755,7 +755,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="FormatColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="HhZ-n9-r3j">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Format">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -833,7 +833,41 @@
                 </viewController>
                 <customObject id="A0r-jG-6Vg" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-265" y="923"/>
+            <point key="canvasLocation" x="-515" y="871"/>
+        </scene>
+        <!--AET Window Controller-->
+        <scene sceneID="M7n-V7-LtD">
+            <objects>
+                <windowController storyboardIdentifier="AETWindowController" id="5Vh-lP-6oh" userLabel="AET Window Controller" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="aUW-Ug-YNV">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="323" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1080"/>
+                        <connections>
+                            <outlet property="delegate" destination="5Vh-lP-6oh" id="GKV-N6-B0N"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="f5b-EC-utI" kind="relationship" relationship="window.shadowedContentViewController" id="Auz-b0-bNb"/>
+                    </connections>
+                </windowController>
+                <customObject id="tfY-gg-mRN" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="421"/>
+        </scene>
+        <!--AET Controller-->
+        <scene sceneID="BYx-6q-SXU">
+            <objects>
+                <viewController id="f5b-EC-utI" userLabel="AET Controller" customClass="AETController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="ivX-xb-bie">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="HUH-rj-l8h" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="75" y="871"/>
         </scene>
         <!--CGFX Window Controller-->
         <scene sceneID="lOE-dM-9KS">
@@ -882,7 +916,7 @@
                 </windowController>
                 <customObject id="vdh-u1-tML" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="416" y="473"/>
+            <point key="canvasLocation" x="675" y="421"/>
         </scene>
         <!--CGFX Controller-->
         <scene sceneID="hef-0o-0rs">
@@ -913,7 +947,7 @@
                 </tabViewController>
                 <customObject id="MWd-eH-64o" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="416" y="923"/>
+            <point key="canvasLocation" x="675" y="871"/>
         </scene>
         <!--CGFX Textures Controller-->
         <scene sceneID="dag-wY-gg2">
@@ -942,7 +976,7 @@
                                                     <tableColumns>
                                                         <tableColumn identifier="NameColumn" editable="NO" width="200" minWidth="10" maxWidth="3.4028234663852886e+38" id="Jf5-99-pw6">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -955,7 +989,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="SizeColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="0Vm-eD-zTU">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Size">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -968,7 +1002,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="FormatColumn" editable="NO" width="100" minWidth="10" maxWidth="3.4028234663852886e+38" id="3iW-VF-FgA">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Format">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -1026,7 +1060,7 @@
                 </viewController>
                 <customObject id="7OP-Fc-qON" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-184" y="1453"/>
+            <point key="canvasLocation" x="75" y="1401"/>
         </scene>
         <!--CGFX Materials Controller-->
         <scene sceneID="zBd-dr-Obs">
@@ -1055,7 +1089,7 @@
                                                     <tableColumns>
                                                         <tableColumn identifier="NameColumn" editable="NO" width="200" minWidth="40" maxWidth="1000" id="S4O-Ex-dvK">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" title="Name">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                             </tableHeaderCell>
@@ -1068,7 +1102,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="BlendingColumn" width="75" minWidth="10" maxWidth="3.4028234663852886e+38" id="Qwo-Vb-GiZ">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Blending">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -1081,7 +1115,7 @@
                                                         </tableColumn>
                                                         <tableColumn identifier="ActiveTextureCoordinatorsColumn" width="175" minWidth="10" maxWidth="3.4028234663852886e+38" id="6WC-aN-GOf">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Active Texture Coordinators">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -1139,7 +1173,7 @@
                 </viewController>
                 <customObject id="5Ch-PS-QKl" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="416" y="1453"/>
+            <point key="canvasLocation" x="675" y="1401"/>
         </scene>
         <!--CGFX Models Controller-->
         <scene sceneID="F2H-5f-rjX">
@@ -1168,7 +1202,7 @@
                                                     <tableColumns>
                                                         <tableColumn identifier="NameColumn" editable="NO" width="200" minWidth="10" maxWidth="3.4028234663852886e+38" id="fNN-HV-2s9">
                                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Name">
-                                                                <font key="font" metaFont="controlContent" size="11"/>
+                                                                <font key="font" metaFont="menu" size="11"/>
                                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </tableHeaderCell>
@@ -1226,7 +1260,7 @@
                 </viewController>
                 <customObject id="jgf-ze-gWz" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1019" y="1453"/>
+            <point key="canvasLocation" x="1278" y="1401"/>
         </scene>
     </scenes>
 </document>

@@ -17,6 +17,7 @@ class Document: NSDocument {
     // MARK: - Private Properties
 
     private let sprWindowControllerIdentifier = NSStoryboard.SceneIdentifier("SPRWindowController")
+    private let aetWindowControllerIdentifier = NSStoryboard.SceneIdentifier("AETWindowController")
     private let cgfxWindowControllerIdentifier = NSStoryboard.SceneIdentifier("CGFXWindowController")
 
     /// The current contents of this document.
@@ -41,6 +42,11 @@ class Document: NSDocument {
             let controller = windowController.contentViewController as! CGFXController
             controller.cgfx = cgfx
             self.addWindowController(windowController)
+        case .aet(let aet):
+            let windowController = storyboard.instantiateController(withIdentifier: aetWindowControllerIdentifier) as! NSWindowController
+            let controller = windowController.contentViewController as! AETController
+            controller.aet = aet
+            self.addWindowController(windowController)
         }
     }
 
@@ -55,16 +61,17 @@ class Document: NSDocument {
         var signatureBytes = [UInt8](repeating: 0, count: 4)
         data.copyBytes(to: &signatureBytes, count: signatureBytes.count)
 
-        guard let signature = NSString(bytes: signatureBytes, length: signatureBytes.count, encoding: String.Encoding.utf8.rawValue) else {
-            throw DocumentError.unknownFormat
-        }
-
-        switch signature {
-        case "\0\0\0\0":
+        switch signatureBytes {
+        case [0x00, 0x00, 0x00, 0x00]:
             var spr = spr_t()
             spr_open(path, &spr)
             contents = .spr(spr)
-        case "CGFX":
+        case [0x10, 0x00, 0x00, 0x00], [0x20, 0x00, 0x00, 0x00]:
+            var aet = aet_t()
+            aet_open(path, &aet)
+            contents = .aet(aet)
+        // CGFX ascii
+        case [0x43, 0x47, 0x46, 0x58]:
             var cgfx = cgfx_t()
             cgfx_open(path, &cgfx)
             contents = .cgfx(cgfx)
@@ -81,6 +88,8 @@ class Document: NSDocument {
             spr_close(&spr)
         case .cgfx(var cgfx):
             cgfx_close(&cgfx)
+        case .aet(var aet):
+            aet_close(&aet)
         }
     }
 }
@@ -101,6 +110,9 @@ extension Document {
 
         /// This document contains the given CGFX.
         case cgfx(cgfx_t)
+
+        /// This document contains the given AET.
+        case aet(aet_t)
     }
 }
 

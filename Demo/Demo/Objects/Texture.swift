@@ -70,6 +70,7 @@ struct Texture {
             colorSpace = CGColorSpaceCreateDeviceRGB()
         // coregraphics seems provide no way to read packed data
         // but these formats are never used in mirai so skip them
+        #warning("TODO: See CGImagePixelFormatInfo.")
         case .rgba5551, .rgb565:
             return nil
         case .rgba4444:
