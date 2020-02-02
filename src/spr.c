@@ -132,9 +132,9 @@ void spr_open(const char *path, struct spr_t *spr)
         // array
         fseek(file, scrs_pointer + (i * 96), SEEK_SET);
 
-        // read the ctpk index
-        uint8_t ctpk_index;
-        fread(&ctpk_index, sizeof(ctpk_index), 1, file);
+        // read the texture index
+        uint8_t texture_index;
+        fread(&texture_index, sizeof(texture_index), 1, file);
 
         // read the name
         char *name = spr_string_read(file, scr_name_allocated_size);
@@ -152,7 +152,7 @@ void spr_open(const char *path, struct spr_t *spr)
         // insert the scr
         struct scr_t scr;
         scr.name = name;
-        scr.ctpk_index = ctpk_index;
+        scr.texture_index = texture_index;
         scr.top_left = top_left;
         scr.bottom_right = bottom_right;
         spr->scrs[i] = scr;

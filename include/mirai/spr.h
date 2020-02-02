@@ -55,8 +55,8 @@ struct scr_t
     /// Allocated.
     char *name;
 
-    /// The index of the CTPK that this SCR is within, within this SCR's containing SPR.
-    unsigned int ctpk_index;
+    /// The index of the texture that this SCR is within, within this SCR's containing SPR.
+    unsigned int texture_index;
 
     /// The top left coordinate of this SCR's bounds.
     ///
