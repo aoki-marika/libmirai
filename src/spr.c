@@ -8,57 +8,27 @@
 
 #include "spr.h"
 
-#include <assert.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include <assert.h>
 
 // MARK: - Constants
 
-/// The maximum length of a CTPK name, in bytes.
-const int max_ctpk_name_length = 32;
+/// The size of the allocated space for each CTPK name within an SPR, in bytes.
+const int ctpk_name_allocated_size = 32;
 
-/// The maximum length of an image name, in bytes.
-const int max_image_name_length = 71;
-
-// MARK: - Data Structures
-
-/// The data structure for the header of an SPR file.
-struct spr_header_t
-{
-    /// The signature for this file, must be `0x0000`.
-    uint32_t signature;
-
-    /// The pointer to the beginning of the CTPK data within this file.
-    uint32_t ctpks_pointer;
-
-    /// The number of CTPK files within this file.
-    uint32_t num_ctpks;
-
-    /// The pointer to the beginning of the CTPK names data within this file.
-    uint32_t names_pointer;
-
-    // have no idea what this is, seems to always be all zeroes
-    uint8_t unknown[8];
-
-    /// The number of images within this file.
-    uint32_t num_images;
-
-    /// The offset of the image data within this file, in bytes.
-    uint32_t images_pointer;
-};
+/// The size of the allocated space for each SCR name within an SPR, in bytes.
+const int scr_name_allocated_size = 71;
 
 // MARK: - Functions
 
-/// Read an SPR name from the given file handle, of the given max length.
+/// Read the string at the current offset of the given file handle, of the given allocated size.
 ///
-/// SPRs store names in a semi-odd way where they allocate a fixed amount of space,
-/// then all whitespace is replaced by terminator characters.
-///
-/// The name is read starting from the current position of the given file handle.
-/// @param file The file handle to read the name from.
-/// @param allocated_size The size of the allocated space for the name, in bytes.
-char *spr_read_name(FILE *file, int allocated_size)
+/// Strings within SPRs are stored in a semi-odd way where they allocate a fixed
+/// amount of space, then all whitespace is replaced by terminator characters.
+/// @param file The file handle to read the string from.
+/// @param allocated_size The size of the allocated space for the string, in bytes.
+/// @returns The string at the current offset of the given file handle. Allocated.
+char *spr_string_read(FILE *file, int allocated_size)
 {
     char characters[allocated_size];
     fread(characters, allocated_size, 1, file);
@@ -87,112 +57,113 @@ char *spr_read_name(FILE *file, int allocated_size)
 void spr_open(const char *path, struct spr_t *spr)
 {
     // open the file for binary reading
-    spr->file = fopen(path, "rb");
+    FILE *file = fopen(path, "rb");
 
-    // read the header
-    struct spr_header_t header;
-    fread(&header, sizeof(struct spr_header_t), 1, spr->file);
-    assert(header.signature == 0x0000);
+    // signature
+    assert(fgetc(file) == 0x0);
+    assert(fgetc(file) == 0x0);
+    assert(fgetc(file) == 0x0);
+    assert(fgetc(file) == 0x0);
 
-    // initialize the output spr
-    spr->num_ctpks = header.num_ctpks;
-    spr->ctpk_names = malloc(header.num_ctpks * sizeof(char *));
-    spr->ctpks = malloc(header.num_ctpks * sizeof(struct ctpk_t *));
-    spr->num_images = header.num_images;
-    spr->images = malloc(header.num_images * sizeof(struct spr_image_t *));
+    // read the ctpk count, pointer, and names pointer
+    // this is actually the only count and pointer that is in the opposite order
+    uint32_t num_ctpks, ctpks_pointer, ctpk_names_pointer;
+    fread(&ctpks_pointer, sizeof(ctpks_pointer), 1, file);
+    fread(&num_ctpks, sizeof(num_ctpks), 1, file);
+    fread(&ctpk_names_pointer, sizeof(ctpk_names_pointer), 1, file);
 
-    // read each image
-    fseek(spr->file, header.images_pointer, SEEK_SET);
-    for (int i = 0; i < header.num_images; i++)
+    // padding
+    for (int i = 0; i < 8; i++)
+        assert(fgetc(file) == 0x0);
+
+    // read the scr count and pointer
+    uint32_t num_scrs, scrs_pointer;
+    fread(&num_scrs, sizeof(num_scrs), 1, file);
+    fread(&scrs_pointer, sizeof(scrs_pointer), 1, file);
+
+    // read the ctpks
+    // the pointer for each ctpk needs to be advanced by the last
+    // as ctpks can be of any length
+    spr->num_ctpks = num_ctpks;
+    spr->ctpks = malloc(num_ctpks * sizeof(struct ctpk_t));
+    spr->ctpk_names = malloc(num_ctpks * sizeof(char *));
+
+    size_t ctpk_pointer = ctpks_pointer;
+    for (int i = 0; i < num_ctpks; i++)
     {
+        // read the ctpk
+        // +4 to skip the flags
+        fseek(file, ctpk_pointer + 4, SEEK_SET);
+
+        struct ctpk_t ctpk;
+        ctpk_open(file, &ctpk);
+
+        // read the name
+        fseek(file, ctpk_names_pointer + (i * ctpk_name_allocated_size), SEEK_SET);
+
+        char *name = spr_string_read(file, ctpk_name_allocated_size);
+
+        // advance the ctpk pointer
+        // use the end of the last texture to advance the pointer
+        // as ctpks are variable in size
+        assert(ctpk.num_textures > 0);
+
+        struct texture_t *last_texture = ctpk.textures[ctpk.num_textures - 1];
+        ctpk_pointer = last_texture->data_pointer + last_texture->data_size;
+
+        // insert the ctpk
+        spr->ctpks[i] = ctpk;
+        spr->ctpk_names[i] = name;
+    }
+
+    // read the scrs
+    spr->num_scrs = num_scrs;
+    spr->scrs = malloc(num_scrs * sizeof(struct scr_t));
+    for (int i = 0; i < num_scrs; i++)
+    {
+        // array
+        fseek(file, scrs_pointer + (i * 96), SEEK_SET);
+
         // read the ctpk index
         uint8_t ctpk_index;
-        fread(&ctpk_index, sizeof(ctpk_index), 1, spr->file);
+        fread(&ctpk_index, sizeof(ctpk_index), 1, file);
 
         // read the name
-        char *name = spr_read_name(spr->file, max_image_name_length);
+        char *name = spr_string_read(file, scr_name_allocated_size);
 
-        // read the top left coordinates
-        float start_x, start_y;
-        fread(&start_x, sizeof(start_x), 1, spr->file);
-        fread(&start_y, sizeof(start_y), 1, spr->file);
+        // read the top left and bottom right coordinates
+        struct vec2_t top_left, bottom_right;
+        vec2_read(file, &top_left);
+        vec2_read(file, &bottom_right);
+        assert(bottom_right.x > top_left.x);
+        assert(bottom_right.y > top_left.y);
 
-        // read the bottom right coordinates
-        float end_x, end_y;
-        fread(&end_x, sizeof(end_x), 1, spr->file);
-        fread(&end_y, sizeof(end_y), 1, spr->file);
+        // 8x byte unknown
+        fseek(file, 8, SEEK_CUR);
 
-        // assert that the coordinates are proper, mostly for debugging
-        // potentially remove later?
-        assert(start_x <= 1.0 && start_y <= 1.0 && end_x <= 1.0 && end_y <= 1.0);
-        assert(end_x >= start_x && end_y >= start_y);
-
-        // unsure what these bytes are, so skip them
-        fseek(spr->file, 8, SEEK_CUR);
-
-        // add the image
-        struct spr_image_t *image = malloc(sizeof(struct spr_image_t));
-        image->ctpk_index = ctpk_index;
-        image->name = name;
-        image->start_x = start_x;
-        image->start_y = start_y;
-        image->end_x = end_x;
-        image->end_y = end_y;
-        spr->images[i] = image;
+        // insert the scr
+        struct scr_t scr;
+        scr.name = name;
+        scr.ctpk_index = ctpk_index;
+        scr.top_left = top_left;
+        scr.bottom_right = bottom_right;
+        spr->scrs[i] = scr;
     }
 
-    // read each ctpk file
-    unsigned long long names_pointer = header.names_pointer;
-    unsigned long long ctpks_pointer = header.ctpks_pointer;
-    for (unsigned int i = 0; i < header.num_ctpks; i++)
-    {
-        // read the name
-        fseek(spr->file, names_pointer, SEEK_SET);
-        spr->ctpk_names[i] = spr_read_name(spr->file, max_ctpk_name_length);
-
-        // read the ctpk file
-        // not sure what this is but theres an additional 4 bytes before the ctpk header
-        // so read those and ignore them
-        fseek(spr->file, ctpks_pointer, SEEK_SET);
-        fseek(spr->file, 4, SEEK_CUR);
-
-        struct ctpk_t *ctpk = malloc(sizeof(struct ctpk_t));
-        ctpk_open(spr->file, ctpk);
-        spr->ctpks[i] = ctpk;
-
-        // increment the pointers for the next ctpk
-        // ctpk pointer needs to be handled specially as it should skip past texture data without reading it
-        // but if there are no textures then the next ctpk should be immediately after
-        names_pointer += max_ctpk_name_length;
-
-        if (ctpk->num_textures > 0)
-        {
-            struct texture_t *last_texture = ctpk->textures[ctpk->num_textures - 1];
-            ctpks_pointer = last_texture->data_pointer + last_texture->data_size;
-        }
-        else
-        {
-            ctpks_pointer = ftell(spr->file);
-        }
-    }
+    // set the file handle
+    spr->file = file;
 }
 
 void spr_close(struct spr_t *spr)
 {
-    for (unsigned int i = 0; i < spr->num_ctpks; i++)
-    {
+    for (int i = 0; i < spr->num_ctpks; i++)
         free(spr->ctpk_names[i]);
-        ctpk_close(spr->ctpks[i]);
-    }
 
-    for (unsigned int i = 0; i < spr->num_images; i++)
-    {
-        free(spr->images[i]->name);
-        free(spr->images[i]);
-    }
+    for (int i = 0; i < spr->num_scrs; i++)
+        free(spr->scrs[i].name);
 
+    free(spr->scrs);
     free(spr->ctpk_names);
     free(spr->ctpks);
-    free(spr->images);
     fclose(spr->file);
 }
