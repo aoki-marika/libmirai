@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "ctpk.h"
+
 // MARK: - Constants
 
 /// The size of the allocated space for each CTPK name within an SPR, in bytes.
@@ -81,12 +83,13 @@ void spr_open(const char *path, struct spr_t *spr)
     fread(&num_scrs, sizeof(num_scrs), 1, file);
     fread(&scrs_pointer, sizeof(scrs_pointer), 1, file);
 
-    // read the ctpks
+    // read the textures
+    // read the ctpks and then only keep their textures, as thats all thats needed
     // the pointer for each ctpk needs to be advanced by the last
     // as ctpks can be of any length
-    spr->num_ctpks = num_ctpks;
-    spr->ctpks = malloc(num_ctpks * sizeof(struct ctpk_t));
-    spr->ctpk_names = malloc(num_ctpks * sizeof(char *));
+    spr->num_textures = num_ctpks;
+    spr->textures = malloc(num_ctpks * sizeof(struct texture_t));
+    spr->texture_names = malloc(num_ctpks * sizeof(char *));
 
     size_t ctpk_pointer = ctpks_pointer;
     for (int i = 0; i < num_ctpks; i++)
@@ -97,6 +100,7 @@ void spr_open(const char *path, struct spr_t *spr)
 
         struct ctpk_t ctpk;
         ctpk_open(file, &ctpk);
+        assert(ctpk.num_textures == 1);
 
         // read the name
         fseek(file, ctpk_names_pointer + (i * ctpk_name_allocated_size), SEEK_SET);
@@ -111,9 +115,12 @@ void spr_open(const char *path, struct spr_t *spr)
         struct texture_t *last_texture = &ctpk.textures[ctpk.num_textures - 1];
         ctpk_pointer = last_texture->data_pointer + last_texture->data_size;
 
-        // insert the ctpk
-        spr->ctpks[i] = ctpk;
-        spr->ctpk_names[i] = name;
+        // insert the texture
+        spr->textures[i] = ctpk.textures[0];
+        spr->texture_names[i] = name;
+
+        // close the ctpk as its only needed to read the textures
+        ctpk_close(&ctpk);
     }
 
     // read the scrs
@@ -156,14 +163,14 @@ void spr_open(const char *path, struct spr_t *spr)
 
 void spr_close(struct spr_t *spr)
 {
-    for (int i = 0; i < spr->num_ctpks; i++)
-        free(spr->ctpk_names[i]);
+    for (int i = 0; i < spr->num_textures; i++)
+        free(spr->texture_names[i]);
 
     for (int i = 0; i < spr->num_scrs; i++)
         free(spr->scrs[i].name);
 
     free(spr->scrs);
-    free(spr->ctpk_names);
-    free(spr->ctpks);
+    free(spr->texture_names);
+    free(spr->textures);
     fclose(spr->file);
 }

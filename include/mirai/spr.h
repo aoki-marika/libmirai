@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#include "ctpk.h"
+#include "texture.h"
 #include "vector.h"
 
 // MARK: - Data Structures
@@ -23,18 +23,18 @@ struct spr_t
     /// Kept open until `spr_close(spr)` is called with this SPR.
     FILE *file;
 
-    /// The total number of CTPKs within this SPR.
-    unsigned int num_ctpks;
+    /// The total number of textures within this SPR.
+    unsigned int num_textures;
 
-    /// All the CTPKs within this SPR.
+    /// All the textures within this SPR.
     ///
     /// Allocated.
-    struct ctpk_t *ctpks;
+    struct texture_t *textures;
 
-    /// The names of all the CTPKs within this SPR.
+    /// The names of all the textures within this SPR.
     ///
     /// The array and each item are allocated.
-    char **ctpk_names;
+    char **texture_names;
 
     /// The total number of SCRs within this SPR.
     unsigned int num_scrs;
