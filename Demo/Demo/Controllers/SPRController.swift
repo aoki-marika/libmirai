@@ -24,7 +24,7 @@ class SPRController: NSViewController {
             return nil
         }
 
-        return spr?.ctpks[selectedRow]?.pointee.textures[0]?.pointee
+        return spr?.textures[selectedRow]
     }
 
     // MARK: - Public Properties
@@ -40,7 +40,19 @@ class SPRController: NSViewController {
 
     @IBOutlet private weak var tableView: NSTableView!
     @IBOutlet private weak var textureView: NSImageView!
-    @IBOutlet private weak var imagesView: NSImageView!
+    @IBOutlet private weak var scrsView: NSImageView!
+
+    // MARK: - Public Methods
+
+    override func keyDown(with event: NSEvent) {
+        // toggle the scrs view if h is pressed
+        if event.keyCode == 4 {
+            scrsView.isHidden = !scrsView.isHidden
+        }
+        else {
+            super.keyDown(with: event)
+        }
+    }
 }
 
 // MARK: - NSTableViewDataSource
@@ -52,7 +64,7 @@ extension SPRController: NSTableViewDataSource {
             return 0
         }
 
-        return Int(spr.num_ctpks)
+        return Int(spr.num_textures)
     }
 
     func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
@@ -63,25 +75,18 @@ extension SPRController: NSTableViewDataSource {
         let identifier = tableColumn!.identifier
         switch identifier {
         case nameColumnIdentifier:
-            guard let cName = spr.ctpk_names[row] else {
+            guard let cName = spr.texture_names[row] else {
                 return nil
             }
 
             let name = String(cString: cName)
             return name
         case sizeColumnIdentifier:
-            // mirai ctpks only ever use one texture as images are handled at the spr level
-            guard let texture = spr.ctpks[row]?.pointee.textures[0]?.pointee else {
-                return nil
-            }
-
+            let texture = spr.textures[row]
             let size = "\(texture.width)x\(texture.height)"
             return size
         case formatColumnIdentifier:
-            guard let texture = spr.ctpks[row]?.pointee.textures[0]?.pointee else {
-                return nil
-            }
-
+            let texture = spr.textures[row]
             let format = Texture.Format(rawValue: texture.data_format.rawValue)!
             return format.name
         default:
@@ -97,7 +102,7 @@ extension SPRController: NSTableViewDelegate {
     func tableViewSelectionDidChange(_ notification: Notification) {
         guard let spr = spr, let selectedTexture = selectedTexture else {
             textureView.image = nil
-            imagesView.image = nil
+            scrsView.image = nil
             return
         }
 
@@ -105,36 +110,34 @@ extension SPRController: NSTableViewDelegate {
         var texture = Texture(backing: selectedTexture)
         textureView.image = texture.getImage(from: spr.file)
 
-        // load the images into a separate overlay image
+        // load the scrs into a separate overlay image
         // this is done so they can be toggled off and on
         let w = CGFloat(selectedTexture.width)
         let h = CGFloat(selectedTexture.height)
         let size = NSSize(width: w, height: h)
-        let images = NSImage(size: size)
-        images.lockFocus()
+        let scrsImage = NSImage(size: size)
+        scrsImage.lockFocus()
 
-        for index in 0..<Int(spr.num_images) {
-            guard let image = spr.images[index]?.pointee else {
+        for index in 0..<Int(spr.num_scrs) {
+            let scr = spr.scrs[index]
+
+            // ensure the scr is for the selected texture
+            guard scr.ctpk_index == tableView.selectedRow else {
                 continue
             }
 
-            // ensure the image is for the selected texture
-            guard image.ctpk_index == tableView.selectedRow else {
-                continue
-            }
-
-            // get the corners of the image
-            // images are top left origin, while cg is bottom left
+            // get the corners of the scr
+            // scrs are top left origin, while cg is bottom left
             // so convert from top to bottom for the y positions
             // as nsbezierpath draws paths centered on the points,
             // 0.5 is added/subtracted to ensure that the 1px line is
             // drawn on the pixel grid, not between it
-            let topLeft = CGPoint(x: (CGFloat(image.start_x) * w) + 0.5, y: (CGFloat(1.0 - image.start_y) * h) - 0.5)
-            let topRight = CGPoint(x: (CGFloat(image.end_x) * w) - 0.5, y: (CGFloat(1.0 - image.start_y) * h) - 0.5)
-            let bottomLeft = CGPoint(x: (CGFloat(image.start_x) * w) + 0.5, y: (CGFloat(1.0 - image.end_y) * h) + 0.5)
-            let bottomRight = CGPoint(x: (CGFloat(image.end_x) * w) - 0.5, y: (CGFloat(1.0 - image.end_y) * h) + 0.5)
+            let topLeft = CGPoint(x: (CGFloat(scr.top_left.x) * w) + 0.5, y: (CGFloat(1.0 - scr.top_left.y) * h) - 0.5)
+            let topRight = CGPoint(x: (CGFloat(scr.bottom_right.x) * w) - 0.5, y: (CGFloat(1.0 - scr.top_left.y) * h) - 0.5)
+            let bottomLeft = CGPoint(x: (CGFloat(scr.top_left.x) * w) + 0.5, y: (CGFloat(1.0 - scr.bottom_right.y) * h) + 0.5)
+            let bottomRight = CGPoint(x: (CGFloat(scr.bottom_right.x) * w) - 0.5, y: (CGFloat(1.0 - scr.bottom_right.y) * h) + 0.5)
 
-            // create the outline path for the image
+            // create the outline path for the scr
             let path = NSBezierPath()
             path.move(to: topLeft)
             path.line(to: topRight)
@@ -142,12 +145,12 @@ extension SPRController: NSTableViewDelegate {
             path.line(to: bottomLeft)
             path.close()
 
-            // draw the image outline
+            // draw the scr outline
             NSColor.controlAccentColor.set()
             path.stroke()
 
             // draw the name
-            let name = String(cString: image.name)
+            let name = String(cString: scr.name)
             NSString(string: name).draw(
                 in: NSRect(
                     x: bottomLeft.x,
@@ -163,7 +166,7 @@ extension SPRController: NSTableViewDelegate {
             )
         }
 
-        images.unlockFocus()
-        imagesView.image = images
+        scrsImage.unlockFocus()
+        scrsView.image = scrsImage
     }
 }
