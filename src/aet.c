@@ -340,11 +340,9 @@ void aet_open(const char *path, struct aet_t *aet)
             fread(&num_node_groups, sizeof(num_node_groups), 1, file);
             fread(&node_groups_pointer, sizeof(node_groups_pointer), 1, file);
 
-            // read the sprite group count and pointer
-            // TODO: Are sprite groups actually supposed to be read here, or are they all read from nodes?
-            uint32_t num_sprite_groups, sprite_groups_pointer;
-            fread(&num_sprite_groups, sizeof(num_sprite_groups), 1, file);
-            fread(&sprite_groups_pointer, sizeof(sprite_groups_pointer), 1, file);
+            // u32 sprite group count and pointer, unused
+            // all the sprite groups are pointed to by nodes when needed
+            fseek(file, 2 * 4, SEEK_CUR);
 
             // padding
             for (int i = 0; i < 5; i++)
