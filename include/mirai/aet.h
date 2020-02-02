@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "color.h"
+#include "vector.h"
 
 // MARK: - Enumerations
 
@@ -93,6 +94,21 @@ struct aet_node_t
     ///
     /// Allocated.
     char *name;
+
+    /// The origin of this node's position.
+    struct vec2_t origin;
+
+    /// The position of this node.
+    struct vec2_t position;
+
+    /// The rotation of this node.
+    float rotation;
+
+    /// The scale of this node.
+    struct vec2_t scale;
+
+    /// The opacity of this node.
+    float opacity;
 
     /// The type of this node's contents.
     enum aet_node_contents_type_t contents_type;

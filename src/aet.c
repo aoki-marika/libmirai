@@ -118,8 +118,11 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     //  - u32 node pointer unknown
     //  - u32 unknown 3 count
     //  - u32 unknown 3 array pointer
-    //  - u32 unknown 4 pointer
-    fseek(file, 4 * 4, SEEK_CUR);
+    fseek(file, 4 * 3, SEEK_CUR);
+
+    // read the placement pointer
+    uint32_t placement_pointer;
+    fread(&placement_pointer, sizeof(placement_pointer), 1, file);
 
     // padding
     for (int i = 0; i < 4; i++)
@@ -177,6 +180,59 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
             // should never be reached
             assert(0);
     }
+
+    // read the placement
+    // read all the floats into a 2d array first, then split them into their properties
+    fseek(file, placement_pointer, SEEK_SET);
+
+    const int num_float_arrays = 8;
+    float num_floats[num_float_arrays];
+    float *floats[num_float_arrays];
+    for (int i = 0; i < num_float_arrays; i++)
+    {
+        // array
+        fseek(file, placement_pointer + 4 + (i * 8), SEEK_SET);
+
+        // read the float count and pointer of this array
+        uint32_t num_array_floats, array_floats_pointer;
+        fread(&num_array_floats, sizeof(num_array_floats), 1, file);
+        fread(&array_floats_pointer, sizeof(array_floats_pointer), 1, file);
+
+        // no array should ever have no floats
+        assert(num_array_floats > 0);
+
+        // read the floats of this array
+        num_floats[i] = num_array_floats;
+        floats[i] = malloc(num_array_floats * sizeof(float));
+        for (int f = 0; f < num_array_floats; f++)
+        {
+            // array
+            fseek(file, array_floats_pointer + (f * 4), SEEK_SET);
+
+            // read and insert the float
+            float value;
+            fread(&value, sizeof(value), 1, file);
+            floats[i][f] = value;
+        }
+    }
+
+    // split the float arrays into their properties
+    node->origin.x = floats[0][0];
+    node->origin.y = floats[1][0];
+
+    node->position.x = floats[2][0];
+    node->position.y = floats[3][0];
+
+    node->rotation = floats[4][0];
+
+    node->scale.x = floats[5][0];
+    node->scale.y = floats[6][0];
+
+    node->opacity = floats[7][0];
+
+    // free the floats now that they have been mapped to properties
+    for (int i = 0; i < num_float_arrays; i++)
+        free(floats[i]);
 }
 
 void aet_open(const char *path, struct aet_t *aet)
