@@ -9,6 +9,7 @@
 #include "spr.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "ctpk.h"
@@ -173,4 +174,16 @@ void spr_close(struct spr_t *spr)
     free(spr->texture_names);
     free(spr->textures);
     fclose(spr->file);
+}
+
+struct scr_t *spr_lookup(struct spr_t *spr, char *scr_name)
+{
+    for (int i = 0; i < spr->num_scrs; i++)
+    {
+        struct scr_t *scr = &spr->scrs[i];
+        if (strcmp(scr->name, scr_name) == 0)
+            return scr;
+    }
+
+    return NULL;
 }

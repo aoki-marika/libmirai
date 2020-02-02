@@ -81,3 +81,11 @@ void spr_open(const char *path, struct spr_t *spr);
 /// This must be called after an SPR is opened and before program execution completes.
 /// @param spr The SPR to close.
 void spr_close(struct spr_t *spr);
+
+/// Attempt to get the SCR from the given SPR of the given name.
+/// @param spr The SPR to lookup the SCR within.
+/// @param scr_name The name of the SCR to lookup within the given SPR.
+/// @return The SCR of the given name from the given SCR, if any.
+/// Note that this SCR is a pointer within the given SPR, so the SPR must be within scope where it is used.
+/// If there is no SCR of the given name within the given SPR, then this is `NULL`.
+struct scr_t *spr_lookup(struct spr_t *spr, char *scr_name);
