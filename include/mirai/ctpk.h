@@ -15,25 +15,21 @@
 // MARK: - Data Structures
 
 /// The data structure for a CTPK file that has been opened.
-///
-/// If `ctpk_open(file, ctpk)` is called on a CTPK then `ctpk_close(ctpk)` must also be called on it before program execution completes.
 struct ctpk_t
 {
-    /// The number of textures within this CTPK.
+    /// The total number of textures within this CTPK.
     unsigned int num_textures;
 
-    /// All of the textures within this CTPK.
+    /// All the textures within this CTPK.
     ///
-    /// The array and each texture are allocated.
-    struct texture_t **textures;
+    /// Allocated.
+    struct texture_t *textures;
 };
 
 // MARK: - Functions
 
-/// Open the CTPK file from the given file handle into the given CTPK.
-///
-/// The CTPK file is read starting from the current position indicator of the given file handle.
-/// @param file The file handle to open the CTPK file from.
+/// Open the CTPK file at the current offset of the given file handle into the given CTPK.
+/// @param file The file handle to read the CTPK from.
 /// @param ctpk The CTPK to open the file into.
 void ctpk_open(FILE *file, struct ctpk_t *ctpk);
 

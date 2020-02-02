@@ -11,128 +11,80 @@
 #include <stdlib.h>
 #include <assert.h>
 
-// MARK: - Data Structures
-
-/// The data structure for the header of a CTPK file.
-struct ctpk_header_t
-{
-    // the signature is separated into multiple fields so that
-    // signature checking doesnt have to account for byte order swapping
-
-    /// The `C` character of this file's signature.
-    uint8_t signatureC;
-
-    /// The `T` character of this file's signature.
-    uint8_t signatureT;
-
-    /// The `P` character of this file's signature.
-    uint8_t signatureP;
-
-    /// The `K` character of this file's signature.
-    uint8_t signatureK;
-
-    /// The CTPK format version that this file uses.
-    uint16_t version;
-
-    /// The number of textures within this file.
-    uint16_t num_textures;
-
-    /// The offset of the beginning of the textures within this file, in bytes.
-    uint32_t textures_pointer;
-
-    /// The combined size of all the textures within this file, in bytes.
-    uint32_t textures_size;
-
-    /// The offset of the hash section within this file, in bytes.
-    uint32_t hashes_pointer;
-
-    /// The offset of the beginning of the texture conversion data within this file, in bytes.
-    uint32_t conversion_pointer;
-
-    /// Reserved data.
-    uint64_t reserved;
-};
-
-/// The data structure for the header of a single texture within a CTPK file.
-struct ctpk_texture_header_t
-{
-    uint32_t file_path_pointer;
-
-    /// The size of this texture's encoded data within the file, in bytes.
-    uint32_t data_size;
-
-    /// The offset of the beginning of this texture's encoded data within the file, in bytes.
-    uint32_t data_pointer;
-
-    /// The format of this texture's encoded data.
-    enum texture_format_t format;
-
-    /// The width of this texture, in pixels.
-    uint16_t width;
-
-    /// The height of this texture, in pixels.
-    uint16_t height;
-
-    /// The mipmap level of this texture.
-    uint8_t mipmap_level;
-
-    uint8_t type;
-    uint16_t cube_direction;
-    uint32_t bitmap_size_pointer;
-    uint32_t timestamp;
-};
-
-/// The data structure for the conversion info of a single texture within a CTPK file.
-///
-/// Unsure exactly what this does and it's not necessary at the moment so leaving undocumented.
-struct ctpk_texture_conversion_info_t
-{
-    uint8_t format;
-    uint8_t mipmap_level;
-    uint8_t compression;
-    uint8_t compression_method;
-};
-
 // MARK: - Functions
 
 void ctpk_open(FILE *file, struct ctpk_t *ctpk)
 {
-    // read the start of this file relative to the file handle
-    // this is used to store the absolute position of texture data
-    unsigned long long start_pointer = ftell(file);
+    // read the pointer of this ctpk relative to the file
+    // this is used to get the absolute position of texture data
+    long pointer = ftell(file);
 
-    // read the header
-    // the signature is CTPK in ascii
-    struct ctpk_header_t header;
-    fread(&header, sizeof(header), 1, file);
-    assert(header.signatureC == 'C');
-    assert(header.signatureT == 'T');
-    assert(header.signatureP == 'P');
-    assert(header.signatureK == 'K');
+    // read the signature
+    assert(fgetc(file) == 'C');
+    assert(fgetc(file) == 'T');
+    assert(fgetc(file) == 'P');
+    assert(fgetc(file) == 'K');
 
-    // initialize the output file
-    ctpk->num_textures = header.num_textures;
-    ctpk->textures = malloc(header.num_textures * sizeof(struct ctpk_texture_t *));
+    // u16 version, unused
+    fseek(file, 2, SEEK_CUR);
 
-    // read all the textures
-    for (unsigned int i = 0; i < header.num_textures; i++)
+    // read the texture count and data base pointer
+    uint16_t num_textures;
+    fread(&num_textures, sizeof(num_textures), 1, file);
+
+    uint32_t data_base_pointer;
+    fread(&data_base_pointer, sizeof(data_base_pointer), 1, file);
+
+    // multiple unused values
+    //  - u32 total texture data size
+    //  - u32 hash section pointer
+    //  - u32 conversion info pointer
+    //  - 8x byte padding
+    fseek(file, (3 * 4) + 8, SEEK_CUR);
+
+    // read the textures
+    ctpk->num_textures = num_textures;
+    ctpk->textures = malloc(num_textures * sizeof(struct texture_t));
+    for (int i = 0; i < num_textures; i++)
     {
-        // read the header
-        struct ctpk_texture_header_t texture_header;
-        fread(&texture_header, sizeof(texture_header), 1, file);
+        // array
+        // +32 for ctpk header size
+        fseek(file, pointer + 32 + (i * 36), SEEK_SET);
 
-        // read the conversion info
-        struct ctpk_texture_conversion_info_t conversion_info;
-        fread(&conversion_info, sizeof(conversion_info), 1, file);
+        // u32 file path pointer, unused
+        fseek(file, 4, SEEK_CUR);
 
-        // create the texture
-        struct texture_t *texture = malloc(sizeof(struct texture_t));
-        texture_create(texture_header.width,
-                       texture_header.height,
-                       texture_header.data_size,
-                       start_pointer + header.textures_pointer + texture_header.data_pointer,
-                       texture_header.format,
-                       texture);
+        // read the data size and pointer
+        // note that the data pointer is relative to the data base pointer
+        uint32_t data_size, data_pointer;
+        fread(&data_size, sizeof(data_size), 1, file);
+        fread(&data_pointer, sizeof(data_pointer), 1, file);
+
+        // read the data format
+        enum texture_format_t data_format;
+        fread(&data_format, sizeof(data_format), 1, file);
+
+        // read the size
+        uint16_t width, height;
+        fread(&width, sizeof(width), 1, file);
+        fread(&height, sizeof(height), 1, file);
+
+        // multiple unused values
+        //  - u8 mip level
+        //  - u8 type
+        //  - u16 cube map info
+        //  - u32 bitmap size array pointer
+        //  - u32 timestamp
+        fseek(file, (1 * 2) + 2 + (2 * 4), SEEK_CUR);
+
+        // insert the texture
+        struct texture_t texture;
+        texture_create(width,
+                       height,
+                       data_size,
+                       pointer + data_base_pointer + data_pointer,
+                       data_format,
+                       &texture);
 
         ctpk->textures[i] = texture;
     }
@@ -140,8 +92,5 @@ void ctpk_open(FILE *file, struct ctpk_t *ctpk)
 
 void ctpk_close(struct ctpk_t *ctpk)
 {
-    for (unsigned int i = 0; i < ctpk->num_textures; i++)
-        free(ctpk->textures[i]);
-
     free(ctpk->textures);
 }
