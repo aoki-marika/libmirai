@@ -34,17 +34,8 @@
 		EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39B23D31F9300A5FA6C /* matrix.c */; };
 		EC47097323D47159004863D0 /* mtob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097223D47159004863D0 /* mtob.c */; };
 		EC47097623D47666004863D0 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097523D47666004863D0 /* color.c */; };
+		EC6FB37123E08CA800EEB73A /* aet.c in Sources */ = {isa = PBXBuildFile; fileRef = EC6FB37023E08CA800EEB73A /* aet.c */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		EC2DB3CB23D3242B00A5FA6C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = EC2DB3B223D3242800A5FA6C;
-			remoteInfo = Demo;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,11 +64,12 @@
 		EC2DB39923D31F9300A5FA6C /* ctpk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
 		EC2DB39A23D31F9300A5FA6C /* db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = db.c; sourceTree = "<group>"; };
 		EC2DB39B23D31F9300A5FA6C /* matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
-		EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Demo.xcodeproj; path = Demo/Demo.xcodeproj; sourceTree = "<group>"; };
 		EC47097023D4714C004863D0 /* mtob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mtob.h; sourceTree = "<group>"; };
 		EC47097223D47159004863D0 /* mtob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mtob.c; sourceTree = "<group>"; };
 		EC47097423D47604004863D0 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
 		EC47097523D47666004863D0 /* color.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = color.c; sourceTree = "<group>"; };
+		EC6FB36E23E08C9B00EEB73A /* aet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aet.h; sourceTree = "<group>"; };
+		EC6FB37023E08CA800EEB73A /* aet.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aet.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +86,6 @@
 		EC01727023D31F3B00D4E2AD = {
 			isa = PBXGroup;
 			children = (
-				EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */,
 				EC2DB37223D31F8700A5FA6C /* include */,
 				EC2DB38E23D31F9300A5FA6C /* src */,
 				EC01727A23D31F3B00D4E2AD /* Products */,
@@ -131,6 +122,7 @@
 			children = (
 				EC2DB39323D31F9300A5FA6C /* spr.c */,
 				EC2DB39923D31F9300A5FA6C /* ctpk.c */,
+				EC6FB37023E08CA800EEB73A /* aet.c */,
 				EC2DB39A23D31F9300A5FA6C /* db.c */,
 				EC2DB39023D31F9300A5FA6C /* cgfx.c */,
 				EC2DB38F23D31F9300A5FA6C /* dict.c */,
@@ -147,19 +139,12 @@
 			path = src;
 			sourceTree = "<group>";
 		};
-		EC2DB3C823D3242A00A5FA6C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				EC2DB3CC23D3242B00A5FA6C /* Demo.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		EC74315C23D32A7F00586E48 /* mirai */ = {
 			isa = PBXGroup;
 			children = (
 				EC2DB37E23D31F8700A5FA6C /* spr.h */,
 				EC2DB37523D31F8700A5FA6C /* ctpk.h */,
+				EC6FB36E23E08C9B00EEB73A /* aet.h */,
 				EC2DB37623D31F8700A5FA6C /* db.h */,
 				EC2DB37C23D31F8700A5FA6C /* cgfx.h */,
 				EC2DB37A23D31F8700A5FA6C /* dict.h */,
@@ -244,12 +229,6 @@
 			mainGroup = EC01727023D31F3B00D4E2AD;
 			productRefGroup = EC01727A23D31F3B00D4E2AD /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = EC2DB3C823D3242A00A5FA6C /* Products */;
-					ProjectRef = EC2DB3C723D3242A00A5FA6C /* Demo.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				EC01727823D31F3B00D4E2AD /* libmirai */,
@@ -257,21 +236,12 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		EC2DB3CC23D3242B00A5FA6C /* Demo.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = Demo.app;
-			remoteRef = EC2DB3CB23D3242B00A5FA6C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXSourcesBuildPhase section */
 		EC01727623D31F3B00D4E2AD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC6FB37123E08CA800EEB73A /* aet.c in Sources */,
 				EC47097323D47159004863D0 /* mtob.c in Sources */,
 				EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */,
 				EC2DB39F23D31F9300A5FA6C /* vector.c in Sources */,
