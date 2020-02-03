@@ -38,7 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC01727923D31F3B00D4E2AD /* libmirai.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmirai.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC2DB37323D31F8700A5FA6C /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		EC2DB37423D31F8700A5FA6C /* cmdl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmdl.h; sourceTree = "<group>"; };
 		EC2DB37523D31F8700A5FA6C /* ctpk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctpk.h; sourceTree = "<group>"; };
@@ -95,7 +95,7 @@
 		EC01727A23D31F3B00D4E2AD /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */,
+				EC01727923D31F3B00D4E2AD /* libmirai.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,7 +201,7 @@
 			);
 			name = libmirai;
 			productName = libmirai;
-			productReference = EC01727923D31F3B00D4E2AD /* liblibmirai.dylib */;
+			productReference = EC01727923D31F3B00D4E2AD /* libmirai.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -378,7 +378,6 @@
 				DEVELOPMENT_TEAM = ZPZL835757;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -391,7 +390,6 @@
 				DEVELOPMENT_TEAM = ZPZL835757;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};

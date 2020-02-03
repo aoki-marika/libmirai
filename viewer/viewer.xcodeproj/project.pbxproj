@@ -11,11 +11,11 @@
 		EC00394523E8489500F55A5B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00394423E8489500F55A5B /* Cocoa.framework */; };
 		EC00394723E8489800F55A5B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00394623E8489800F55A5B /* OpenGL.framework */; };
 		EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00394823E8489D00F55A5B /* IOKit.framework */; };
-		EC00395823E84C8100F55A5B /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; };
-		EC00395923E84C8100F55A5B /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		EC00395C23E860F300F55A5B /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395B23E860F300F55A5B /* program.c */; };
 		EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395F23E86E7D00F55A5B /* vertex_array.c */; };
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
+		ECEA38C723E88CDF00EFEC5B /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; };
+		ECEA38C823E88CDF00EFEC5B /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,13 +38,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		EC00393C23E8465500F55A5B /* Embed Libraries */ = {
+		ECEA38C923E88CDF00EFEC5B /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				EC00395923E84C8100F55A5B /* liblibmirai.dylib in Embed Libraries */,
+				ECEA38C823E88CDF00EFEC5B /* liblibmirai.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -73,9 +73,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC00394523E8489500F55A5B /* Cocoa.framework in Frameworks */,
+				ECEA38C723E88CDF00EFEC5B /* liblibmirai.dylib in Frameworks */,
 				EC00394723E8489800F55A5B /* OpenGL.framework in Frameworks */,
 				EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */,
-				EC00395823E84C8100F55A5B /* liblibmirai.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,7 +159,7 @@
 				EC00391D23E8421800F55A5B /* Sources */,
 				EC00391E23E8421800F55A5B /* Frameworks */,
 				EC00391F23E8421800F55A5B /* CopyFiles */,
-				EC00393C23E8465500F55A5B /* Embed Libraries */,
+				ECEA38C923E88CDF00EFEC5B /* Embed Libraries */,
 			);
 			buildRules = (
 			);
