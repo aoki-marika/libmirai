@@ -13,6 +13,7 @@
 		EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00394823E8489D00F55A5B /* IOKit.framework */; };
 		EC00395823E84C8100F55A5B /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; };
 		EC00395923E84C8100F55A5B /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EC00395C23E860F300F55A5B /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395B23E860F300F55A5B /* program.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,9 @@
 		EC00394623E8489800F55A5B /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		EC00394823E8489D00F55A5B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		EC00395023E84C6E00F55A5B /* libmirai.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libmirai.xcodeproj; path = ../libmirai.xcodeproj; sourceTree = "<group>"; };
+		EC00395A23E860EA00F55A5B /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = program.h; sourceTree = "<group>"; };
+		EC00395B23E860F300F55A5B /* program.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = program.c; sourceTree = "<group>"; };
+		EC00395D23E8618900F55A5B /* gl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gl.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +106,8 @@
 		EC00392C23E8423C00F55A5B /* viewer */ = {
 			isa = PBXGroup;
 			children = (
+				EC00395D23E8618900F55A5B /* gl.h */,
+				EC00395A23E860EA00F55A5B /* program.h */,
 			);
 			path = viewer;
 			sourceTree = "<group>";
@@ -110,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				EC00392E23E8425600F55A5B /* main.c */,
+				EC00395B23E860F300F55A5B /* program.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -206,6 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC00395C23E860F300F55A5B /* program.c in Sources */,
 				EC00392F23E8425600F55A5B /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,7 +341,7 @@
 					"$(SRCROOT)/../include",
 				);
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/external/lib";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-lglfw3";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -350,7 +358,7 @@
 					"$(SRCROOT)/../include",
 				);
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/external/lib";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "-lglfw3";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

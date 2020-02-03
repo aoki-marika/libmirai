@@ -10,11 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// the glfw header contains many warnings, ignore them all
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Weverything"
-#include <GLFW/glfw3.h>
-#pragma clang diagnostic pop
+#include "gl.h"
 
 // MARK: - Enumerations
 
