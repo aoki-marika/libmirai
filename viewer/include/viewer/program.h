@@ -44,5 +44,5 @@ void program_create(const char **vertex_source,
 /// Destroy the given program, releasing all of it's allocated memory.
 ///
 /// This must be called after a program is created and before program execution completes.
-/// @param program The program to close.
+/// @param program The program to destroy.
 void program_destroy(struct program_t *program);
