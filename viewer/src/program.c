@@ -33,7 +33,7 @@ void program_shader_create(const char **source,
     glGetShaderiv(*id, GL_COMPILE_STATUS, &success);
     if (success != GL_TRUE)
     {
-        fprintf(stderr, " - failed to compile shader of type %08x!\n", type);
+        fprintf(stderr, "ERROR: failed to compile shader of type %08x\n", type);
 
         // print the source
         fprintf(stderr, "source:\n");

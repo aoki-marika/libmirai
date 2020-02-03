@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "gl.h"
+#include "spr_viewer.h"
 
 // MARK: - Enumerations
 
@@ -83,6 +84,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
 
     // create the window
+    // note that forward compatibility is needed for gl3 on macOS
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -99,15 +101,32 @@ int main(int argc, char **argv)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    // run the main loop
-    while (!glfwWindowShouldClose(window))
+    // run the viewer
+    // each viewer is repsonsible for its own main loop and event handling
+    // as to make it easier to have custom functionality per-viewer
+    switch (format)
     {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        case FILE_FORMAT_SPR:
+        {
+            struct spr_t spr;
+            spr_open(path, &spr);
+            spr_viewer_run(window, &spr);
+            spr_close(&spr);
+            break;
+        }
+        case FILE_FORMAT_AET:
+        {
+            fprintf(stderr, "ERROR: aet viewer is not implemented\n");
+            return EXIT_FAILURE;
+        }
+        case FILE_FORMAT_CGFX:
+        {
+            fprintf(stderr, "ERROR: cgfx viewer is not implemented\n");
+            return EXIT_FAILURE;
+        }
     }
 
-    // terminate glfw
+    // teardown glfw
     glfwDestroyWindow(window);
     glfwTerminate();
     return EXIT_SUCCESS;

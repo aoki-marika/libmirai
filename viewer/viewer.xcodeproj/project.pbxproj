@@ -16,6 +16,7 @@
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
 		ECEA38C723E88CDF00EFEC5B /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; };
 		ECEA38C823E88CDF00EFEC5B /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		ECEA38CC23E89AA600EFEC5B /* spr_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,8 @@
 		EC00395F23E86E7D00F55A5B /* vertex_array.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vertex_array.c; sourceTree = "<group>"; };
 		ECEA38C423E8888600EFEC5B /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
 		ECEA38C523E8888F00EFEC5B /* texture.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
+		ECEA38CA23E89AA600EFEC5B /* spr_viewer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spr_viewer.h; sourceTree = "<group>"; };
+		ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = spr_viewer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +119,7 @@
 				EC00395A23E860EA00F55A5B /* program.h */,
 				EC00395E23E86E6400F55A5B /* vertex_array.h */,
 				ECEA38C423E8888600EFEC5B /* texture.h */,
+				ECEA38CA23E89AA600EFEC5B /* spr_viewer.h */,
 			);
 			path = viewer;
 			sourceTree = "<group>";
@@ -127,6 +131,7 @@
 				EC00395B23E860F300F55A5B /* program.c */,
 				EC00395F23E86E7D00F55A5B /* vertex_array.c */,
 				ECEA38C523E8888F00EFEC5B /* texture.c */,
+				ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -224,6 +229,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC00395C23E860F300F55A5B /* program.c in Sources */,
+				ECEA38CC23E89AA600EFEC5B /* spr_viewer.c in Sources */,
 				EC00392F23E8425600F55A5B /* main.c in Sources */,
 				EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */,
 				ECEA38C623E8888F00EFEC5B /* texture.c in Sources */,
