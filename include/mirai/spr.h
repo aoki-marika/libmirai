@@ -58,14 +58,14 @@ struct scr_t
     /// The index of the texture that this SCR is within, within this SCR's containing SPR.
     unsigned int texture_index;
 
-    /// The top left coordinate of this SCR's bounds.
+    /// The top left UV coordinate of this SCR's bounds.
     ///
-    /// Normalized with top-left origin.
+    /// Despite being a UV coordinate, this uses a top-left origin.
     struct vec2_t top_left;
 
-    /// The bottom right coordinate of this SCR's bounds.
+    /// The bottom right UV coordinate of this SCR's bounds.
     ///
-    /// Normalized with top-left origin.
+    /// Despite being a UV coordinate, this uses a top-left origin.
     struct vec2_t bottom_right;
 };
 

@@ -48,9 +48,11 @@ enum texture_format_t
     TEXTURE_FORMAT_LA44     = 0x9,
 
     /// Four bits for the luminance channel.
+    /// Decodes to an eight bit luminance channel.
     TEXTURE_FORMAT_L4       = 0xa,
 
     /// Four bits for the alpha channel.
+    /// Decodes to an eight bit alpha channel.
     TEXTURE_FORMAT_A4       = 0xb,
 
     /// Ericsson Texture Compression version one.
@@ -108,4 +110,6 @@ void texture_create(unsigned int width,
 /// @returns A pointer to the array of decoded texture data from the given texture.
 /// This data is allocated so it must be freed before program execution completes.
 /// Note that that the decoded data is in different formats for each texture format, see `texture_format_t` cases for more information.
+/// Also note that this data starts from the **upper-left corner**, with each row being left to right.
+/// If this is uploaded directly to OpenGL, then it will be upside down.
 uint8_t *texture_decode(const struct texture_t *texture, FILE *file);
