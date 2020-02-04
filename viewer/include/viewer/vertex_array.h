@@ -53,7 +53,7 @@ struct vertex_component_t
 /// @param program The program for this array to bind it's component's attributes to.
 /// @param vertex_array The vertex array to load the created vertex array into.
 void vertex_array_create(const void *data,
-                         unsigned int data_size,
+                         size_t data_size,
                          unsigned int num_components,
                          const struct vertex_component_t *components,
                          const struct program_t *program,

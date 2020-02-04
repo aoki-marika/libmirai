@@ -53,10 +53,10 @@ void program_shader_create(const char **source,
     }
 }
 
-void program_create(const char **vertex_source,
-                    unsigned int num_vertex_source,
-                    const char **fragment_source,
+void program_create(unsigned int num_vertex_source,
+                    const char **vertex_source,
                     unsigned int num_fragment_source,
+                    const char **fragment_source,
                     const char *fragment_data_location,
                     struct program_t *program)
 {

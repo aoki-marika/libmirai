@@ -11,7 +11,7 @@
 // MARK: - Functions
 
 void vertex_array_create(const void *data,
-                         unsigned int data_size,
+                         size_t data_size,
                          unsigned int num_components,
                          const struct vertex_component_t *components,
                          const struct program_t *program,
