@@ -14,8 +14,8 @@
 		EC00395C23E860F300F55A5B /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395B23E860F300F55A5B /* program.c */; };
 		EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395F23E86E7D00F55A5B /* vertex_array.c */; };
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
-		ECEA38C723E88CDF00EFEC5B /* liblibmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; };
-		ECEA38C823E88CDF00EFEC5B /* liblibmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* liblibmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		ECEA38C723E88CDF00EFEC5B /* libmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.dylib */; };
+		ECEA38C823E88CDF00EFEC5B /* libmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		ECEA38CC23E89AA600EFEC5B /* spr_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +45,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ECEA38C823E88CDF00EFEC5B /* liblibmirai.dylib in Embed Libraries */,
+				ECEA38C823E88CDF00EFEC5B /* libmirai.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -64,6 +64,7 @@
 		EC00395D23E8618900F55A5B /* gl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gl.h; sourceTree = "<group>"; };
 		EC00395E23E86E6400F55A5B /* vertex_array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vertex_array.h; sourceTree = "<group>"; };
 		EC00395F23E86E7D00F55A5B /* vertex_array.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vertex_array.c; sourceTree = "<group>"; };
+		EC7D36A724014F4A005C09B7 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		ECEA38C423E8888600EFEC5B /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
 		ECEA38C523E8888F00EFEC5B /* texture.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
 		ECEA38CA23E89AA600EFEC5B /* spr_viewer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spr_viewer.h; sourceTree = "<group>"; };
@@ -76,7 +77,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC00394523E8489500F55A5B /* Cocoa.framework in Frameworks */,
-				ECEA38C723E88CDF00EFEC5B /* liblibmirai.dylib in Frameworks */,
+				ECEA38C723E88CDF00EFEC5B /* libmirai.dylib in Frameworks */,
 				EC00394723E8489800F55A5B /* OpenGL.framework in Frameworks */,
 				EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */,
 			);
@@ -116,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				EC00395D23E8618900F55A5B /* gl.h */,
+				EC7D36A724014F4A005C09B7 /* constants.h */,
 				EC00395A23E860EA00F55A5B /* program.h */,
 				EC00395E23E86E6400F55A5B /* vertex_array.h */,
 				ECEA38C423E8888600EFEC5B /* texture.h */,
@@ -149,7 +151,7 @@
 		EC00395123E84C6E00F55A5B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC00395523E84C6E00F55A5B /* liblibmirai.dylib */,
+				EC00395523E84C6E00F55A5B /* libmirai.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -214,10 +216,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		EC00395523E84C6E00F55A5B /* liblibmirai.dylib */ = {
+		EC00395523E84C6E00F55A5B /* libmirai.dylib */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.dylib";
-			path = liblibmirai.dylib;
+			path = libmirai.dylib;
 			remoteRef = EC00395423E84C6E00F55A5B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
