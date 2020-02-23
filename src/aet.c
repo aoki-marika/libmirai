@@ -114,11 +114,13 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     uint32_t contents_pointer;
     fread(&contents_pointer, sizeof(contents_pointer), 1, file);
 
-    // unknown values
-    //  - u32 node pointer unknown
-    //  - u32 unknown 3 count
-    //  - u32 unknown 3 array pointer
-    fseek(file, 4 * 3, SEEK_CUR);
+    // u32 parent node pointer, unused
+    fseek(file, 4, SEEK_CUR);
+
+    // read the marker count and pointer
+    uint32_t num_markers, markers_pointer;
+    fread(&num_markers, sizeof(num_markers), 1, file);
+    fread(&markers_pointer, sizeof(markers_pointer), 1, file);
 
     // read the placement pointer
     uint32_t placement_pointer;
@@ -179,6 +181,30 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
         default:
             // should never be reached
             assert(0);
+    }
+
+    // read the markers
+    node->num_markers = num_markers;
+    node->markers = malloc(num_markers * sizeof(struct aet_marker_t));
+    for (int i = 0; i < num_markers; i++)
+    {
+        // array
+        fseek(file, markers_pointer + (i * 8), SEEK_SET);
+
+        // read the frame
+        float frame;
+        fread(&frame, sizeof(frame), 1, file);
+
+        // read the name
+        uint32_t name_pointer;
+        fread(&name_pointer, sizeof(name_pointer), 1, file);
+        fseek(file, name_pointer, SEEK_SET);
+        char *name = utils_read_string(file);
+
+        // insert the marker
+        struct aet_marker_t *marker = &node->markers[i];
+        marker->frame = frame;
+        marker->name = name;
     }
 
     // read the placement
@@ -332,8 +358,9 @@ void aet_open(const char *path, struct aet_t *aet)
             scene.width = width;
             scene.height = height;
 
-            // 4x byte unknown
-            fseek(file, 4, SEEK_CUR);
+            // padding
+            for (int i = 0; i < 4; i++)
+                assert(fgetc(file) == 0x0);
 
             // read the node group count and pointer
             uint32_t num_node_groups, node_groups_pointer;
@@ -413,6 +440,11 @@ void aet_close(struct aet_t *aet)
                         free(node->children);
                         break;
                 }
+
+                for (int i = 0; i < node->num_markers; i++)
+                    free(node->markers[i].name);
+
+                free(node->markers);
             }
 
             free(group->nodes);

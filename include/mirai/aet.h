@@ -95,6 +95,14 @@ struct aet_node_t
     /// Allocated.
     char *name;
 
+    /// The total number of markers within this node.
+    unsigned int num_markers;
+
+    /// All the markers within this node.
+    ///
+    /// Allocated.
+    struct aet_marker_t *markers;
+
     /// The origin of this node's position.
     struct vec2_t origin;
 
@@ -130,6 +138,20 @@ struct aet_node_t
     /// If `contents_type` is `AET_NODE_CONTENTS_TYPE_CHILDREN`, then this is allocated.
     /// If not then this is `NULL`.
     struct aet_node_t *children;
+};
+
+/// The data structure for marking an animation point within a node's timeline.
+struct aet_marker_t
+{
+    /// The frame number at which this marker occurs, relative to the containing node's timeline.
+    ///
+    /// Any fractions on this value should be ignored, only the whole number is used.
+    float frame;
+
+    /// The name of this marker.
+    ///
+    /// Allocated.
+    char *name;
 };
 
 /// The data structure for a group of sprites within an AET.
