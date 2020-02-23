@@ -574,6 +574,25 @@ void text_put_string(unsigned int x,
         text_put_character(x + i, y, string[i], text);
 }
 
+void text_clear(struct text_t *text)
+{
+    // create empty base data for the texture
+    const unsigned int w = text->width * text_character_advance;
+    const unsigned int h = text->height * text_character_height;
+    uint8_t *empty_data = calloc(1, w * h * 4); //*4 for rgba channels
+
+    // blit on the empty data to clear the texture
+    glTexSubImage2D(GL_TEXTURE_2D,
+                    0,
+                    0,
+                    0,
+                    w,
+                    h,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    empty_data);
+}
+
 void text_draw(struct text_t *text)
 {
     glBindVertexArray(text->quad_array.id);

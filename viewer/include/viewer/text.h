@@ -80,6 +80,12 @@ void text_put_string(unsigned int x,
                      const char *string,
                      struct text_t *text);
 
+/// Clear the entire contents of the given text.
+///
+/// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
+/// @param text The text to clear.
+void text_clear(struct text_t *text);
+
 /// Draw the given text to the screen.
 ///
 /// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
