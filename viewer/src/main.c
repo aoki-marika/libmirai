@@ -12,6 +12,7 @@
 
 #include "gl.h"
 #include "constants.h"
+#include "program.h"
 #include "spr_viewer.h"
 
 // MARK: - Enumerations
@@ -106,6 +107,22 @@ int main(int argc, char **argv)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    // create the shared 2d program and set the constant uniforms
+    const char *vertex_source[] = PROGRAM_2D_VERTEX_SOURCE;
+    const char *fragment_source[] = PROGRAM_2D_FRAGMENT_SOURCE;
+
+    struct program_t program2d;
+    program_create(sizeof(vertex_source) / sizeof(char *),
+                   vertex_source,
+                   sizeof(fragment_source) / sizeof(char *),
+                   fragment_source,
+                   "outColor",
+                   &program2d);
+
+    glUseProgram(program2d.id);
+    GLint uniform_viewport_size = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_VIEWPORT_SIZE);
+    glUniform2ui(uniform_viewport_size, WINDOW_WIDTH, WINDOW_HEIGHT);
+
     // run the viewer
     // each viewer is repsonsible for its own main loop and event handling
     // as to make it easier to have custom functionality per-viewer
@@ -115,7 +132,7 @@ int main(int argc, char **argv)
         {
             struct spr_t spr;
             spr_open(path, &spr);
-            spr_viewer_run(window, &spr);
+            spr_viewer_run(window, &spr, &program2d);
             spr_close(&spr);
             break;
         }
@@ -131,7 +148,8 @@ int main(int argc, char **argv)
         }
     }
 
-    // teardown glfw
+    // free all the allocated resources and exit
+    program_destroy(&program2d);
     glfwDestroyWindow(window);
     glfwTerminate();
     return EXIT_SUCCESS;

@@ -10,7 +10,9 @@
 
 // MARK: - Functions
 
-void spr_viewer_run(GLFWwindow *window, struct spr_t *spr)
+void spr_viewer_run(GLFWwindow *window,
+                    struct spr_t *spr,
+                    const struct program_t *program2d)
 {
     // run the main loop
     while (!glfwWindowShouldClose(window))
