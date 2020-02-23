@@ -102,6 +102,10 @@ int main(int argc, char **argv)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
+    glClearColor(0, 0, 0, 1);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // run the viewer
     // each viewer is repsonsible for its own main loop and event handling
     // as to make it easier to have custom functionality per-viewer
