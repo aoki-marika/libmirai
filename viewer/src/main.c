@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "gl.h"
+#include "constants.h"
 #include "spr_viewer.h"
 
 // MARK: - Enumerations
@@ -90,7 +91,7 @@ int main(int argc, char **argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow *window = glfwCreateWindow(400, 240, path, NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, path, NULL, NULL);
     if (!window)
     {
         glfwTerminate();
