@@ -201,10 +201,30 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
         fseek(file, name_pointer, SEEK_SET);
         char *name = utils_read_string(file);
 
+        // attempt to read the type
+        enum aet_marker_type_t type = AET_MARKER_TYPE_UNKNOWN;
+        if (strcmp(name, "ST_IN") == 0)
+            type = AET_MARKER_TYPE_IN_START;
+        else if (strcmp(name, "ED_IN") == 0)
+            type = AET_MARKER_TYPE_IN_END;
+        else if (strcmp(name, "ST_LP") == 0)
+            type = AET_MARKER_TYPE_LOOP_START;
+        else if (strcmp(name, "ED_LP") == 0)
+            type = AET_MARKER_TYPE_LOOP_END;
+        else if (strcmp(name, "ST_OUT") == 0)
+            type = AET_MARKER_TYPE_OUT_START;
+        else if (strcmp(name, "ED_OUT") == 0)
+            type = AET_MARKER_TYPE_OUT_END;
+        else if (strcmp(name, "ST_SP") == 0)
+            type = AET_MARKER_TYPE_PRESS_START;
+        else if (strcmp(name, "ED_SP") == 0)
+            type = AET_MARKER_TYPE_PRESS_END;
+
         // insert the marker
         struct aet_marker_t *marker = &node->markers[i];
         marker->frame = frame;
         marker->name = name;
+        marker->type = type;
     }
 
     // read the placement

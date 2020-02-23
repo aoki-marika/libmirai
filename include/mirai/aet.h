@@ -25,6 +25,53 @@ enum aet_node_contents_type_t
     AET_NODE_CONTENTS_TYPE_CHILDREN     = 0x3,
 };
 
+/// The different commonly used types of markers.
+enum aet_marker_type_t
+{
+    /// Unknown.
+    AET_MARKER_TYPE_UNKNOWN     = 0x0,
+
+    /// The beginning of the in transition.
+    ///
+    /// `ST_IN`.
+    AET_MARKER_TYPE_IN_START    = 0x1,
+
+    /// The end of the in transition.
+    ///
+    /// `ED_IN`.
+    AET_MARKER_TYPE_IN_END      = 0x2,
+
+    /// The beginning of the loop animation.
+    ///
+    /// `ST_LP`.
+    AET_MARKER_TYPE_LOOP_START  = 0x3,
+
+    /// The end of the loop animation.
+    ///
+    /// `ED_LP`.
+    AET_MARKER_TYPE_LOOP_END    = 0x4,
+
+    /// The beginning of the out transition.
+    ///
+    /// `ST_OUT`.
+    AET_MARKER_TYPE_OUT_START   = 0x5,
+
+    /// The end of the out transition.
+    ///
+    /// `ED_OUT`.
+    AET_MARKER_TYPE_OUT_END     = 0x6,
+
+    /// The beginning of the press animation.
+    ///
+    /// `ST_SP`.
+    AET_MARKER_TYPE_PRESS_START = 0x7,
+
+    /// The end of the press animation.
+    ///
+    /// `ED_SP`.
+    AET_MARKER_TYPE_PRESS_END   = 0x8,
+};
+
 // MARK: - Data Structures
 
 /// The data structure for an AET file that has been opened.
@@ -152,6 +199,11 @@ struct aet_marker_t
     ///
     /// Allocated.
     char *name;
+
+    /// The known type of this marker.
+    ///
+    /// This is read by comparing the name of this marker against the known names of various types.
+    enum aet_marker_type_t type;
 };
 
 /// The data structure for a group of sprites within an AET.
