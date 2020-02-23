@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#include "texture.h"
+#include "ctr_texture.h"
 
 // MARK: - Data Structures
 
@@ -23,7 +23,7 @@ struct txob_t
     char *name;
 
     /// The texture of this TXOB.
-    struct texture_t texture;
+    struct ctr_texture_t texture;
 };
 
 // MARK: - Functions

@@ -53,7 +53,7 @@ void txob_open(FILE *file, struct txob_t *txob)
     fseek(file, 4 + 4 + 4 + 4 + 4, SEEK_CUR);
 
     // read the texture format
-    enum texture_format_t format;
+    enum ctr_texture_format_t format;
     fread(&format, sizeof(format), 1, file);
 
     // three unknown u32s
@@ -75,12 +75,12 @@ void txob_open(FILE *file, struct txob_t *txob)
 
     // create the txob
     txob->name = name;
-    texture_create(width,
-                   height,
-                   data_size,
-                   data_pointer,
-                   format,
-                   &txob->texture);
+    ctr_texture_create(width,
+                       height,
+                       data_size,
+                       data_pointer,
+                       format,
+                       &txob->texture);
 }
 
 void txob_close(struct txob_t *txob)

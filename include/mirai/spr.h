@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#include "texture.h"
+#include "ctr_texture.h"
 #include "vector.h"
 
 // MARK: - Data Structures
@@ -29,7 +29,7 @@ struct spr_t
     /// All the textures within this SPR.
     ///
     /// Allocated.
-    struct texture_t *textures;
+    struct ctr_texture_t *textures;
 
     /// The names of all the textures within this SPR.
     ///

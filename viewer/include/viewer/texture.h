@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <mirai/texture.h>
+#include <mirai/ctr_texture.h>
 
 #include "gl.h"
 
@@ -18,4 +18,4 @@
 /// @param texture The texture to decode and upload the data of.
 /// @param file The file handle containing the data of the given texture.
 /// @param id The value to set to the created OpenGL texture's ID.
-void texture_upload(struct texture_t *texture, FILE *file, GLuint *id);
+void texture_upload(struct ctr_texture_t *texture, FILE *file, GLuint *id);

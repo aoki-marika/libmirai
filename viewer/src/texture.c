@@ -18,80 +18,80 @@
 /// @param internal_format A pointer to the value to assign the internal format to.
 /// @param format A pointer to the value to assign the format to.
 /// @param type A pointer to the value to assign the type to.
-void texture_format_decode(enum texture_format_t texture_format,
+void texture_format_decode(enum ctr_texture_format_t texture_format,
                            GLenum *internal_format,
                            GLenum *format,
                            GLenum *type)
 {
     switch (texture_format)
     {
-        case TEXTURE_FORMAT_RGBA8888:
+        case CTR_TEXTURE_FORMAT_RGBA8888:
             *internal_format = GL_RGBA8;
             *format = GL_RGBA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_RGB888:
+        case CTR_TEXTURE_FORMAT_RGB888:
             *internal_format = GL_RGB8;
             *format = GL_RGB;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_RGBA5551:
+        case CTR_TEXTURE_FORMAT_RGBA5551:
             *internal_format = GL_RGB5_A1;
             *format = GL_RGBA;
             *type = GL_UNSIGNED_SHORT_5_5_5_1;
             break;
-        case TEXTURE_FORMAT_RGB565:
+        case CTR_TEXTURE_FORMAT_RGB565:
             *internal_format = GL_RGB565;
             *format = GL_RGB;
             *type = GL_UNSIGNED_SHORT_5_6_5;
             break;
-        case TEXTURE_FORMAT_RGBA4444:
+        case CTR_TEXTURE_FORMAT_RGBA4444:
             *internal_format = GL_RGBA4;
             *format = GL_RGBA;
             *type = GL_UNSIGNED_SHORT_4_4_4_4;
             break;
-        case TEXTURE_FORMAT_LA88:
+        case CTR_TEXTURE_FORMAT_LA88:
             *internal_format = GL_LUMINANCE8_ALPHA8;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_HL8:
+        case CTR_TEXTURE_FORMAT_HL8:
             fprintf(stderr, "WARNING: unable to decode texture format HL8 properly\n");
             *internal_format = GL_LUMINANCE8_ALPHA8;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_L8:
+        case CTR_TEXTURE_FORMAT_L8:
             *internal_format = GL_LUMINANCE8;
             *format = GL_LUMINANCE;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_A8:
+        case CTR_TEXTURE_FORMAT_A8:
             *internal_format = GL_ALPHA8;
             *format = GL_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_LA44:
+        case CTR_TEXTURE_FORMAT_LA44:
             *internal_format = GL_LUMINANCE4_ALPHA4;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_L4:
+        case CTR_TEXTURE_FORMAT_L4:
             *internal_format = GL_LUMINANCE4;
             *format = GL_LUMINANCE;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_A4:
+        case CTR_TEXTURE_FORMAT_A4:
             *internal_format = GL_ALPHA4;
             *format = GL_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_ETC1:
+        case CTR_TEXTURE_FORMAT_ETC1:
             *internal_format = GL_RGB8;
             *format = GL_RGB;
             *type = GL_UNSIGNED_BYTE;
             break;
-        case TEXTURE_FORMAT_ETC1_A4:
+        case CTR_TEXTURE_FORMAT_ETC1_A4:
             *internal_format = GL_RGBA8;
             *format = GL_RGBA;
             *type = GL_UNSIGNED_BYTE;
@@ -99,7 +99,7 @@ void texture_format_decode(enum texture_format_t texture_format,
     }
 }
 
-void texture_upload(struct texture_t *texture, FILE *file, GLuint *id)
+void texture_upload(struct ctr_texture_t *texture, FILE *file, GLuint *id)
 {
     // create the texture
     glGenTextures(1, id);
@@ -119,7 +119,7 @@ void texture_upload(struct texture_t *texture, FILE *file, GLuint *id)
                           &format,
                           &type);
 
-    uint8_t *decoded_data = texture_decode(texture, file);
+    uint8_t *decoded_data = ctr_texture_decode(texture, file);
 
     // flip the texture data
     // as the decoded data is left to right rows from top to bottom,
@@ -128,20 +128,20 @@ void texture_upload(struct texture_t *texture, FILE *file, GLuint *id)
     unsigned int bpp;
     switch (texture->data_format)
     {
-        case TEXTURE_FORMAT_RGBA8888: bpp = 4; break;
-        case TEXTURE_FORMAT_RGB888:   bpp = 3; break;
-        case TEXTURE_FORMAT_RGBA5551: bpp = 2; break;
-        case TEXTURE_FORMAT_RGB565:   bpp = 2; break;
-        case TEXTURE_FORMAT_RGBA4444: bpp = 2; break;
-        case TEXTURE_FORMAT_LA88:     bpp = 2; break;
-        case TEXTURE_FORMAT_HL8:      bpp = 2; break;
-        case TEXTURE_FORMAT_L8:       bpp = 1; break;
-        case TEXTURE_FORMAT_A8:       bpp = 1; break;
-        case TEXTURE_FORMAT_LA44:     bpp = 1; break;
-        case TEXTURE_FORMAT_L4:       bpp = 1; break;
-        case TEXTURE_FORMAT_A4:       bpp = 1; break;
-        case TEXTURE_FORMAT_ETC1:     bpp = 3; break;
-        case TEXTURE_FORMAT_ETC1_A4:  bpp = 4; break;
+        case CTR_TEXTURE_FORMAT_RGBA8888: bpp = 4; break;
+        case CTR_TEXTURE_FORMAT_RGB888:   bpp = 3; break;
+        case CTR_TEXTURE_FORMAT_RGBA5551: bpp = 2; break;
+        case CTR_TEXTURE_FORMAT_RGB565:   bpp = 2; break;
+        case CTR_TEXTURE_FORMAT_RGBA4444: bpp = 2; break;
+        case CTR_TEXTURE_FORMAT_LA88:     bpp = 2; break;
+        case CTR_TEXTURE_FORMAT_HL8:      bpp = 2; break;
+        case CTR_TEXTURE_FORMAT_L8:       bpp = 1; break;
+        case CTR_TEXTURE_FORMAT_A8:       bpp = 1; break;
+        case CTR_TEXTURE_FORMAT_LA44:     bpp = 1; break;
+        case CTR_TEXTURE_FORMAT_L4:       bpp = 1; break;
+        case CTR_TEXTURE_FORMAT_A4:       bpp = 1; break;
+        case CTR_TEXTURE_FORMAT_ETC1:     bpp = 3; break;
+        case CTR_TEXTURE_FORMAT_ETC1_A4:  bpp = 4; break;
     }
 
     unsigned int bpr = bpp * texture->width;

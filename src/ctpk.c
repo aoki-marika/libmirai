@@ -44,7 +44,7 @@ void ctpk_open(FILE *file, struct ctpk_t *ctpk)
 
     // read the textures
     ctpk->num_textures = num_textures;
-    ctpk->textures = malloc(num_textures * sizeof(struct texture_t));
+    ctpk->textures = malloc(num_textures * sizeof(struct ctr_texture_t));
     for (int i = 0; i < num_textures; i++)
     {
         // array
@@ -61,7 +61,7 @@ void ctpk_open(FILE *file, struct ctpk_t *ctpk)
         fread(&data_pointer, sizeof(data_pointer), 1, file);
 
         // read the data format
-        enum texture_format_t data_format;
+        enum ctr_texture_format_t data_format;
         fread(&data_format, sizeof(data_format), 1, file);
 
         // read the size
@@ -78,13 +78,13 @@ void ctpk_open(FILE *file, struct ctpk_t *ctpk)
         fseek(file, (1 * 2) + 2 + (2 * 4), SEEK_CUR);
 
         // insert the texture
-        struct texture_t texture;
-        texture_create(width,
-                       height,
-                       data_size,
-                       pointer + data_base_pointer + data_pointer,
-                       data_format,
-                       &texture);
+        struct ctr_texture_t texture;
+        ctr_texture_create(width,
+                           height,
+                           data_size,
+                           pointer + data_base_pointer + data_pointer,
+                           data_format,
+                           &texture);
 
         ctpk->textures[i] = texture;
     }

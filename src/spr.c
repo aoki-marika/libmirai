@@ -89,7 +89,7 @@ void spr_open(const char *path, struct spr_t *spr)
     // the pointer for each ctpk needs to be advanced by the last
     // as ctpks can be of any length
     spr->num_textures = num_ctpks;
-    spr->textures = malloc(num_ctpks * sizeof(struct texture_t));
+    spr->textures = malloc(num_ctpks * sizeof(struct ctr_texture_t));
     spr->texture_names = malloc(num_ctpks * sizeof(char *));
 
     size_t ctpk_pointer = ctpks_pointer;
@@ -113,7 +113,7 @@ void spr_open(const char *path, struct spr_t *spr)
         // as ctpks are variable in size
         assert(ctpk.num_textures > 0);
 
-        struct texture_t *last_texture = &ctpk.textures[ctpk.num_textures - 1];
+        struct ctr_texture_t *last_texture = &ctpk.textures[ctpk.num_textures - 1];
         ctpk_pointer = last_texture->data_pointer + last_texture->data_size;
 
         // insert the texture

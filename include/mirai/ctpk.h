@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 
-#include "texture.h"
+#include "ctr_texture.h"
 
 // MARK: - Data Structures
 
@@ -23,7 +23,7 @@ struct ctpk_t
     /// All the textures within this CTPK.
     ///
     /// Allocated.
-    struct texture_t *textures;
+    struct ctr_texture_t *textures;
 };
 
 // MARK: - Functions

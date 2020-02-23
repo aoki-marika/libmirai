@@ -16,7 +16,7 @@
 		EC2DB38723D31F8800A5FA6C /* dict.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37A23D31F8700A5FA6C /* dict.h */; };
 		EC2DB38823D31F8800A5FA6C /* txob.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37B23D31F8700A5FA6C /* txob.h */; };
 		EC2DB38923D31F8800A5FA6C /* cgfx.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37C23D31F8700A5FA6C /* cgfx.h */; };
-		EC2DB38A23D31F8800A5FA6C /* texture.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37D23D31F8700A5FA6C /* texture.h */; };
+		EC2DB38A23D31F8800A5FA6C /* ctr_texture.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37D23D31F8700A5FA6C /* ctr_texture.h */; };
 		EC2DB38B23D31F8800A5FA6C /* spr.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37E23D31F8700A5FA6C /* spr.h */; };
 		EC2DB38C23D31F8800A5FA6C /* vector.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB37F23D31F8700A5FA6C /* vector.h */; };
 		EC2DB38D23D31F8800A5FA6C /* sobj.h in Headers */ = {isa = PBXBuildFile; fileRef = EC2DB38023D31F8700A5FA6C /* sobj.h */; };
@@ -25,7 +25,7 @@
 		EC2DB39E23D31F9300A5FA6C /* txob.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39123D31F9300A5FA6C /* txob.c */; };
 		EC2DB39F23D31F9300A5FA6C /* vector.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39223D31F9300A5FA6C /* vector.c */; };
 		EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39323D31F9300A5FA6C /* spr.c */; };
-		EC2DB3A123D31F9300A5FA6C /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39423D31F9300A5FA6C /* texture.c */; };
+		EC2DB3A123D31F9300A5FA6C /* ctr_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39423D31F9300A5FA6C /* ctr_texture.c */; };
 		EC2DB3A223D31F9300A5FA6C /* sobj.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39523D31F9300A5FA6C /* sobj.c */; };
 		EC2DB3A323D31F9300A5FA6C /* cmdl.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39623D31F9300A5FA6C /* cmdl.c */; };
 		EC2DB3A423D31F9300A5FA6C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39723D31F9300A5FA6C /* utils.c */; };
@@ -48,7 +48,7 @@
 		EC2DB37A23D31F8700A5FA6C /* dict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
 		EC2DB37B23D31F8700A5FA6C /* txob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txob.h; sourceTree = "<group>"; };
 		EC2DB37C23D31F8700A5FA6C /* cgfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cgfx.h; sourceTree = "<group>"; };
-		EC2DB37D23D31F8700A5FA6C /* texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
+		EC2DB37D23D31F8700A5FA6C /* ctr_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ctr_texture.h; sourceTree = "<group>"; };
 		EC2DB37E23D31F8700A5FA6C /* spr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
 		EC2DB37F23D31F8700A5FA6C /* vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vector.h; sourceTree = "<group>"; };
 		EC2DB38023D31F8700A5FA6C /* sobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sobj.h; sourceTree = "<group>"; };
@@ -57,7 +57,7 @@
 		EC2DB39123D31F9300A5FA6C /* txob.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = txob.c; sourceTree = "<group>"; };
 		EC2DB39223D31F9300A5FA6C /* vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vector.c; sourceTree = "<group>"; };
 		EC2DB39323D31F9300A5FA6C /* spr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = spr.c; sourceTree = "<group>"; };
-		EC2DB39423D31F9300A5FA6C /* texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = texture.c; sourceTree = "<group>"; };
+		EC2DB39423D31F9300A5FA6C /* ctr_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctr_texture.c; sourceTree = "<group>"; };
 		EC2DB39523D31F9300A5FA6C /* sobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sobj.c; sourceTree = "<group>"; };
 		EC2DB39623D31F9300A5FA6C /* cmdl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmdl.c; sourceTree = "<group>"; };
 		EC2DB39723D31F9300A5FA6C /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
@@ -130,7 +130,7 @@
 				EC2DB39623D31F9300A5FA6C /* cmdl.c */,
 				EC2DB39523D31F9300A5FA6C /* sobj.c */,
 				EC47097223D47159004863D0 /* mtob.c */,
-				EC2DB39423D31F9300A5FA6C /* texture.c */,
+				EC2DB39423D31F9300A5FA6C /* ctr_texture.c */,
 				EC2DB39723D31F9300A5FA6C /* utils.c */,
 				EC2DB39223D31F9300A5FA6C /* vector.c */,
 				EC2DB39B23D31F9300A5FA6C /* matrix.c */,
@@ -152,7 +152,7 @@
 				EC2DB37423D31F8700A5FA6C /* cmdl.h */,
 				EC2DB38023D31F8700A5FA6C /* sobj.h */,
 				EC47097023D4714C004863D0 /* mtob.h */,
-				EC2DB37D23D31F8700A5FA6C /* texture.h */,
+				EC2DB37D23D31F8700A5FA6C /* ctr_texture.h */,
 				EC2DB37323D31F8700A5FA6C /* utils.h */,
 				EC2DB37F23D31F8700A5FA6C /* vector.h */,
 				EC2DB37923D31F8700A5FA6C /* matrix.h */,
@@ -176,7 +176,7 @@
 				EC2DB38123D31F8800A5FA6C /* utils.h in Headers */,
 				EC2DB38623D31F8800A5FA6C /* matrix.h in Headers */,
 				EC2DB38523D31F8800A5FA6C /* etcdec.h in Headers */,
-				EC2DB38A23D31F8800A5FA6C /* texture.h in Headers */,
+				EC2DB38A23D31F8800A5FA6C /* ctr_texture.h in Headers */,
 				EC2DB38723D31F8800A5FA6C /* dict.h in Headers */,
 				EC2DB38C23D31F8800A5FA6C /* vector.h in Headers */,
 				EC2DB38923D31F8800A5FA6C /* cgfx.h in Headers */,
@@ -252,7 +252,7 @@
 				EC2DB3A223D31F9300A5FA6C /* sobj.c in Sources */,
 				EC2DB39D23D31F9300A5FA6C /* cgfx.c in Sources */,
 				EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */,
-				EC2DB3A123D31F9300A5FA6C /* texture.c in Sources */,
+				EC2DB3A123D31F9300A5FA6C /* ctr_texture.c in Sources */,
 				EC47097623D47666004863D0 /* color.c in Sources */,
 				EC2DB3A323D31F9300A5FA6C /* cmdl.c in Sources */,
 				EC2DB3A823D31F9300A5FA6C /* matrix.c in Sources */,

@@ -6,7 +6,7 @@
 //  Copyright © 2020 Marika. All rights reserved.
 //
 
-#include "texture.h"
+#include "ctr_texture.h"
 
 #include <string.h>
 
@@ -15,7 +15,7 @@
 // MARK: - Constants
 
 /// Translation bytes used for decoding texture data.
-const int trans_bytes[64] =
+const int ctr_texture_translation_bytes[64] =
 {
      0,  1,  4,  5, 16, 17, 20, 21,
      2,  3,  6,  7, 18, 19, 22, 23,
@@ -33,7 +33,7 @@ const int trans_bytes[64] =
 /// @param source The array of bytes to read the word from.
 /// @param offset The offset in the source to read the word from, modified to increment past the word once it's read.
 /// @returns The 32bit ETC word from the given source at the given offset.
-uint32_t etc_read_word(const uint8 *source, int *offset)
+uint32_t ctr_texture_etc_read_word(const uint8 *source, int *offset)
 {
     uint8_t bytes[sizeof(uint32_t)];
     memcpy(bytes, source + *offset, sizeof(uint32_t));
@@ -51,12 +51,12 @@ uint32_t etc_read_word(const uint8 *source, int *offset)
     return word;
 }
 
-void texture_create(unsigned int width,
-                    unsigned int height,
-                    size_t data_size,
-                    size_t data_pointer,
-                    enum texture_format_t data_format,
-                    struct texture_t *texture)
+void ctr_texture_create(unsigned int width,
+                        unsigned int height,
+                        size_t data_size,
+                        size_t data_pointer,
+                        enum ctr_texture_format_t data_format,
+                        struct ctr_texture_t *texture)
 {
     // calculate the decoded data size
     size_t w = width;
@@ -64,20 +64,20 @@ void texture_create(unsigned int width,
     size_t decoded_data_size;
     switch (data_format)
     {
-        case TEXTURE_FORMAT_RGBA8888: decoded_data_size = w * h * 4; break;
-        case TEXTURE_FORMAT_RGB888:   decoded_data_size = w * h * 3; break;
-        case TEXTURE_FORMAT_RGBA5551:
-        case TEXTURE_FORMAT_RGB565:
-        case TEXTURE_FORMAT_RGBA4444: decoded_data_size = w * h * 2; break;
-        case TEXTURE_FORMAT_LA88:
-        case TEXTURE_FORMAT_HL8:      decoded_data_size = w * h * 2; break;
-        case TEXTURE_FORMAT_L8:
-        case TEXTURE_FORMAT_A8:
-        case TEXTURE_FORMAT_LA44:     decoded_data_size = w * h;     break;
-        case TEXTURE_FORMAT_L4:
-        case TEXTURE_FORMAT_A4:       decoded_data_size = w * h;     break;
-        case TEXTURE_FORMAT_ETC1:     decoded_data_size = w * h * 3; break;
-        case TEXTURE_FORMAT_ETC1_A4:  decoded_data_size = w * h * 4; break;
+        case CTR_TEXTURE_FORMAT_RGBA8888: decoded_data_size = w * h * 4; break;
+        case CTR_TEXTURE_FORMAT_RGB888:   decoded_data_size = w * h * 3; break;
+        case CTR_TEXTURE_FORMAT_RGBA5551:
+        case CTR_TEXTURE_FORMAT_RGB565:
+        case CTR_TEXTURE_FORMAT_RGBA4444: decoded_data_size = w * h * 2; break;
+        case CTR_TEXTURE_FORMAT_LA88:
+        case CTR_TEXTURE_FORMAT_HL8:      decoded_data_size = w * h * 2; break;
+        case CTR_TEXTURE_FORMAT_L8:
+        case CTR_TEXTURE_FORMAT_A8:
+        case CTR_TEXTURE_FORMAT_LA44:     decoded_data_size = w * h;     break;
+        case CTR_TEXTURE_FORMAT_L4:
+        case CTR_TEXTURE_FORMAT_A4:       decoded_data_size = w * h;     break;
+        case CTR_TEXTURE_FORMAT_ETC1:     decoded_data_size = w * h * 3; break;
+        case CTR_TEXTURE_FORMAT_ETC1_A4:  decoded_data_size = w * h * 4; break;
     }
 
     // fill in the given texture
@@ -89,7 +89,7 @@ void texture_create(unsigned int width,
     texture->decoded_data_size = decoded_data_size;
 }
 
-uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
+uint8_t *ctr_texture_decode(const struct ctr_texture_t *texture, FILE *file)
 {
     // these are all translations from dnasdws ctpktool project
     // all credits to them for the implementations
@@ -105,13 +105,13 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
     int h = (int)texture->height;
     switch (texture->data_format)
     {
-        case TEXTURE_FORMAT_RGBA8888:
+        case CTR_TEXTURE_FORMAT_RGBA8888:
         {
             uint8_t temp[w * h * 4];
             for (int i = 0; i < w * h / 64; i++)
                 for (int j = 0; j < 64; j++)
                     for (int k = 0; k < 4; k++)
-                        temp[(i * 64 + j) * 4 + k] = raw_data[(i * 64 + trans_bytes[j]) * 4 + 3 - k];
+                        temp[(i * 64 + j) * 4 + k] = raw_data[(i * 64 + ctr_texture_translation_bytes[j]) * 4 + 3 - k];
 
             uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
@@ -121,13 +121,13 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_RGB888:
+        case CTR_TEXTURE_FORMAT_RGB888:
         {
             uint8_t temp[w * h * 3];
             for (int i = 0; i < w * h / 64; i++)
                 for (int j = 0; j < 64; j++)
                     for (int k = 0; k < 3; k++)
-                        temp[(i * 64 + j) * 3 + k] = raw_data[(i * 64 + trans_bytes[j]) * 3 + 2 - k];
+                        temp[(i * 64 + j) * 3 + k] = raw_data[(i * 64 + ctr_texture_translation_bytes[j]) * 3 + 2 - k];
 
             uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
@@ -137,15 +137,15 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_RGBA5551:
-        case TEXTURE_FORMAT_RGB565:
-        case TEXTURE_FORMAT_RGBA4444:
+        case CTR_TEXTURE_FORMAT_RGBA5551:
+        case CTR_TEXTURE_FORMAT_RGB565:
+        case CTR_TEXTURE_FORMAT_RGBA4444:
         {
             uint8_t temp[w * h * 2];
             for (int i = 0; i < w * h / 64; i++)
                 for (int j = 0; j < 64; j++)
                     for (int k = 0; k < 2; k++)
-                        temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + k];
+                        temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + ctr_texture_translation_bytes[j]) * 2 + k];
 
             uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
@@ -155,14 +155,14 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_LA88:
-        case TEXTURE_FORMAT_HL8:
+        case CTR_TEXTURE_FORMAT_LA88:
+        case CTR_TEXTURE_FORMAT_HL8:
         {
             uint8_t temp[w * h * 2];
             for (int i = 0; i < w * h / 64; i++)
                 for (int j = 0; j < 64; j++)
                     for (int k = 0; k < 2; k++)
-                        temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + trans_bytes[j]) * 2 + 1 - k];
+                        temp[(i * 64 + j) * 2 + k] = raw_data[(i * 64 + ctr_texture_translation_bytes[j]) * 2 + 1 - k];
 
             uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
@@ -172,14 +172,14 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_L8:
-        case TEXTURE_FORMAT_A8:
-        case TEXTURE_FORMAT_LA44:
+        case CTR_TEXTURE_FORMAT_L8:
+        case CTR_TEXTURE_FORMAT_A8:
+        case CTR_TEXTURE_FORMAT_LA44:
         {
             uint8_t temp[w * h];
             for (int i = 0; i < w * h / 64; i++)
                 for (int j = 0; j < 64; j++)
-                    temp[i * 64 + j] = raw_data[i * 64 + trans_bytes[j]];
+                    temp[i * 64 + j] = raw_data[i * 64 + ctr_texture_translation_bytes[j]];
 
             uint8_t *decoded = malloc(texture->decoded_data_size);
             for (int i = 0; i < h; i++)
@@ -188,16 +188,16 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_L4:
-        case TEXTURE_FORMAT_A4:
+        case CTR_TEXTURE_FORMAT_L4:
+        case CTR_TEXTURE_FORMAT_A4:
         {
             uint8_t temp[w * h];
             for (int i = 0; i < w * h / 64; i++)
             {
                 for (int j = 0; j < 64; j += 2)
                 {
-                    temp[i * 64 + j] = (raw_data[i * 32 + trans_bytes[j] / 2] & 0xF) * 0x11;
-                    temp[i * 64 + j + 1] = (raw_data[i * 32 + trans_bytes[j] / 2] >> 4 & 0xF) * 0x11;
+                    temp[i * 64 + j] = (raw_data[i * 32 + ctr_texture_translation_bytes[j] / 2] & 0xF) * 0x11;
+                    temp[i * 64 + j + 1] = (raw_data[i * 32 + ctr_texture_translation_bytes[j] / 2] >> 4 & 0xF) * 0x11;
                 }
             }
 
@@ -208,7 +208,7 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
 
             return decoded;
         }
-        case TEXTURE_FORMAT_ETC1:
+        case CTR_TEXTURE_FORMAT_ETC1:
         {
             uint8_t temp[w * h / 2];
             for (int i = 0; i < w * h / 2 / 8; i++)
@@ -226,15 +226,15 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
             {
                 for (int x = 0; x < w / 4; x++)
                 {
-                    uint32_t block1 = etc_read_word(compressed, &offset);
-                    uint32_t block2 = etc_read_word(compressed, &offset);
+                    uint32_t block1 = ctr_texture_etc_read_word(compressed, &offset);
+                    uint32_t block2 = ctr_texture_etc_read_word(compressed, &offset);
                     decompressBlockETC2(block1, block2, decoded, w, h, x * 4, y * 4);
                 }
             }
 
             return decoded;
         }
-        case TEXTURE_FORMAT_ETC1_A4:
+        case CTR_TEXTURE_FORMAT_ETC1_A4:
         {
             uint8_t rgb_compressed_temp[w * h / 2];
             for (int i = 0; i < w * h / 2 / 8; i++)
@@ -269,8 +269,8 @@ uint8_t *texture_decode(const struct texture_t *texture, FILE *file)
             {
                 for (int x = 0; x < w / 4; x++)
                 {
-                    uint32_t block1 = etc_read_word(rgb_compressed, &offset);
-                    uint32_t block2 = etc_read_word(rgb_compressed, &offset);
+                    uint32_t block1 = ctr_texture_etc_read_word(rgb_compressed, &offset);
+                    uint32_t block2 = ctr_texture_etc_read_word(rgb_compressed, &offset);
                     decompressBlockETC2(block1, block2, rgb, w, h, x * 4, y * 4);
                 }
             }
