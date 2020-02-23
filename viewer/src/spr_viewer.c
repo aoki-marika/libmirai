@@ -50,6 +50,25 @@ void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
     memcpy(out, vertices, sizeof(vertices));
 }
 
+void spr_viewer_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if (action != GLFW_PRESS)
+        return;
+
+    struct spr_viewer_t *viewer = (struct spr_viewer_t *)glfwGetWindowUserPointer(window);
+    switch (key)
+    {
+        case GLFW_KEY_F1:
+            viewer->screen = SPR_VIEWER_SCREEN_TEXTURES;
+            break;
+        case GLFW_KEY_F2:
+            viewer->screen = SPR_VIEWER_SCREEN_SCRS;
+            break;
+        default:
+            break;
+    }
+}
+
 void spr_viewer_create(const struct spr_t *spr,
                        const struct program_t *program2d,
                        struct spr_viewer_t *viewer)
@@ -136,6 +155,7 @@ void spr_viewer_create(const struct spr_t *spr,
     // initialize the viewer
     viewer->spr = spr;
     viewer->program2d = program2d;
+    viewer->screen = SPR_VIEWER_SCREEN_TEXTURES;
 }
 
 void spr_viewer_destroy(struct spr_viewer_t *viewer)
@@ -152,6 +172,11 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
     // create a shorthand for the spr
     const struct spr_t *spr = viewer->spr;
 
+    // setup key handling
+    // use the windows user pointer to pass the viewer to the key callback
+    glfwSetWindowUserPointer(window, viewer);
+    glfwSetKeyCallback(window, spr_viewer_key_callback);
+
     // get the used uniforms from the program
     const struct program_t *program = viewer->program2d;
     glUseProgram(program->id);
@@ -161,6 +186,33 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
+
+        // get the index of the texture unit and quad to draw
+        // the unit is relative to the base unit of the viewer
+        int unit_index, quad_index;
+        switch (viewer->screen)
+        {
+            case SPR_VIEWER_SCREEN_TEXTURES:
+            {
+                const int texture_index = 0;
+                glBindVertexArray(viewer->texture_quads_array.id);
+                unit_index = texture_index;
+                quad_index = texture_index;
+                break;
+            }
+            case SPR_VIEWER_SCREEN_SCRS:
+            {
+                const int scr_index = 0;
+                glBindVertexArray(viewer->scr_quads_array.id);
+                unit_index = spr->scrs[scr_index].texture_index;
+                quad_index = scr_index;
+                break;
+            }
+        }
+
+        // bind the sampler and draw the quad
+        glUniform1i(uniform_sampler, (viewer->textures_base_unit - GL_TEXTURE0) + unit_index);
+        glDrawArrays(GL_TRIANGLES, quad_index * 6, 6); //6 vertices per quad
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -14,6 +14,18 @@
 #include "program.h"
 #include "vertex_array.h"
 
+// MARK: - Enumerations
+
+/// The different screens that an SPR viewer can be displaying.
+enum spr_viewer_screen_t
+{
+    /// The screen for displaying all the textures within the SPR.
+    SPR_VIEWER_SCREEN_TEXTURES = 0x0,
+
+    /// The screen for displaying all the SCRs within the SPR.
+    SPR_VIEWER_SCREEN_SCRS     = 0x1,
+};
+
 // MARK: - Data Structures
 
 /// The data structure for managing the state of an SPR viewer across usages.
@@ -40,6 +52,9 @@ struct spr_viewer_t
 
     /// The vertex array for the quads used to display this viewer's SCRs.
     struct vertex_array_t scr_quads_array;
+
+    /// The current screen that this viewer is displaying.
+    enum spr_viewer_screen_t screen;
 };
 
 // MARK: - Functions
