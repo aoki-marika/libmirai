@@ -50,25 +50,6 @@ void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
     memcpy(out, vertices, sizeof(vertices));
 }
 
-void spr_viewer_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-    if (action != GLFW_PRESS)
-        return;
-
-    struct spr_viewer_t *viewer = (struct spr_viewer_t *)glfwGetWindowUserPointer(window);
-    switch (key)
-    {
-        case GLFW_KEY_F1:
-            viewer->screen = SPR_VIEWER_SCREEN_TEXTURES;
-            break;
-        case GLFW_KEY_F2:
-            viewer->screen = SPR_VIEWER_SCREEN_SCRS;
-            break;
-        default:
-            break;
-    }
-}
-
 void spr_viewer_create(const struct spr_t *spr,
                        const struct program_t *program2d,
                        struct spr_viewer_t *viewer)
@@ -156,6 +137,8 @@ void spr_viewer_create(const struct spr_t *spr,
     viewer->spr = spr;
     viewer->program2d = program2d;
     viewer->screen = SPR_VIEWER_SCREEN_TEXTURES;
+    viewer->texture_index = 0;
+    viewer->scr_index = 0;
 }
 
 void spr_viewer_destroy(struct spr_viewer_t *viewer)
@@ -165,6 +148,53 @@ void spr_viewer_destroy(struct spr_viewer_t *viewer)
 
     glDeleteTextures(viewer->spr->num_textures, viewer->texture_ids);
     free(viewer->texture_ids);
+}
+
+void spr_viewer_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    // only handle key presses and repeats
+    if (action != GLFW_PRESS && action != GLFW_REPEAT)
+        return;
+
+    // get the viewer
+    struct spr_viewer_t *viewer = (struct spr_viewer_t *)glfwGetWindowUserPointer(window);
+
+    // get the index to modify in the case that the pressed key does so
+    // also get the maximum value to ensure it never goes over, half-open
+    unsigned int *index;
+    unsigned int index_max;
+    switch (viewer->screen)
+    {
+        case SPR_VIEWER_SCREEN_TEXTURES:
+            index = &viewer->texture_index;
+            index_max = viewer->spr->num_textures;
+            break;
+        case SPR_VIEWER_SCREEN_SCRS:
+            index = &viewer->scr_index;
+            index_max = viewer->spr->num_scrs;
+            break;
+    }
+
+    // handle the different keys
+    switch (key)
+    {
+        case GLFW_KEY_F1:
+            viewer->screen = SPR_VIEWER_SCREEN_TEXTURES;
+            break;
+        case GLFW_KEY_F2:
+            viewer->screen = SPR_VIEWER_SCREEN_SCRS;
+            break;
+        case GLFW_KEY_LEFT:
+            if (*index > 0)
+                *index -= 1;
+            break;
+        case GLFW_KEY_RIGHT:
+            if (*index + 1 < index_max)
+                *index += 1;
+            break;
+        default:
+            break;
+    }
 }
 
 void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
@@ -194,18 +224,16 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
         {
             case SPR_VIEWER_SCREEN_TEXTURES:
             {
-                const int texture_index = 0;
                 glBindVertexArray(viewer->texture_quads_array.id);
-                unit_index = texture_index;
-                quad_index = texture_index;
+                unit_index = viewer->texture_index;
+                quad_index = viewer->texture_index;
                 break;
             }
             case SPR_VIEWER_SCREEN_SCRS:
             {
-                const int scr_index = 0;
                 glBindVertexArray(viewer->scr_quads_array.id);
-                unit_index = spr->scrs[scr_index].texture_index;
-                quad_index = scr_index;
+                unit_index = spr->scrs[viewer->scr_index].texture_index;
+                quad_index = viewer->scr_index;
                 break;
             }
         }

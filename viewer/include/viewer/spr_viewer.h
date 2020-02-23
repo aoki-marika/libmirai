@@ -55,6 +55,12 @@ struct spr_viewer_t
 
     /// The current screen that this viewer is displaying.
     enum spr_viewer_screen_t screen;
+
+    /// The index of the current texture that this viewer is displaying in the textures screen.
+    unsigned int texture_index;
+
+    /// The index of the current SCR that this viewer is displaying in the SCRs screen.
+    unsigned int scr_index;
 };
 
 // MARK: - Functions
