@@ -56,6 +56,30 @@ void text_create(unsigned int width,
 /// @param text The text to destroy.
 void text_destroy(struct text_t *text);
 
+/// Put the given character at the given position onto the given text.
+///
+/// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
+/// @param x The X position to put the character, in characters. Top-left origin.
+/// @param y The Y position to put the character, in characters. Top-left origin.
+/// @param character The character to put.
+/// @param text The text to put the character onto.
+void text_put_character(unsigned int x,
+                        unsigned int y,
+                        char character,
+                        struct text_t *text);
+
+/// Put the given string at the given position onto the given text.
+///
+/// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
+/// @param x The X position to put the string, in characters. Top-left origin.
+/// @param y The Y position to put the string, in characters. Top-left origin.
+/// @param string The string to put.
+/// @param text The text to put the string onto.
+void text_put_string(unsigned int x,
+                     unsigned int y,
+                     const char *string,
+                     struct text_t *text);
+
 /// Draw the given text to the screen.
 ///
 /// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
