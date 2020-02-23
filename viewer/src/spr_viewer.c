@@ -8,6 +8,7 @@
 
 #include "spr_viewer.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 #include "constants.h"
@@ -49,28 +50,23 @@ void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
     memcpy(out, vertices, sizeof(vertices));
 }
 
-void spr_viewer_run(GLFWwindow *window,
-                    struct spr_t *spr,
-                    const struct program_t *program2d)
+void spr_viewer_create(const struct spr_t *spr,
+                       const struct program_t *program2d,
+                       struct spr_viewer_t *viewer)
 {
-    // get the used uniforms from the program
-    glUseProgram(program2d->id);
-    GLint uniform_sampler = glGetUniformLocation(program2d->id, PROGRAM_2D_UNIFORM_SAMPLER);
-
     // upload each texture to a separate unit
     // use a base unit to allow the first n units to be used for debug ui
-    const int texture_base_unit = GL_TEXTURE5;
-    GLuint texture_ids[spr->num_textures];
+    viewer->textures_base_unit = GL_TEXTURE5;
+    viewer->texture_ids = malloc(spr->num_textures * sizeof(GLuint));
     for (int i = 0; i < spr->num_textures; i++)
     {
-        glActiveTexture(texture_base_unit + i);
+        glActiveTexture(viewer->textures_base_unit + i);
         texture_upload(&spr->textures[i],
                        spr->file,
-                       &texture_ids[i]);
+                       &viewer->texture_ids[i]);
     }
 
-    // create the vertex arrays for each texture and scr
-    // these only need to be created at load time, then they can be drawn whenever
+    // create the quad arrays for each texture and scr
     // create the vertex components once as they are shared
     const int vertex_stride = 4 * sizeof(float);
     const int num_quad_vertices = 2 * 3; //2 triangles * 3 points per triangle
@@ -106,13 +102,12 @@ void spr_viewer_run(GLFWwindow *window,
                                        &texture_quads_vertices[i * num_quad_vertices * num_vertex_floats]);
     }
 
-    struct vertex_array_t texture_quads_array;
     vertex_array_create(texture_quads_vertices,
                         sizeof(texture_quads_vertices),
                         sizeof(vertex_components) / sizeof(struct vertex_component_t),
                         vertex_components,
                         program2d,
-                        &texture_quads_array);
+                        &viewer->texture_quads_array);
 
     float scr_quads_vertices[num_quad_vertices * num_vertex_floats * spr->num_scrs];
     for (int i = 0; i < spr->num_scrs; i++)
@@ -131,13 +126,36 @@ void spr_viewer_run(GLFWwindow *window,
                                        &scr_quads_vertices[i * num_quad_vertices * num_vertex_floats]);
     }
 
-    struct vertex_array_t scr_quads_array;
     vertex_array_create(scr_quads_vertices,
                         sizeof(scr_quads_vertices),
                         sizeof(vertex_components) / sizeof(struct vertex_component_t),
                         vertex_components,
                         program2d,
-                        &scr_quads_array);
+                        &viewer->scr_quads_array);
+
+    // initialize the viewer
+    viewer->spr = spr;
+    viewer->program2d = program2d;
+}
+
+void spr_viewer_destroy(struct spr_viewer_t *viewer)
+{
+    vertex_array_destroy(&viewer->scr_quads_array);
+    vertex_array_destroy(&viewer->texture_quads_array);
+
+    glDeleteTextures(viewer->spr->num_textures, viewer->texture_ids);
+    free(viewer->texture_ids);
+}
+
+void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
+{
+    // create a shorthand for the spr
+    const struct spr_t *spr = viewer->spr;
+
+    // get the used uniforms from the program
+    const struct program_t *program = viewer->program2d;
+    glUseProgram(program->id);
+    GLint uniform_sampler = glGetUniformLocation(program->id, PROGRAM_2D_UNIFORM_SAMPLER);
 
     // run the main loop
     while (!glfwWindowShouldClose(window))
@@ -147,9 +165,4 @@ void spr_viewer_run(GLFWwindow *window,
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    // free all the allocated resources
-    vertex_array_destroy(&scr_quads_array);
-    vertex_array_destroy(&texture_quads_array);
-    glDeleteTextures(spr->num_textures, texture_ids);
 }

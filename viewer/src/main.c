@@ -131,8 +131,11 @@ int main(int argc, char **argv)
         case FILE_FORMAT_SPR:
         {
             struct spr_t spr;
+            struct spr_viewer_t viewer;
             spr_open(path, &spr);
-            spr_viewer_run(window, &spr, &program2d);
+            spr_viewer_create(&spr, &program2d, &viewer);
+            spr_viewer_run(window, &viewer);
+            spr_viewer_destroy(&viewer);
             spr_close(&spr);
             break;
         }
