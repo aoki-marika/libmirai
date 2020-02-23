@@ -47,7 +47,7 @@ struct vertex_component_t
 
 /// Create a new vertex array from the given properties.
 /// @param data The vertex data for this array.
-/// @param data_size The total size of the given data.
+/// @param data_size The total size, in bytes, of the given data.
 /// @param num_components The number of components within the given data.
 /// @param components All the components within the given data.
 /// @param program The program for this array to bind it's component's attributes to.
