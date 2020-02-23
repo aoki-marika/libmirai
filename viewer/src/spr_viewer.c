@@ -9,6 +9,7 @@
 #include "spr_viewer.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 
 #include "constants.h"
@@ -219,7 +220,9 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
 
         // get the index of the texture unit and quad to draw
         // the unit is relative to the base unit of the viewer
+        // is valid is used to ensure that there are any vertices to draw
         int unit_index, quad_index;
+        bool is_valid;
         switch (viewer->screen)
         {
             case SPR_VIEWER_SCREEN_TEXTURES:
@@ -227,6 +230,7 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
                 glBindVertexArray(viewer->texture_quads_array.id);
                 unit_index = viewer->texture_index;
                 quad_index = viewer->texture_index;
+                is_valid = viewer->texture_index < spr->num_textures;
                 break;
             }
             case SPR_VIEWER_SCREEN_SCRS:
@@ -234,13 +238,17 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
                 glBindVertexArray(viewer->scr_quads_array.id);
                 unit_index = spr->scrs[viewer->scr_index].texture_index;
                 quad_index = viewer->scr_index;
+                is_valid = viewer->scr_index < spr->num_scrs;
                 break;
             }
         }
 
-        // bind the sampler and draw the quad
-        glUniform1i(uniform_sampler, (viewer->textures_base_unit - GL_TEXTURE0) + unit_index);
-        glDrawArrays(GL_TRIANGLES, quad_index * 6, 6); //6 vertices per quad
+        // bind the sampler and draw the quad if there is one
+        if (is_valid)
+        {
+            glUniform1i(uniform_sampler, (viewer->textures_base_unit - GL_TEXTURE0) + unit_index);
+            glDrawArrays(GL_TRIANGLES, quad_index * 6, 6); //6 vertices per quad
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
