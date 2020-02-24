@@ -92,13 +92,18 @@ void spr_open(const char *path, struct spr_t *spr)
     spr->textures = malloc(num_ctpks * sizeof(struct ctr_texture_t));
     spr->texture_names = malloc(num_ctpks * sizeof(char *));
 
-    size_t ctpk_pointer = ctpks_pointer;
+    uint32_t ctpk_pointer = ctpks_pointer;
     for (int i = 0; i < num_ctpks; i++)
     {
-        // read the ctpk
-        // +4 to skip the flags
-        fseek(file, ctpk_pointer + 4, SEEK_SET);
+        // seek to the ctpk
+        fseek(file, ctpk_pointer, SEEK_SET);
 
+        // read the pointer to the next ctpk
+        uint32_t next_pointer;
+        fread(&next_pointer, sizeof(next_pointer), 1, file);
+        next_pointer += (uint32_t)ftell(file);
+
+        // read the ctpk
         struct ctpk_t ctpk;
         ctpk_open(file, &ctpk);
         assert(ctpk.num_textures == 1);
@@ -109,12 +114,7 @@ void spr_open(const char *path, struct spr_t *spr)
         char *name = spr_string_read(file, ctpk_name_allocated_size);
 
         // advance the ctpk pointer
-        // use the end of the last texture to advance the pointer
-        // as ctpks are variable in size
-        assert(ctpk.num_textures > 0);
-
-        struct ctr_texture_t *last_texture = &ctpk.textures[ctpk.num_textures - 1];
-        ctpk_pointer = last_texture->data_pointer + last_texture->data_size;
+        ctpk_pointer = next_pointer;
 
         // insert the texture
         spr->textures[i] = ctpk.textures[0];
