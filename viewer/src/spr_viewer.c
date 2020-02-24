@@ -16,7 +16,7 @@
 #include "vertex_array.h"
 #include "texture.h"
 
-// MARK: - Textures
+// MARK: - Functions
 
 /// Create the vertices for a quad displaying a sampled texture.
 /// @param uv_bottom_left The bottom left UV coordinate of the quad.
