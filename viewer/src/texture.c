@@ -23,6 +23,10 @@ void texture_format_decode(enum ctr_texture_format_t texture_format,
                            GLenum *format,
                            GLenum *type)
 {
+    #warning TODO: Manually unpack the various formats that are not natively supported by OpenGL.
+    // opengl does not support defining a luminance or alpha format, only various combinations of rgba
+    // this can be read with r/rg but then end up mapping to those channels, where the fragment shader is expected
+    // to convert them to what is wanted, which is not feasable here
     switch (texture_format)
     {
         case CTR_TEXTURE_FORMAT_RGBA8888:
@@ -51,37 +55,44 @@ void texture_format_decode(enum ctr_texture_format_t texture_format,
             *type = GL_UNSIGNED_SHORT_4_4_4_4;
             break;
         case CTR_TEXTURE_FORMAT_LA88:
+            // not supported
             *internal_format = GL_LUMINANCE8_ALPHA8;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_HL8:
+            // not supported
             fprintf(stderr, "WARNING: unable to decode texture format HL8 properly\n");
             *internal_format = GL_LUMINANCE8_ALPHA8;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_L8:
+            // not supported
             *internal_format = GL_LUMINANCE8;
             *format = GL_LUMINANCE;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_A8:
+            // not supported
             *internal_format = GL_ALPHA8;
             *format = GL_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_LA44:
+            // not supported
             *internal_format = GL_LUMINANCE4_ALPHA4;
             *format = GL_LUMINANCE_ALPHA;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_L4:
+            // not supported
             *internal_format = GL_LUMINANCE4;
             *format = GL_LUMINANCE;
             *type = GL_UNSIGNED_BYTE;
             break;
         case CTR_TEXTURE_FORMAT_A4:
+            // not supported
             *internal_format = GL_ALPHA4;
             *format = GL_ALPHA;
             *type = GL_UNSIGNED_BYTE;
