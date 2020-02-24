@@ -9,6 +9,7 @@
 #include "ctr_texture.h"
 
 #include <string.h>
+#include <math.h>
 
 #include "etcdec.h"
 
@@ -87,6 +88,7 @@ void ctr_texture_create(unsigned int width,
     texture->data_pointer = data_pointer;
     texture->data_format = data_format;
     texture->decoded_data_size = decoded_data_size;
+    texture->unpacked_data_size = width * height * 4;
 }
 
 uint8_t *ctr_texture_decode(const struct ctr_texture_t *texture, FILE *file)
@@ -291,4 +293,159 @@ uint8_t *ctr_texture_decode(const struct ctr_texture_t *texture, FILE *file)
             return decoded;
         }
     }
+}
+
+/// Convert and rescale an unsigned integer of a variable bit size to an unsigned 8-bit integer.
+/// @param un The value to convert.
+/// @param size The bit size of the given value.
+/// @returns The rescaled 8-bit unsigned value of the given value.
+uint8_t ctr_texture_un_to_u8(uint8_t un, unsigned int size)
+{
+    uint8_t max = pow(2, size) - 1;
+    double normalized = (double)un / max;
+
+    uint8_t u8 = (uint8_t)(normalized * UINT8_MAX);
+    return u8;
+}
+
+/// Unpack a pixel from decoded CTR texture data.
+/// @param pixel The index of the pixel to unpack.
+/// @param format The data format of the given decoded data.
+/// @param decoded The array containing the decoded data to unpack.
+/// @param unpacked The 8-bit RGBA array to write the unpacked data to.
+void ctr_texture_pixel_unpack(unsigned int pixel,
+                              enum ctr_texture_format_t format,
+                              const uint8_t *decoded,
+                              uint8_t *unpacked)
+{
+    unsigned int unpacked_offset = pixel * 4;
+
+    // get the red, green, blue, and alpha channels
+    uint8_t red, green, blue, alpha;
+    switch (format)
+    {
+        case CTR_TEXTURE_FORMAT_RGBA8888:
+        case CTR_TEXTURE_FORMAT_ETC1_A4:
+        {
+            unsigned int decoded_offset = pixel * 4;
+            red   = decoded[decoded_offset + 0];
+            blue  = decoded[decoded_offset + 1];
+            green = decoded[decoded_offset + 2];
+            alpha = decoded[decoded_offset + 3];
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_RGB888:
+        case CTR_TEXTURE_FORMAT_ETC1:
+        {
+            unsigned int decoded_offset = pixel * 3;
+            red   = decoded[decoded_offset + 0];
+            blue  = decoded[decoded_offset + 1];
+            green = decoded[decoded_offset + 2];
+            alpha = 0xff;
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_RGBA5551:
+        {
+            uint16_t value = ((uint16_t *)decoded)[pixel];
+            red   = ctr_texture_un_to_u8((value >> 11) & 0b11111, 5);
+            green = ctr_texture_un_to_u8((value >> 6) & 0b11111, 5);
+            blue  = ctr_texture_un_to_u8((value >> 1) & 0b11111, 5);
+            alpha = ctr_texture_un_to_u8((value >> 0) & 0b1, 1);
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_RGB565:
+        {
+            uint16_t value = ((uint16_t *)decoded)[pixel];
+            red   = ctr_texture_un_to_u8((value >> 11) & 0b11111, 5);
+            green = ctr_texture_un_to_u8((value >> 5) & 0b111111, 6);
+            blue  = ctr_texture_un_to_u8(value & 0b11111, 5);
+            alpha = 0xff;
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_RGBA4444:
+        {
+            uint16_t value = ((uint16_t *)decoded)[pixel];
+            red   = ctr_texture_un_to_u8((value >> 12) & 0b1111, 4);
+            green = ctr_texture_un_to_u8((value >> 4) & 0b1111, 4);
+            blue  = ctr_texture_un_to_u8((value >> 8) & 0b1111, 4);
+            alpha = ctr_texture_un_to_u8((value >> 0) & 0b1111, 4);
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_LA88:
+        {
+            unsigned int decoded_offset = pixel * 2;
+            uint8_t luminance = decoded[decoded_offset + 0];
+            red   = luminance;
+            green = luminance;
+            blue  = luminance;
+            alpha = decoded[decoded_offset + 1];
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_HL8:
+        {
+            // unsure how to properly unpack this, leave a warning for now
+            fprintf(stderr, "WARNING: unable to correctly unpack HL8 CTR texture data format");
+            red =   0xff;
+            green = 0x00;
+            blue =  0xff;
+            alpha = 0xff;
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_L8:
+        case CTR_TEXTURE_FORMAT_L4:
+        {
+            red   = decoded[pixel];
+            green = decoded[pixel];
+            blue  = decoded[pixel];
+            alpha = 0xff;
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_A8:
+        case CTR_TEXTURE_FORMAT_A4:
+        {
+            red   = 0xff;
+            green = 0xff;
+            blue  = 0xff;
+            alpha = decoded[pixel];
+            break;
+        }
+        case CTR_TEXTURE_FORMAT_LA44:
+        {
+            uint8_t value = decoded[pixel];
+            uint8_t luminance = ctr_texture_un_to_u8((value >> 4) & 0b1111, 4);
+            red   = luminance;
+            green = luminance;
+            blue  = luminance;
+            alpha = ctr_texture_un_to_u8(value & 0b1111, 4);
+            break;
+        }
+    }
+
+    // set the channels
+    unpacked[unpacked_offset + 0] = red;
+    unpacked[unpacked_offset + 1] = blue;
+    unpacked[unpacked_offset + 2] = green;
+    unpacked[unpacked_offset + 3] = alpha;
+}
+
+uint8_t *ctr_texture_unpack(const struct ctr_texture_t *texture,
+                            const uint8_t *decoded)
+{
+    // unpack the decoded data
+    // width * height * 4 channels (rgba)
+    uint8_t *unpacked = malloc(texture->unpacked_data_size);
+
+    for (int y = 0; y < texture->height; y++)
+    {
+        for (int x = 0; x < texture->width; x++)
+        {
+            int pixel = (y * texture->width) + x;
+            ctr_texture_pixel_unpack(pixel,
+                                     texture->data_format,
+                                     decoded,
+                                     unpacked);
+        }
+    }
+
+    return unpacked;
 }

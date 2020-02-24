@@ -35,7 +35,7 @@ enum ctr_texture_format_t
     /// Eight bits for the luminance and alpha channels.
     CTR_TEXTURE_FORMAT_LA88     = 0x5,
 
-    /// Eight bits for the hue and luminance channels.
+    /// Eight bits for the hue and lightness channels.
     CTR_TEXTURE_FORMAT_HL8      = 0x6,
 
     /// Eight bits for the luminance channel.
@@ -89,6 +89,12 @@ struct ctr_texture_t
 
     /// The size of this CTR texture's decoded data, in bytes.
     size_t decoded_data_size;
+
+    /// The size of this CTR texture's unpacked decoded data, in bytes.
+    ///
+    /// Although this is always a constant `width * height * 4 channels (RGBA)`,
+    /// it can be useful for defining fixed length arrays in usage.
+    size_t unpacked_data_size;
 };
 
 // MARK: - Functions
@@ -116,3 +122,15 @@ void ctr_texture_create(unsigned int width,
 /// Also note that this data starts from the **upper-left corner**, with each row being left to right.
 /// If this is uploaded directly to OpenGL, then it will be upside down.
 uint8_t *ctr_texture_decode(const struct ctr_texture_t *texture, FILE *file);
+
+/// Unpack the given decoded CTR texture data to 8-bit red, green, blue, and alpha channels.
+///
+/// This is a compatibility feature for directly using OpenGL where luminance and alpha texture data is not supported.
+/// @param texture The CTR texture of which the given decoded data originated from.
+/// @param decoded The decoded CTR texture data to unpack.
+/// @returns The unpacked 8-bit red, green, blue, and alpha channels of the given decoded CTR texture data.
+/// Allocated.
+/// Note that, the same as `ctr_texture_decode(const struct ctr_texture_t *, FILE *)`, the unpacked data is ordered top to bottom,
+/// with rows being ordered left to right.
+uint8_t *ctr_texture_unpack(const struct ctr_texture_t *texture,
+                            const uint8_t *decoded);
