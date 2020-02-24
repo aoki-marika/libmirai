@@ -15,8 +15,8 @@
 		EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395F23E86E7D00F55A5B /* vertex_array.c */; };
 		ECC028E82402E6010080F415 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = ECC028E72402E6010080F415 /* text.c */; };
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
-		ECEA38C723E88CDF00EFEC5B /* libmirai.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.dylib */; };
-		ECEA38C823E88CDF00EFEC5B /* libmirai.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		ECEA38C723E88CDF00EFEC5B /* libmirai.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.a */; };
+		ECEA38C823E88CDF00EFEC5B /* libmirai.a in Embed Libraries */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.a */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		ECEA38CC23E89AA600EFEC5B /* spr_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */; };
 /* End PBXBuildFile section */
 
@@ -46,7 +46,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				ECEA38C823E88CDF00EFEC5B /* libmirai.dylib in Embed Libraries */,
+				ECEA38C823E88CDF00EFEC5B /* libmirai.a in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -80,7 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC00394523E8489500F55A5B /* Cocoa.framework in Frameworks */,
-				ECEA38C723E88CDF00EFEC5B /* libmirai.dylib in Frameworks */,
+				ECEA38C723E88CDF00EFEC5B /* libmirai.a in Frameworks */,
 				EC00394723E8489800F55A5B /* OpenGL.framework in Frameworks */,
 				EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */,
 			);
@@ -156,7 +156,7 @@
 		EC00395123E84C6E00F55A5B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EC00395523E84C6E00F55A5B /* libmirai.dylib */,
+				EC00395523E84C6E00F55A5B /* libmirai.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,10 +221,10 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		EC00395523E84C6E00F55A5B /* libmirai.dylib */ = {
+		EC00395523E84C6E00F55A5B /* libmirai.a */ = {
 			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.dylib";
-			path = libmirai.dylib;
+			fileType = archive.ar;
+			path = libmirai.a;
 			remoteRef = EC00395423E84C6E00F55A5B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
