@@ -8,6 +8,7 @@
 
 #include "text.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -572,6 +573,25 @@ void text_put_string(unsigned int x,
 {
     for (int i = 0; i < strlen(string); i++)
         text_put_character(x + i, y, string[i], text);
+}
+
+void text_put_int(unsigned int x,
+                  unsigned int y,
+                  int value,
+                  unsigned int max_length,
+                  struct text_t *text)
+{
+    // convert the integer to a string
+    // +1 max length for the terminator
+    char string[max_length + 1];
+    snprintf(string, max_length + 1, "%i", value);
+
+    // get the x offset to draw the string right-aligned within the given bounds
+    unsigned int length = (unsigned int)strlen(string);
+    unsigned int x_offset = max_length - length;
+
+    // put the string
+    text_put_string(x + x_offset, y, string, text);
 }
 
 void text_clear(struct text_t *text)

@@ -80,6 +80,21 @@ void text_put_string(unsigned int x,
                      const char *string,
                      struct text_t *text);
 
+/// Put the given integer at the given position onto the given text.
+///
+/// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
+/// @param x The X position to put the integer, in characters. Top-left origin.
+/// @param y The Y position to put the integer, in characters. Top-left origin.
+/// @param value The integer to put.
+/// @param max_length The maximum length of the string for the given integer.
+/// The integer is drawn right-aligned, using this length as the horizontal bounds.
+/// @param text The text to put the integer onto.
+void text_put_int(unsigned int x,
+                  unsigned int y,
+                  int value,
+                  unsigned int max_length,
+                  struct text_t *text);
+
 /// Clear the entire contents of the given text.
 ///
 /// It is assumed that the given text's texture is bound to `GL_TEXTURE_2D` on the active texture unit.
