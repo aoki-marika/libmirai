@@ -13,9 +13,7 @@
 #include <string.h>
 
 #include "constants.h"
-#include "vertex_array.h"
 #include "texture.h"
-#include "text.h"
 
 // MARK: - Functions
 
@@ -125,6 +123,35 @@ void spr_viewer_put_scr(unsigned int x,
     text_put_int(contents_x + 7, current_y, height, 4, text);
 }
 
+/// Update the debug interface text of the given viewer.
+/// @param viewer The viewer to update.
+void spr_viewer_update_text(struct spr_viewer_t *viewer)
+{
+    // update the textures text
+    glActiveTexture(viewer->textures_text_unit);
+    text_clear(&viewer->textures_text);
+
+    if (viewer->texture_index < viewer->spr->num_textures)
+    {
+        struct ctr_texture_t *texture = &viewer->spr->textures[viewer->texture_index];
+        char *texture_name = viewer->spr->texture_names[viewer->texture_index];
+        spr_viewer_put_texture(1, 1, texture, texture_name, &viewer->textures_text);
+    }
+
+    // update the scrs text
+    glActiveTexture(viewer->scrs_text_unit);
+    text_clear(&viewer->scrs_text);
+
+    if (viewer->scr_index < viewer->spr->num_scrs)
+    {
+        struct scr_t *scr = &viewer->spr->scrs[viewer->scr_index];
+        struct ctr_texture_t *scr_texture = &viewer->spr->textures[scr->texture_index];
+        char *scr_texture_name = viewer->spr->texture_names[scr->texture_index];
+        spr_viewer_put_scr(1, 1, scr, scr_texture, &viewer->scrs_text);
+        spr_viewer_put_texture(1, 5, scr_texture, scr_texture_name, &viewer->scrs_text);
+    }
+}
+
 void spr_viewer_create(const struct spr_t *spr,
                        const struct program_t *program2d,
                        struct spr_viewer_t *viewer)
@@ -208,6 +235,21 @@ void spr_viewer_create(const struct spr_t *spr,
                         program2d,
                         &viewer->scr_quads_array);
 
+    // create the texts
+    viewer->textures_text_unit = GL_TEXTURE0;
+    glActiveTexture(viewer->textures_text_unit);
+    text_create(80,
+                60,
+                program2d,
+                &viewer->textures_text);
+
+    viewer->scrs_text_unit = GL_TEXTURE1;
+    glActiveTexture(viewer->scrs_text_unit);
+    text_create(80,
+                60,
+                program2d,
+                &viewer->scrs_text);
+
     // initialize the viewer
     viewer->spr = spr;
     viewer->program2d = program2d;
@@ -218,6 +260,9 @@ void spr_viewer_create(const struct spr_t *spr,
 
 void spr_viewer_destroy(struct spr_viewer_t *viewer)
 {
+    text_destroy(&viewer->scrs_text);
+    text_destroy(&viewer->textures_text);
+
     vertex_array_destroy(&viewer->scr_quads_array);
     vertex_array_destroy(&viewer->texture_quads_array);
 
@@ -251,6 +296,7 @@ void spr_viewer_key_callback(GLFWwindow *window, int key, int scancode, int acti
     }
 
     // handle the different keys
+    bool display_changed = false;
     switch (key)
     {
         case GLFW_KEY_F1:
@@ -261,15 +307,25 @@ void spr_viewer_key_callback(GLFWwindow *window, int key, int scancode, int acti
             break;
         case GLFW_KEY_LEFT:
             if (*index > 0)
+            {
                 *index -= 1;
+                display_changed = true;
+            }
             break;
         case GLFW_KEY_RIGHT:
             if (*index + 1 < index_max)
+            {
                 *index += 1;
+                display_changed = true;
+            }
             break;
         default:
             break;
     }
+
+    // update the debug interface text if the displayed item changed
+    if (display_changed)
+        spr_viewer_update_text(viewer);
 }
 
 void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
@@ -287,6 +343,9 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
     glUseProgram(program->id);
     GLint uniform_sampler = glGetUniformLocation(program->id, PROGRAM_2D_UNIFORM_SAMPLER);
 
+    // set the initial text
+    spr_viewer_update_text(viewer);
+
     // run the main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -295,8 +354,11 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
         // get the index of the texture unit and quad to draw
         // the unit is relative to the base unit of the viewer
         // is valid is used to ensure that there are any vertices to draw
+        // also get the text and its texture unit to draw the debug interface
         int unit_index, quad_index;
         bool is_valid;
+        struct text_t *text;
+        GLenum text_unit;
         switch (viewer->screen)
         {
             case SPR_VIEWER_SCREEN_TEXTURES:
@@ -305,6 +367,8 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
                 unit_index = viewer->texture_index;
                 quad_index = viewer->texture_index;
                 is_valid = viewer->texture_index < spr->num_textures;
+                text = &viewer->textures_text;
+                text_unit = viewer->textures_text_unit;
                 break;
             }
             case SPR_VIEWER_SCREEN_SCRS:
@@ -313,6 +377,8 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
                 unit_index = spr->scrs[viewer->scr_index].texture_index;
                 quad_index = viewer->scr_index;
                 is_valid = viewer->scr_index < spr->num_scrs;
+                text = &viewer->scrs_text;
+                text_unit = viewer->scrs_text_unit;
                 break;
             }
         }
@@ -323,6 +389,11 @@ void spr_viewer_run(GLFWwindow *window, struct spr_viewer_t *viewer)
             glUniform1i(uniform_sampler, (viewer->textures_base_unit - GL_TEXTURE0) + unit_index);
             glDrawArrays(GL_TRIANGLES, quad_index * 6, 6); //6 vertices per quad
         }
+
+        // draw the debug interface
+        glActiveTexture(text_unit);
+        glUniform1i(uniform_sampler, text_unit - GL_TEXTURE0);
+        text_draw(text);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

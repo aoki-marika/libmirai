@@ -13,6 +13,7 @@
 #include "gl.h"
 #include "program.h"
 #include "vertex_array.h"
+#include "text.h"
 
 // MARK: - Enumerations
 
@@ -52,6 +53,18 @@ struct spr_viewer_t
 
     /// The vertex array for the quads used to display this viewer's SCRs.
     struct vertex_array_t scr_quads_array;
+
+    /// The texture unit that this viewer's textures text's backing texture is on.
+    GLenum textures_text_unit;
+
+    /// The text that this viewer is using to draw the textures debug interface.
+    struct text_t textures_text;
+
+    /// The texture unit that this viewer's SCRs text's backing texture is on.
+    GLenum scrs_text_unit;
+
+    /// The text that this viewer is using to draw the SCRs debug interface.
+    struct text_t scrs_text;
 
     /// The current screen that this viewer is displaying.
     enum spr_viewer_screen_t screen;
