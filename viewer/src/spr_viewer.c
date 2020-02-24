@@ -99,12 +99,10 @@ void spr_viewer_put_texture(unsigned int x,
 /// @param x The X position to put the description, in characters.
 /// @param y The Y position to put the description, in characters.
 /// @param scr The SCR to put the description of.
-/// @param texture The texture containing the given SCR.
 /// @param text The text to put the description onto.
 void spr_viewer_put_scr(unsigned int x,
                         unsigned int y,
                         const struct scr_t *scr,
-                        const struct ctr_texture_t *texture,
                         struct text_t *text)
 {
     unsigned int header_x = x;
@@ -116,11 +114,9 @@ void spr_viewer_put_scr(unsigned int x,
     text_put_string(contents_x, current_y++, scr->name, text);
 
     // put the size
-    unsigned int width = (scr->bottom_right.x - scr->top_left.x) * texture->width;
-    unsigned int height = (scr->bottom_right.y - scr->top_left.y) * texture->height;
-    text_put_int(contents_x, current_y, width, 4, text);
+    text_put_int(contents_x, current_y, scr->width, 4, text);
     text_put_character(contents_x + 5, current_y, 'X', text);
-    text_put_int(contents_x + 7, current_y, height, 4, text);
+    text_put_int(contents_x + 7, current_y, scr->height, 4, text);
 }
 
 /// Update the debug interface text of the given viewer.
@@ -147,7 +143,7 @@ void spr_viewer_update_text(struct spr_viewer_t *viewer)
         struct scr_t *scr = &viewer->spr->scrs[viewer->scr_index];
         struct ctr_texture_t *scr_texture = &viewer->spr->textures[scr->texture_index];
         char *scr_texture_name = viewer->spr->texture_names[scr->texture_index];
-        spr_viewer_put_scr(1, 1, scr, scr_texture, &viewer->scrs_text);
+        spr_viewer_put_scr(1, 1, scr, &viewer->scrs_text);
         spr_viewer_put_texture(1, 5, scr_texture, scr_texture_name, &viewer->scrs_text);
     }
 }
@@ -216,15 +212,12 @@ void spr_viewer_create(const struct spr_t *spr,
     {
         // invert the v coordinates to convert from top-left origin to bottom-left
         struct scr_t *scr = &spr->scrs[i];
-        struct ctr_texture_t *texture = &spr->textures[scr->texture_index];
         struct vec2_t uv_bottom_left = { .x = scr->top_left.x, .y = 1.0 - scr->bottom_right.y };
         struct vec2_t uv_top_right = { .x = scr->bottom_right.x, .y = 1.0 - scr->top_left.y };
-        float width = (scr->bottom_right.x - scr->top_left.x) * texture->width;
-        float height = (scr->bottom_right.y - scr->top_left.y) * texture->height;
         spr_viewer_texture_quad_create(uv_bottom_left,
                                        uv_top_right,
-                                       width,
-                                       height,
+                                       scr->width,
+                                       scr->height,
                                        &scr_quads_vertices[i * num_quad_vertices * num_vertex_floats]);
     }
 

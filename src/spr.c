@@ -146,8 +146,12 @@ void spr_open(const char *path, struct spr_t *spr)
         assert(bottom_right.x > top_left.x);
         assert(bottom_right.y > top_left.y);
 
-        // 8x byte unknown
-        fseek(file, 8, SEEK_CUR);
+        // read the pixel space uv coordinates and size
+        uint16_t x, y, width, height;
+        fread(&x, sizeof(x), 1, file);
+        fread(&y, sizeof(y), 1, file);
+        fread(&width, sizeof(width), 1, file);
+        fread(&height, sizeof(height), 1, file);
 
         // insert the scr
         struct scr_t scr;
@@ -155,6 +159,10 @@ void spr_open(const char *path, struct spr_t *spr)
         scr.texture_index = texture_index;
         scr.top_left = top_left;
         scr.bottom_right = bottom_right;
+        scr.x = x;
+        scr.y = y;
+        scr.width = width;
+        scr.height = height;
         spr->scrs[i] = scr;
     }
 

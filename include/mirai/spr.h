@@ -67,6 +67,22 @@ struct scr_t
     ///
     /// Despite being a UV coordinate, this uses a top-left origin.
     struct vec2_t bottom_right;
+
+    /// The top left U coordinate of this SCR's bounds, in pixels.
+    ///
+    /// Top-left origin.
+    uint16_t x;
+
+    /// The top left V coordinate of this SCR's bounds, in pixels.
+    ///
+    /// Top-left origin.
+    uint16_t y;
+
+    /// The width of this SCR's bounds, in pixels.
+    uint16_t width;
+
+    /// The height of this SCR's bounds, in pixels.
+    uint16_t height;
 };
 
 // MARK: - Functions
