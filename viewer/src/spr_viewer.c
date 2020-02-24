@@ -15,6 +15,7 @@
 #include "constants.h"
 #include "vertex_array.h"
 #include "texture.h"
+#include "text.h"
 
 // MARK: - Functions
 
@@ -49,6 +50,79 @@ void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
 
     // copy the vertices to the output
     memcpy(out, vertices, sizeof(vertices));
+}
+
+/// Put a description of the given texture onto the given text.
+/// @param x The X position to put the description, in characters.
+/// @param y The Y position to put the description, in characters.
+/// @param texture The texture to put the description of.
+/// @param name The name of the given texture.
+/// @param text The text to put the description onto.
+void spr_viewer_put_texture(unsigned int x,
+                            unsigned int y,
+                            const struct ctr_texture_t *texture,
+                            const char *name,
+                            struct text_t *text)
+{
+    unsigned int header_x = x;
+    unsigned int contents_x = x + 1;
+    unsigned int current_y = y;
+
+    // put the header and name
+    text_put_string(header_x, current_y++, "TEXTURE", text);
+    text_put_string(contents_x, current_y++, name, text);
+
+    // put the data format
+    switch (texture->data_format)
+    {
+        case CTR_TEXTURE_FORMAT_RGBA8888: text_put_string(contents_x, current_y++, "RGBA8888", text); break;
+        case CTR_TEXTURE_FORMAT_RGB888:   text_put_string(contents_x, current_y++, "RGB888", text); break;
+        case CTR_TEXTURE_FORMAT_RGBA5551: text_put_string(contents_x, current_y++, "RGBA5551", text); break;
+        case CTR_TEXTURE_FORMAT_RGB565:   text_put_string(contents_x, current_y++, "RGB565", text); break;
+        case CTR_TEXTURE_FORMAT_RGBA4444: text_put_string(contents_x, current_y++, "RGBA4444", text); break;
+        case CTR_TEXTURE_FORMAT_LA88:     text_put_string(contents_x, current_y++, "LA88", text); break;
+        case CTR_TEXTURE_FORMAT_HL8:      text_put_string(contents_x, current_y++, "HL8", text); break;
+        case CTR_TEXTURE_FORMAT_L8:       text_put_string(contents_x, current_y++, "L8", text); break;
+        case CTR_TEXTURE_FORMAT_A8:       text_put_string(contents_x, current_y++, "A8", text); break;
+        case CTR_TEXTURE_FORMAT_LA44:     text_put_string(contents_x, current_y++, "LA44", text); break;
+        case CTR_TEXTURE_FORMAT_L4:       text_put_string(contents_x, current_y++, "L4", text); break;
+        case CTR_TEXTURE_FORMAT_A4:       text_put_string(contents_x, current_y++, "A4", text); break;
+        case CTR_TEXTURE_FORMAT_ETC1:     text_put_string(contents_x, current_y++, "ETC1", text); break;
+        case CTR_TEXTURE_FORMAT_ETC1_A4:  text_put_string(contents_x, current_y++, "ETC1 A4", text); break;
+    }
+
+    // put the size
+    text_put_int(contents_x, current_y, texture->width, 4, text);
+    text_put_character(contents_x + 5, current_y, 'X', text);
+    text_put_int(contents_x + 7, current_y, texture->height, 4, text);
+}
+
+/// Put a description of the given SCR onto the given text.
+/// @param x The X position to put the description, in characters.
+/// @param y The Y position to put the description, in characters.
+/// @param scr The SCR to put the description of.
+/// @param texture The texture containing the given SCR.
+/// @param text The text to put the description onto.
+void spr_viewer_put_scr(unsigned int x,
+                        unsigned int y,
+                        const struct scr_t *scr,
+                        const struct ctr_texture_t *texture,
+                        struct text_t *text)
+{
+    unsigned int header_x = x;
+    unsigned int contents_x = x + 1;
+    unsigned int current_y = y;
+
+    // put the header and name
+    text_put_string(header_x, current_y++, "SCR", text);
+    text_put_string(contents_x, current_y++, scr->name, text);
+
+    // put the size
+    unsigned int width = (scr->bottom_right.x - scr->top_left.x) * texture->width;
+    unsigned int height = (scr->bottom_right.y - scr->top_left.y) * texture->height;
+    text_put_int(contents_x, current_y, width, 4, text);
+    text_put_character(contents_x + 5, current_y, 'X', text);
+    text_put_int(contents_x + 7, current_y, height, 4, text);
 }
 
 void spr_viewer_create(const struct spr_t *spr,
