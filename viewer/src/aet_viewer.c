@@ -11,10 +11,13 @@
 // MARK: - Functions
 
 void aet_viewer_create(const struct aet_t *aet,
+                       const struct spr_t *spr,
                        const struct program_t *program2d,
                        struct aet_viewer_t *viewer)
 {
+    // initialize the viewer
     viewer->aet = aet;
+    viewer->spr = spr;
     viewer->program2d = program2d;
 }
 
@@ -27,6 +30,8 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     // run the main loop
     while (!glfwWindowShouldClose(window))
     {
+        glClear(GL_COLOR_BUFFER_BIT);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

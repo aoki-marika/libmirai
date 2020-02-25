@@ -9,6 +9,7 @@
 #pragma once
 
 #include <mirai/aet.h>
+#include <mirai/spr.h>
 
 #include "program.h"
 
@@ -20,6 +21,9 @@ struct aet_viewer_t
     /// The AET that this viewer is viewing.
     const struct aet_t *aet;
 
+    /// The SPR that contains the SCRs used by this viewer's AET.
+    const struct spr_t *spr;
+
     /// The program that this viewer is using to render it's 2D elements.
     const struct program_t *program2d;
 };
@@ -29,10 +33,13 @@ struct aet_viewer_t
 /// Create a new AET viewer from the given properties.
 /// @param aet The AET that the new viewer will be viewing.
 /// It is expected that this AET remains available throughout the lifetime of the viewer.
+/// @param spr The SPR containing the SCRs used by the given AET.
+/// It is expected that this SPR remains available throughout the lifetime of the viewer.
 /// @param program2d The program used to render this viewer's 2D elements, assumed to be the standard.
 /// It is expected that this program remains available throughout the lifetime of the viewer.
 /// @param viewer The viewer to load the created viewer into.
 void aet_viewer_create(const struct aet_t *aet,
+                       const struct spr_t *spr,
                        const struct program_t *program2d,
                        struct aet_viewer_t *viewer);
 

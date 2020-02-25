@@ -42,7 +42,7 @@ void print_usage()
 int main(int argc, char **argv)
 {
     // ensure the proper amount of flags were passed
-    if (argc != 3)
+    if (argc < 3)
     {
         print_usage();
         exit(EXIT_FAILURE);
@@ -142,12 +142,35 @@ int main(int argc, char **argv)
         }
         case FILE_FORMAT_AET:
         {
+            // aet viewers also need an spr
+            // print a special usage message in this case
+            if (argc < 4)
+            {
+                printf("usage: -aet [aet file] [spr file]\n");
+                return EXIT_FAILURE;
+            }
+
+            // ensure the file exists
+            char *spr_path = argv[3];
+            FILE *spr_file = fopen(spr_path, "rb");
+            if (!spr_file)
+            {
+                perror("ERROR");
+                exit(EXIT_FAILURE);
+            }
+
+            fclose(spr_file);
+
+            // open the viewer
             struct aet_t aet;
+            struct spr_t spr;
             struct aet_viewer_t viewer;
             aet_open(path, &aet);
-            aet_viewer_create(&aet, &program2d, &viewer);
+            spr_open(spr_path, &spr);
+            aet_viewer_create(&aet, &spr, &program2d, &viewer);
             aet_viewer_run(window, &viewer);
             aet_viewer_destroy(&viewer);
+            spr_close(&spr);
             aet_close(&aet);
             break;
         }
