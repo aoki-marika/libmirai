@@ -22,16 +22,14 @@
 #define PROGRAM_2D_VERTEX_SOURCE \
 { \
     "#version 150 core\n", \
-    "uniform uvec2 viewportSize;", \
     "uniform mat4 model;", \
+    "uniform mat4 projection;", \
     "in vec2 position;", \
     "in vec2 texcoord;", \
     "out vec2 vertexTexcoord;", \
     "void main()", \
     "{", \
-    "    float x = -1.0 + (position.x / float(viewportSize.x / uint(2)));" \
-    "    float y =  1.0 + ((1.0 - position.y) / float(viewportSize.y / uint(2)));" \
-    "    gl_Position = model * vec4(x, y, 0.0, 1.0);", \
+    "    gl_Position = model * projection * vec4(position.x, position.y, 0.0, 1.0);", \
     "    vertexTexcoord = texcoord;", \
     "}", \
 }
@@ -52,11 +50,11 @@
     "}", \
 }
 
-/// The name of the viewport size uniform within the standard 2D rendering program.
-#define PROGRAM_2D_UNIFORM_VIEWPORT_SIZE "viewportSize"
-
 /// The name of the model matrix uniform within the standard 2D rendering program.
 #define PROGRAM_2D_UNIFORM_MODEL "model"
+
+/// The name of the projection matrix uniform within the standard 2D rendering program.
+#define PROGRAM_2D_UNIFORM_PROJECTION "projection"
 
 /// The name of the sampler uniform within the standard 2D rendering program.
 #define PROGRAM_2D_UNIFORM_SAMPLER "sampler"

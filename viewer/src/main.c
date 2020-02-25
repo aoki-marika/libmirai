@@ -123,13 +123,26 @@ int main(int argc, char **argv)
 
     glUseProgram(program2d.id);
 
-    GLint uniform_viewport_size = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_VIEWPORT_SIZE);
-    glUniform2ui(uniform_viewport_size, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-    // set an identity matrix for any viewers that do not manipulate it
+    // set an identity model matrix for any viewers that do not manipulate it
     GLint uniform_model = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_MODEL);
-    struct mat4_t identity = mat4_identity();
-    glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&identity.data);
+    GLint uniform_projection = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_PROJECTION);
+
+    struct mat4_t model = mat4_identity();
+    glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&model.data);
+
+    // set an orthographic projection matrix that has takes center origin pixel-space coordinates
+    // then translate this matrix by -w/2 and -h/2 to place the center in the top left
+    // to then take top-left origin pixel-space coordinates
+    struct mat4_t projection = mat4_ortho(-WINDOW_WIDTH / 2,
+                                          WINDOW_WIDTH / 2,
+                                          WINDOW_HEIGHT / 2,
+                                          -WINDOW_HEIGHT / 2,
+                                          -1,
+                                          1);
+
+    struct vec3_t projection_offset = { .x = -WINDOW_WIDTH / 2, .y = -WINDOW_HEIGHT / 2, .z = 0 };
+    projection = mat4_multiply(projection, mat4_translation(projection_offset));
+    glUniformMatrix4fv(uniform_projection, 1, GL_FALSE, (GLfloat *)&projection.data);
 
     // run the viewer
     // each viewer is repsonsible for its own main loop and event handling

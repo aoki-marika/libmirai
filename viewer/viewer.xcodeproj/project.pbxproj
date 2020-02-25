@@ -14,6 +14,7 @@
 		EC00395C23E860F300F55A5B /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395B23E860F300F55A5B /* program.c */; };
 		EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395F23E86E7D00F55A5B /* vertex_array.c */; };
 		ECA9D0BD24054A0A002A6950 /* aet_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECA9D0BC24054A0A002A6950 /* aet_viewer.c */; };
+		ECA9D0C024056608002A6950 /* matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = ECA9D0BF24056608002A6950 /* matrix.c */; };
 		ECC028E82402E6010080F415 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = ECC028E72402E6010080F415 /* text.c */; };
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
 		ECEA38C723E88CDF00EFEC5B /* libmirai.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.a */; };
@@ -69,6 +70,8 @@
 		EC7D36A724014F4A005C09B7 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		ECA9D0BA24054A00002A6950 /* aet_viewer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aet_viewer.h; sourceTree = "<group>"; };
 		ECA9D0BC24054A0A002A6950 /* aet_viewer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aet_viewer.c; sourceTree = "<group>"; };
+		ECA9D0BE240565EF002A6950 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		ECA9D0BF24056608002A6950 /* matrix.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = matrix.c; sourceTree = "<group>"; };
 		ECC028E62402E5E70080F415 /* text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = text.h; sourceTree = "<group>"; };
 		ECC028E72402E6010080F415 /* text.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = text.c; sourceTree = "<group>"; };
 		ECEA38C423E8888600EFEC5B /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
@@ -125,6 +128,7 @@
 				EC00395D23E8618900F55A5B /* gl.h */,
 				EC7D36A724014F4A005C09B7 /* constants.h */,
 				EC00395A23E860EA00F55A5B /* program.h */,
+				ECA9D0BE240565EF002A6950 /* matrix.h */,
 				EC00395E23E86E6400F55A5B /* vertex_array.h */,
 				ECEA38C423E8888600EFEC5B /* texture.h */,
 				ECC028E62402E5E70080F415 /* text.h */,
@@ -139,6 +143,7 @@
 			children = (
 				EC00392E23E8425600F55A5B /* main.c */,
 				EC00395B23E860F300F55A5B /* program.c */,
+				ECA9D0BF24056608002A6950 /* matrix.c */,
 				EC00395F23E86E7D00F55A5B /* vertex_array.c */,
 				ECEA38C523E8888F00EFEC5B /* texture.c */,
 				ECC028E72402E6010080F415 /* text.c */,
@@ -246,6 +251,7 @@
 				EC00392F23E8425600F55A5B /* main.c in Sources */,
 				EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */,
 				ECEA38C623E8888F00EFEC5B /* texture.c in Sources */,
+				ECA9D0C024056608002A6950 /* matrix.c in Sources */,
 				ECC028E82402E6010080F415 /* text.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
