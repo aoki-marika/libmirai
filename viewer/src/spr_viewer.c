@@ -166,28 +166,9 @@ void spr_viewer_create(const struct spr_t *spr,
 
     // create the quad arrays for each texture and scr
     // create the vertex components once as they are shared
-    const int vertex_stride = 4 * sizeof(float);
-    const int num_quad_vertices = 2 * 3; //2 triangles * 3 points per triangle
-    const int num_vertex_floats = 4; //x, y, u, v
-    const struct vertex_component_t vertex_components[] =
-    {
-        {
-            .data_type = GL_FLOAT,
-            .num_values = 2,
-            .offset = 0 * sizeof(float),
-            .stride = vertex_stride,
-            .attribute_name = PROGRAM_2D_COMPONENT_POSITION,
-        },
-        {
-            .data_type = GL_FLOAT,
-            .num_values = 2,
-            .offset = 2 * sizeof(float),
-            .stride = vertex_stride,
-            .attribute_name = PROGRAM_2D_COMPONENT_TEXCOORD,
-        },
-    };
+    const struct vertex_component_t vertex_components[] = PROGRAM_2D_VERTEX_COMPONENTS;
 
-    float texture_quads_vertices[num_quad_vertices * num_vertex_floats * spr->num_textures];
+    float texture_quads_vertices[spr->num_textures * PROGRAM_2D_QUAD_FLOATS];
     for (int i = 0; i < spr->num_textures; i++)
     {
         struct ctr_texture_t *texture = &spr->textures[i];
@@ -197,7 +178,7 @@ void spr_viewer_create(const struct spr_t *spr,
                                        uv_top_right,
                                        texture->width,
                                        texture->height,
-                                       &texture_quads_vertices[i * num_quad_vertices * num_vertex_floats]);
+                                       &texture_quads_vertices[i * PROGRAM_2D_QUAD_FLOATS]);
     }
 
     vertex_array_create(texture_quads_vertices,
@@ -207,7 +188,7 @@ void spr_viewer_create(const struct spr_t *spr,
                         program2d,
                         &viewer->texture_quads_array);
 
-    float scr_quads_vertices[num_quad_vertices * num_vertex_floats * spr->num_scrs];
+    float scr_quads_vertices[spr->num_scrs * PROGRAM_2D_QUAD_FLOATS];
     for (int i = 0; i < spr->num_scrs; i++)
     {
         // invert the v coordinates to convert from top-left origin to bottom-left
@@ -218,7 +199,7 @@ void spr_viewer_create(const struct spr_t *spr,
                                        uv_top_right,
                                        scr->width,
                                        scr->height,
-                                       &scr_quads_vertices[i * num_quad_vertices * num_vertex_floats]);
+                                       &scr_quads_vertices[i * PROGRAM_2D_QUAD_FLOATS]);
     }
 
     vertex_array_create(scr_quads_vertices,

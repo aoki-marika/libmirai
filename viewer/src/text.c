@@ -462,26 +462,8 @@ void text_create(unsigned int width,
     free(empty_data);
 
     // create the vertex array
-    const int vertex_stride = 4 * sizeof(float);
-    const struct vertex_component_t vertex_components[] =
-    {
-        {
-            .data_type = GL_FLOAT,
-            .num_values = 2,
-            .offset = 0 * sizeof(float),
-            .stride = vertex_stride,
-            .attribute_name = PROGRAM_2D_COMPONENT_POSITION,
-        },
-        {
-            .data_type = GL_FLOAT,
-            .num_values = 2,
-            .offset = 2 * sizeof(float),
-            .stride = vertex_stride,
-            .attribute_name = PROGRAM_2D_COMPONENT_TEXCOORD,
-        },
-    };
-
-    const float vertices[] =
+    const struct vertex_component_t vertex_components[] = PROGRAM_2D_VERTEX_COMPONENTS;
+    const float vertices[PROGRAM_2D_QUAD_FLOATS] =
     {
     //  x  y    u    v
         0, 0, 0.0, 1.0, //top-left

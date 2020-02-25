@@ -62,3 +62,37 @@
 
 /// The name of the texcoord vertex component within the standard 2D rendering program.
 #define PROGRAM_2D_COMPONENT_TEXCOORD "texcoord"
+
+/// The total number of vertices used to create a quad within the standard 2D rendering program.
+///
+/// 2 triangles * 3 vertices per triangle.
+#define PROGRAM_2D_QUAD_VERTICES 2 * 3
+
+/// The total number of floats used within a single vertex within the standard 2D rendering program.
+///
+/// X, Y, U, and V.
+#define PROGRAM_2D_VERTEX_FLOATS 4
+
+/// The total number of floats needed for the vertices of a quad within the standard 2D rendering program.
+#define PROGRAM_2D_QUAD_FLOATS PROGRAM_2D_QUAD_VERTICES * PROGRAM_2D_VERTEX_FLOATS
+
+/// The standard vertex array components used for vertices drawn by the standard 2D rendering program.
+///
+/// X float, Y float, U float, and V float.
+#define PROGRAM_2D_VERTEX_COMPONENTS \
+{ \
+    { \
+        .data_type = GL_FLOAT, \
+        .num_values = 2, \
+        .offset = 0 * sizeof(float), \
+        .stride = 4 * sizeof(float), \
+        .attribute_name = PROGRAM_2D_COMPONENT_POSITION, \
+    }, \
+    { \
+        .data_type = GL_FLOAT, \
+        .num_values = 2, \
+        .offset = 2 * sizeof(float), \
+        .stride = 4 * sizeof(float), \
+        .attribute_name = PROGRAM_2D_COMPONENT_TEXCOORD, \
+    }, \
+}
