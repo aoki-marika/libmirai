@@ -13,6 +13,7 @@
 #include "gl.h"
 #include "constants.h"
 #include "program.h"
+#include "matrix.h"
 #include "spr_viewer.h"
 #include "aet_viewer.h"
 
@@ -121,8 +122,14 @@ int main(int argc, char **argv)
                    &program2d);
 
     glUseProgram(program2d.id);
+
     GLint uniform_viewport_size = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_VIEWPORT_SIZE);
     glUniform2ui(uniform_viewport_size, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    // set an identity matrix for any viewers that do not manipulate it
+    GLint uniform_model = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_MODEL);
+    struct mat4_t identity = mat4_identity();
+    glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&identity.data);
 
     // run the viewer
     // each viewer is repsonsible for its own main loop and event handling
