@@ -14,6 +14,7 @@
 #include "constants.h"
 #include "program.h"
 #include "spr_viewer.h"
+#include "aet_viewer.h"
 
 // MARK: - Enumerations
 
@@ -141,8 +142,14 @@ int main(int argc, char **argv)
         }
         case FILE_FORMAT_AET:
         {
-            fprintf(stderr, "ERROR: aet viewer is not implemented\n");
-            return EXIT_FAILURE;
+            struct aet_t aet;
+            struct aet_viewer_t viewer;
+            aet_open(path, &aet);
+            aet_viewer_create(&aet, &program2d, &viewer);
+            aet_viewer_run(window, &viewer);
+            aet_viewer_destroy(&viewer);
+            aet_close(&aet);
+            break;
         }
         case FILE_FORMAT_CGFX:
         {

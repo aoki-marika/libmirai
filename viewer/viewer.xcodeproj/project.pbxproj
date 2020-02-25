@@ -13,6 +13,7 @@
 		EC00394923E8489D00F55A5B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00394823E8489D00F55A5B /* IOKit.framework */; };
 		EC00395C23E860F300F55A5B /* program.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395B23E860F300F55A5B /* program.c */; };
 		EC00396023E86E7D00F55A5B /* vertex_array.c in Sources */ = {isa = PBXBuildFile; fileRef = EC00395F23E86E7D00F55A5B /* vertex_array.c */; };
+		ECA9D0BD24054A0A002A6950 /* aet_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECA9D0BC24054A0A002A6950 /* aet_viewer.c */; };
 		ECC028E82402E6010080F415 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = ECC028E72402E6010080F415 /* text.c */; };
 		ECEA38C623E8888F00EFEC5B /* texture.c in Sources */ = {isa = PBXBuildFile; fileRef = ECEA38C523E8888F00EFEC5B /* texture.c */; };
 		ECEA38C723E88CDF00EFEC5B /* libmirai.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC00395523E84C6E00F55A5B /* libmirai.a */; };
@@ -66,6 +67,8 @@
 		EC00395E23E86E6400F55A5B /* vertex_array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vertex_array.h; sourceTree = "<group>"; };
 		EC00395F23E86E7D00F55A5B /* vertex_array.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vertex_array.c; sourceTree = "<group>"; };
 		EC7D36A724014F4A005C09B7 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
+		ECA9D0BA24054A00002A6950 /* aet_viewer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aet_viewer.h; sourceTree = "<group>"; };
+		ECA9D0BC24054A0A002A6950 /* aet_viewer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aet_viewer.c; sourceTree = "<group>"; };
 		ECC028E62402E5E70080F415 /* text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = text.h; sourceTree = "<group>"; };
 		ECC028E72402E6010080F415 /* text.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = text.c; sourceTree = "<group>"; };
 		ECEA38C423E8888600EFEC5B /* texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = texture.h; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 				ECEA38C423E8888600EFEC5B /* texture.h */,
 				ECC028E62402E5E70080F415 /* text.h */,
 				ECEA38CA23E89AA600EFEC5B /* spr_viewer.h */,
+				ECA9D0BA24054A00002A6950 /* aet_viewer.h */,
 			);
 			path = viewer;
 			sourceTree = "<group>";
@@ -139,6 +143,7 @@
 				ECEA38C523E8888F00EFEC5B /* texture.c */,
 				ECC028E72402E6010080F415 /* text.c */,
 				ECEA38CB23E89AA600EFEC5B /* spr_viewer.c */,
+				ECA9D0BC24054A0A002A6950 /* aet_viewer.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -235,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ECA9D0BD24054A0A002A6950 /* aet_viewer.c in Sources */,
 				EC00395C23E860F300F55A5B /* program.c in Sources */,
 				ECEA38CC23E89AA600EFEC5B /* spr_viewer.c in Sources */,
 				EC00392F23E8425600F55A5B /* main.c in Sources */,
