@@ -36,6 +36,24 @@ struct aet_viewer_t
     GLuint *texture_ids;
 };
 
+/// A data structure for wrapping around AET nodes and provide viewer-specific functionality.
+struct aet_viewer_node_t
+{
+    /// The backing AET node of this node, if any.
+    ///
+    /// If this is a root node then this is `NULL`.
+    /// Else this is a pointer within the containing viewer's AET.
+    const struct aet_node_t *backing;
+
+    /// The total number of child nodes within this node.
+    unsigned int num_children;
+
+    /// All the child nodes of this node.
+    ///
+    /// Allocated.
+    struct aet_viewer_node_t *children;
+};
+
 // MARK: - Functions
 
 /// Create a new AET viewer from the given properties.

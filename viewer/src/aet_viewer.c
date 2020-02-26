@@ -14,6 +14,52 @@
 
 // MARK: - Functions
 
+/// Create a new viewer node from the given AET node.
+/// @param backing The backing AET node of the viewer node.
+/// @param node The viewer node to load the new node into.
+void aet_viewer_node_create(const struct aet_node_t *backing,
+                            struct aet_viewer_node_t *node)
+{
+    node->backing = backing;
+    node->num_children = backing->num_children;
+    node->children = malloc(backing->num_children * sizeof(struct aet_viewer_node_t));
+    for (int i = 0; i < backing->num_children; i++)
+    {
+        const struct aet_node_t *child_backing = &backing->children[i];
+        struct aet_viewer_node_t child;
+        aet_viewer_node_create(child_backing, &child);
+        node->children[i] = child;
+    }
+}
+
+/// Create a new viewer node from the given AET node group.
+/// @param backing The backing AET node group of the viewer node.
+/// @param node The viewer node to load the new node into.
+void aet_viewer_node_create_group(const struct aet_node_group_t *backing,
+                                  struct aet_viewer_node_t *node)
+{
+    node->backing = NULL;
+    node->num_children = backing->num_nodes;
+    node->children = malloc(backing->num_nodes * sizeof(struct aet_viewer_node_t));
+    for (int i = 0; i < backing->num_nodes; i++)
+    {
+        const struct aet_node_t *child_backing = &backing->nodes[i];
+        struct aet_viewer_node_t child;
+        aet_viewer_node_create(child_backing, &child);
+        node->children[i] = child;
+    }
+}
+
+/// Free the given node and all of it's allocated resources.
+/// @param node The node to free.
+void aet_viewer_node_destroy(struct aet_viewer_node_t *node)
+{
+    for (int i = 0; i < node->num_children; i++)
+        aet_viewer_node_destroy(&node->children[i]);
+
+    free(node->children);
+}
+
 void aet_viewer_create(const struct aet_t *aet,
                        const struct spr_t *spr,
                        const struct program_t *program2d,
@@ -44,6 +90,19 @@ void aet_viewer_destroy(struct aet_viewer_t *viewer)
 
 void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
 {
+    // create the root node
+    // TODO: REMOVEME
+    // this is temporary while an interface is not implemented
+    const struct aet_t *aet = viewer->aet;
+    const unsigned int scene_index = 0;
+
+    const struct aet_scene_t *scene = &aet->scenes[scene_index];
+    const unsigned int node_group_index = scene->num_node_groups - 1;
+
+    const struct aet_node_group_t *node_group = &scene->node_groups[node_group_index];
+    struct aet_viewer_node_t root;
+    aet_viewer_node_create_group(node_group, &root);
+
     // run the main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -52,4 +111,8 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    // destroy the root node
+    // TODO: REMOVEME
+    aet_viewer_node_destroy(&root);
 }
