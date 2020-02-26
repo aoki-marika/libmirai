@@ -10,6 +10,7 @@
 
 #include <mirai/aet.h>
 #include <mirai/spr.h>
+#include <mirai/matrix.h>
 
 #include "program.h"
 #include "vertex_array.h"
@@ -45,6 +46,9 @@ struct aet_viewer_node_t
     /// If this is a root node then this is `NULL`.
     /// Else this is a pointer within the containing viewer's AET.
     const struct aet_node_t *backing;
+
+    /// The world-space model transform for this node's vertices.
+    struct mat4_t transform_world;
 
     /// The total number of quads within this node's sprite quads vertex array.
     unsigned int num_sprite_quads;

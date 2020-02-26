@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "constants.h"
+#include "matrix.h"
 #include "texture.h"
 
 // MARK: - Functions
@@ -156,11 +157,23 @@ void aet_viewer_node_destroy(struct aet_viewer_node_t *node)
     }
 }
 
+/// Update the transforms of the given node and it's children.
+/// @param node The node to update the transforms of.
+void aet_viewer_node_update_transforms(struct aet_viewer_node_t *node)
+{
+    node->transform_world = mat4_identity();
+
+    for (int i = 0; i < node->num_children; i++)
+        aet_viewer_node_update_transforms(&node->children[i]);
+}
+
 /// Draw the given node and all of it's children.
 /// @param viewer The viewer drawing the given node.
+/// @param uniform_model The model transform uniform location within the active program.
 /// @param uniform_sampler The texture sampler uniform location within the active program.
 /// @param node The node to draw.
 void aet_viewer_node_draw(struct aet_viewer_t *viewer,
+                          GLint uniform_model,
                           GLint uniform_sampler,
                           struct aet_viewer_node_t *node)
 {
@@ -174,6 +187,7 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
                 GLenum unit = viewer->textures_base_unit + node->sprites_texture_index;
                 glActiveTexture(unit);
                 glBindVertexArray(node->sprite_quads_array->id);
+                glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&node->transform_world.data);
                 glUniform1i(uniform_sampler, unit - GL_TEXTURE0);
                 glDrawArrays(GL_TRIANGLES, 0, node->num_sprite_quads * PROGRAM_2D_QUAD_VERTICES);
                 break;
@@ -185,7 +199,7 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
 
     // children are drawn in reverse order
     for (int i = node->num_children - 1; i >= 0; i--)
-        aet_viewer_node_draw(viewer, uniform_sampler, &node->children[i]);
+        aet_viewer_node_draw(viewer, uniform_model, uniform_sampler, &node->children[i]);
 }
 
 void aet_viewer_create(const struct aet_t *aet,
@@ -220,6 +234,7 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
 {
     // get the uniform locations
     glUseProgram(viewer->program2d->id);
+    GLint uniform_model = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_MODEL);
     GLint uniform_sampler = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_SAMPLER);
 
     // create the root node
@@ -235,13 +250,16 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     struct aet_viewer_node_t root;
     aet_viewer_node_create_group(node_group, scene, viewer->spr, viewer->program2d, &root);
 
+    // set the initial transforms
+    aet_viewer_node_update_transforms(&root);
+
     // run the main loop
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw the root node
-        aet_viewer_node_draw(viewer, uniform_sampler, &root);
+        aet_viewer_node_draw(viewer, uniform_model, uniform_sampler, &root);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
