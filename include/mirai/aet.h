@@ -150,6 +150,8 @@ struct aet_node_t
     /// Allocated.
     struct aet_marker_t *markers;
 
+    #warning TODO: Move to a properties data structure.
+
     /// The origin of this node's position.
     struct vec2_t origin;
 
@@ -175,9 +177,6 @@ struct aet_node_t
     struct aet_sprite_group_t *sprite_group;
 
     /// The total number of child nodes within this node.
-    ///
-    /// If `contents_type` is `AET_NODE_CONTENTS_TYPE_SPRITE_GROUP` then this is set.
-    /// If not then this is `0`.
     unsigned int num_children;
 
     /// All the child nodes of this node.

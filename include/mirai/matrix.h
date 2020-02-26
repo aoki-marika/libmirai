@@ -15,6 +15,9 @@
 /// A data structure to represent a 4x4 matrix.
 struct mat4_t
 {
+    /// The internal data of this matrix.
+    ///
+    /// First index is column, second index is row.
     float data[4][4];
 };
 

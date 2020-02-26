@@ -184,7 +184,7 @@ void spr_close(struct spr_t *spr)
     fclose(spr->file);
 }
 
-struct scr_t *spr_lookup(struct spr_t *spr, char *scr_name)
+struct scr_t *spr_lookup(const struct spr_t *spr, char *scr_name)
 {
     for (int i = 0; i < spr->num_scrs; i++)
     {
