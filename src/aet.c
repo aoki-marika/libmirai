@@ -122,9 +122,9 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     fread(&num_markers, sizeof(num_markers), 1, file);
     fread(&markers_pointer, sizeof(markers_pointer), 1, file);
 
-    // read the placement pointer
-    uint32_t placement_pointer;
-    fread(&placement_pointer, sizeof(placement_pointer), 1, file);
+    // read the properties pointer
+    uint32_t properties_pointer;
+    fread(&properties_pointer, sizeof(properties_pointer), 1, file);
 
     // padding
     for (int i = 0; i < 4; i++)
@@ -227,58 +227,80 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
         marker->type = type;
     }
 
-    // read the placement
-    // read all the floats into a 2d array first, then split them into their properties
-    fseek(file, placement_pointer, SEEK_SET);
-
-    const int num_float_arrays = 8;
-    float num_floats[num_float_arrays];
-    float *floats[num_float_arrays];
-    for (int i = 0; i < num_float_arrays; i++)
+    // read the properties
+    // origin x, origin y, position x, position y, rotation, scale x, scale y, opacity
+    for (int i = 0; i < 8; i++)
     {
         // array
-        fseek(file, placement_pointer + 4 + (i * 8), SEEK_SET);
+        // +4 to skip the preceding 4x unknown bytes
+        fseek(file, properties_pointer + 4 + (i * 8), SEEK_SET);
 
-        // read the float count and pointer of this array
-        uint32_t num_array_floats, array_floats_pointer;
-        fread(&num_array_floats, sizeof(num_array_floats), 1, file);
-        fread(&array_floats_pointer, sizeof(array_floats_pointer), 1, file);
+        // read the value count and data array pointer
+        uint32_t num_values, data_pointer;
+        fread(&num_values, sizeof(num_values), 1, file);
+        fread(&data_pointer, sizeof(data_pointer), 1, file);
 
-        // no array should ever have no floats
-        assert(num_array_floats > 0);
+        // read the data
+        assert(num_values > 0);
 
-        // read the floats of this array
-        num_floats[i] = num_array_floats;
-        floats[i] = malloc(num_array_floats * sizeof(float));
-        for (int f = 0; f < num_array_floats; f++)
+        struct aet_node_property_t property;
+        property.num_values = num_values;
+        property.values = malloc(num_values * sizeof(float));
+        if (num_values == 1)
         {
-            // array
-            fseek(file, array_floats_pointer + (f * 4), SEEK_SET);
+            property.type = AET_NODE_PROPERTY_TYPE_STATIC;
+            property.frames = NULL;
 
-            // read and insert the float
+            // read the single value
             float value;
+            fseek(file, data_pointer, SEEK_SET);
             fread(&value, sizeof(value), 1, file);
-            floats[i][f] = value;
+
+            // insert the value
+            property.values[0] = value;
+        }
+        else
+        {
+            property.type = AET_NODE_PROPERTY_TYPE_DYNAMIC;
+            property.frames = malloc(num_values * sizeof(float));
+
+            // read all the values and their frames
+            for (int i = 0; i < num_values; i++)
+            {
+                // read the frame number
+                float frame;
+                fseek(file, data_pointer + (i * sizeof(float)), SEEK_SET);
+                fread(&frame, sizeof(frame), 1, file);
+
+                // read the value
+                // the value is in a second array after the frames
+                // with 2 floats per entry, so seek to the beginning of that array,
+                // then seek to the item and take the value
+                float value;
+                fseek(file, data_pointer + (num_values * sizeof(float)), SEEK_SET);
+                fseek(file, (i * sizeof(float) * 2), SEEK_CUR);
+                fread(&value, sizeof(value), 1, file);
+
+                // insert the value
+                property.values[i] = value;
+                property.frames[i] = frame;
+            }
+        }
+
+        // set the property
+        switch (i)
+        {
+            case 0: node->origin_x = property; break;
+            case 1: node->origin_y = property; break;
+            case 2: node->position_x = property; break;
+            case 3: node->position_y = property; break;
+            case 4: node->rotation = property; break;
+            case 5: node->scale_x = property; break;
+            case 6: node->scale_y = property; break;
+            case 7: node->opacity = property; break;
+            default: assert(0);
         }
     }
-
-    // split the float arrays into their properties
-    node->origin.x = floats[0][0];
-    node->origin.y = floats[1][0];
-
-    node->position.x = floats[2][0];
-    node->position.y = floats[3][0];
-
-    node->rotation = floats[4][0];
-
-    node->scale.x = floats[5][0];
-    node->scale.y = floats[6][0];
-
-    node->opacity = floats[7][0];
-
-    // free the floats now that they have been mapped to properties
-    for (int i = 0; i < num_float_arrays; i++)
-        free(floats[i]);
 }
 
 void aet_open(const char *path, struct aet_t *aet)
@@ -437,6 +459,21 @@ void aet_open(const char *path, struct aet_t *aet)
     aet->file = file;
 }
 
+/// Release the given node property and all of it's allocated resources.
+/// @param property The node property to free.
+void aet_node_property_free(struct aet_node_property_t *property)
+{
+    free(property->values);
+    switch (property->type)
+    {
+        case AET_NODE_PROPERTY_TYPE_DYNAMIC:
+            free(property->frames);
+            break;
+        default:
+            break;
+    }
+}
+
 void aet_close(struct aet_t *aet)
 {
     for (int i = 0; i < aet->num_scenes; i++)
@@ -465,6 +502,15 @@ void aet_close(struct aet_t *aet)
                     free(node->markers[i].name);
 
                 free(node->markers);
+
+                aet_node_property_free(&node->origin_x);
+                aet_node_property_free(&node->origin_y);
+                aet_node_property_free(&node->position_x);
+                aet_node_property_free(&node->position_y);
+                aet_node_property_free(&node->rotation);
+                aet_node_property_free(&node->scale_x);
+                aet_node_property_free(&node->scale_y);
+                aet_node_property_free(&node->opacity);
             }
 
             free(group->nodes);

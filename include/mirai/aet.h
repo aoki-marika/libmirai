@@ -72,6 +72,16 @@ enum aet_marker_type_t
     AET_MARKER_TYPE_PRESS_END   = 0x8,
 };
 
+/// The different types that a single animatable property within a node can be.
+enum aet_node_property_type_t
+{
+    /// This property has no animations.
+    AET_NODE_PROPERTY_TYPE_STATIC = 0x0,
+
+    /// This property has animations.
+    AET_NODE_PROPERTY_TYPE_DYNAMIC = 0x1,
+};
+
 // MARK: - Data Structures
 
 /// The data structure for an AET file that has been opened.
@@ -134,6 +144,27 @@ struct aet_node_group_t
     struct aet_node_t *nodes;
 };
 
+/// The data structure for a single animatable property within a node.
+struct aet_node_property_t
+{
+    /// The type of this property.
+    enum aet_node_property_type_t type;
+
+    /// The total number of values within this property.
+    unsigned int num_values;
+
+    /// All the values of this property.
+    ///
+    /// Allocated.
+    float *values;
+
+    /// The frame number of which each value of this property occurs.
+    ///
+    /// If `type` is `AET_NODE_PROPERTY_TYPE_STATIC`, then this is `NULL`.
+    /// If `type` is `AET_NODE_PROPERTY_TYPE_DYNAMIC`, then this is allocated.
+    float *frames;
+};
+
 /// The data structure for a single node within a scene's graph in an AET.
 struct aet_node_t
 {
@@ -150,22 +181,29 @@ struct aet_node_t
     /// Allocated.
     struct aet_marker_t *markers;
 
-    #warning TODO: Move to a properties data structure.
+    /// The X axis of this node's origin.
+    struct aet_node_property_t origin_x;
 
-    /// The origin of this node's position.
-    struct vec2_t origin;
+    /// The Y axis of this node's origin.
+    struct aet_node_property_t origin_y;
 
-    /// The position of this node.
-    struct vec2_t position;
+    /// The X axis of this node's position.
+    struct aet_node_property_t position_x;
+
+    /// The Y axis of this node's origin.
+    struct aet_node_property_t position_y;
 
     /// The rotation of this node.
-    float rotation;
+    struct aet_node_property_t rotation;
 
-    /// The scale of this node.
-    struct vec2_t scale;
+    /// The X axis of this node's scale.
+    struct aet_node_property_t scale_x;
+
+    /// The Y axis of this node's scale.
+    struct aet_node_property_t scale_y;
 
     /// The opacity of this node.
-    float opacity;
+    struct aet_node_property_t opacity;
 
     /// The type of this node's contents.
     enum aet_node_contents_type_t contents_type;
