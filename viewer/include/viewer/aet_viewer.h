@@ -26,6 +26,14 @@ struct aet_viewer_t
 
     /// The program that this viewer is using to render it's 2D elements.
     const struct program_t *program2d;
+
+    /// The first texture unit that SPR textures are uploaded to within this viewer.
+    GLenum textures_base_unit;
+
+    /// The unique identifiers of all the uploaded textures from this viewer's SPR.
+    ///
+    /// Allocated. Always of length `spr->num_textures`.
+    GLuint *texture_ids;
 };
 
 // MARK: - Functions
