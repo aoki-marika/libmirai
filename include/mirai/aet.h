@@ -315,3 +315,10 @@ void aet_open(const char *path, struct aet_t *aet);
 /// This must be called after an AET is opened and before program execution completes.
 /// @param aet The AET to close.
 void aet_close(struct aet_t *aet);
+
+/// Get the given frame number in milliseconds.
+/// @param frame The frame number to convert.
+/// @param framerate The frame rate of the given frame number.
+/// @param speed The normalized playback speed of the given frame.
+/// @returns The millisecond of the given frame number accounting for the given properties.
+double aet_frame_to_ms(float frame, float framerate, float speed);

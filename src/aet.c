@@ -544,3 +544,10 @@ void aet_close(struct aet_t *aet)
     free(aet->scenes);
     fclose(aet->file);
 }
+
+double aet_frame_to_ms(float frame, float framerate, float speed)
+{
+    double frame_duration = (1 / framerate) * 1000;
+    double frame_ms = (frame * frame_duration) / speed;
+    return frame_ms;
+}
