@@ -12,6 +12,7 @@
 #include <mirai/spr.h>
 
 #include "program.h"
+#include "vertex_array.h"
 
 // MARK: - Data Structures
 
@@ -45,12 +46,29 @@ struct aet_viewer_node_t
     /// Else this is a pointer within the containing viewer's AET.
     const struct aet_node_t *backing;
 
+    /// The total number of quads within this node's sprite quads vertex array.
+    unsigned int num_sprite_quads;
+
+    /// The vertex array containing the quads used to draw this node's sprites.
+    ///
+    /// If `backing->contents_type` is `AET_NODE_CONTENTS_TYPE_SPRITE_GROUP`,
+    /// then this is allocated.
+    /// Else this is `NULL`.
+    ///
+    /// Each quad is of the size of it's sprite, and placed at `0,0`.
+    struct vertex_array_t *sprite_quads_array;
+
+    /// The index of the texture within the SPR that this node's sprites are in.
+    unsigned int sprites_texture_index;
+
     /// The total number of child nodes within this node.
     unsigned int num_children;
 
     /// All the child nodes of this node.
     ///
-    /// Allocated.
+    /// If `backing->contents_type` is `AET_NODE_CONTENTS_TYPE_CHILDREN`,
+    /// or this is a root node, then this is allocated.
+    /// Else this is `NULL`.
     struct aet_viewer_node_t *children;
 };
 
