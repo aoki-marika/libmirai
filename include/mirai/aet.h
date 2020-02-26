@@ -117,6 +117,17 @@ struct aet_scene_t
     /// The array and each item are allocated.
     char **scr_names;
 
+    /// The frame number at which this scene's animation timeline begins.
+    float timeline_start_frame;
+
+    /// The frame number at which this scene's animation timeline ends.
+    float timeline_end_frame;
+
+    /// The frame rate (frames per second) at which this scene's animation timeline is defined in.
+    ///
+    /// All nodes within this scene take on this frame rate, and do not define their own.
+    float timeline_framerate;
+
     /// The width of this scene, in pixels.
     unsigned int width;
 
@@ -173,6 +184,21 @@ struct aet_node_t
     /// Allocated.
     char *name;
 
+    /// The frame number at which this node's animation timeline begins.
+    ///
+    /// Relative to both the scenes timeline and frame rate.
+    float timeline_start_frame;
+
+    /// The frame number at which this node's animation timeline end.
+    ///
+    /// Relative to both the scenes timeline and frame rate.
+    float timeline_end_frame;
+
+    /// The normalized speed at which this node's animation timeline plays at.
+    ///
+    /// `1.0` is normal speed, `2.0` is double speed, `0.5` is half, etc.
+    float timeline_playback_speed;
+
     /// The total number of markers within this node.
     unsigned int num_markers;
 
@@ -227,9 +253,9 @@ struct aet_node_t
 /// The data structure for marking an animation point within a node's timeline.
 struct aet_marker_t
 {
-    /// The frame number at which this marker occurs, relative to the containing node's timeline.
+    /// The frame number at which this marker occurs.
     ///
-    /// Any fractions on this value should be ignored, only the whole number is used.
+    /// Relative to the containing node's timeline.
     float frame;
 
     /// The name of this marker.

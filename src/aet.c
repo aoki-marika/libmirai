@@ -100,11 +100,18 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     char *name = utils_read_string(file);
     fseek(file, name_return, SEEK_SET);
 
+    // read the timeline properties
+    // third float is unknown, skip it
+    float timeline_start_frame, timeline_end_frame, timeline_playback_speed;
+    fread(&timeline_start_frame, sizeof(timeline_start_frame), 1, file);
+    fread(&timeline_end_frame, sizeof(timeline_end_frame), 1, file);
+    fseek(file, 4, SEEK_CUR);
+    fread(&timeline_playback_speed, sizeof(timeline_playback_speed), 1, file);
+
     // unknown values
-    //  - 4x float unknown
     //  - 1x u16 flags unknown
     //  - 1x u8 unknown
-    fseek(file, (4 * 4) + 2 + 1, SEEK_CUR);
+    fseek(file, 2 + 1, SEEK_CUR);
 
     // read the contents type and pointer
     // init 0x0 and fread sizeof(u8) as sizeof(enum) is 4
@@ -132,6 +139,9 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
 
     // initialize the node
     node->name = name;
+    node->timeline_start_frame = timeline_start_frame;
+    node->timeline_end_frame = timeline_end_frame;
+    node->timeline_playback_speed = timeline_playback_speed;
 
     // read the contents
     node->contents_type = contents_type;
@@ -387,8 +397,14 @@ void aet_open(const char *path, struct aet_t *aet)
             fread(&header_pointer, sizeof(header_pointer), 1, file);
             fseek(file, header_pointer, SEEK_SET);
 
-            // 16x byte unknown
-            fseek(file, 16, SEEK_CUR);
+            // read the timeline properties
+            float timeline_start_frame, timeline_end_frame, timeline_framerate;
+            fread(&timeline_start_frame, sizeof(timeline_start_frame), 1, file);
+            fread(&timeline_end_frame, sizeof(timeline_end_frame), 1, file);
+            fread(&timeline_framerate, sizeof(timeline_framerate), 1, file);
+
+            // 1x float unknown
+            fseek(file, 4, SEEK_CUR);
 
             // read the size
             uint32_t width, height;
@@ -397,12 +413,16 @@ void aet_open(const char *path, struct aet_t *aet)
             assert(width == 320 || width == 400 || width == 1200);
             assert(height == 240 || height == 720);
 
-            scene.width = width;
-            scene.height = height;
-
             // padding
             for (int i = 0; i < 4; i++)
                 assert(fgetc(file) == 0x0);
+
+            // initialize the scene
+            scene.timeline_start_frame = timeline_start_frame;
+            scene.timeline_end_frame = timeline_end_frame;
+            scene.timeline_framerate = timeline_framerate;
+            scene.width = width;
+            scene.height = height;
 
             // read the node group count and pointer
             uint32_t num_node_groups, node_groups_pointer;
