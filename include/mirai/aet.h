@@ -219,7 +219,7 @@ struct aet_node_t
     /// The Y axis of this node's origin.
     struct aet_node_property_t position_y;
 
-    /// The rotation of this node.
+    /// The rotation of this node, in clockwise degrees.
     struct aet_node_property_t rotation;
 
     /// The X axis of this node's scale.
