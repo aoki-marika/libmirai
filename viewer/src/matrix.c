@@ -9,6 +9,7 @@
 #include "matrix.h"
 
 #include <string.h>
+#include <math.h>
 
 #include "constants.h"
 
@@ -68,6 +69,18 @@ struct mat4_t mat4_scaling(struct vec3_t scale)
     return result;
 }
 
+struct mat4_t mat4_rotation_z(float radians)
+{
+    float sin = sinf(radians);
+    float cos = cosf(radians);
+    struct mat4_t result = mat4_identity();
+    result.data[0][0] = cos;
+    result.data[0][1] = sin;
+    result.data[1][0] = -sin;
+    result.data[1][1] = cos;
+    return result;
+}
+
 struct mat4_t mat4_ortho(float left,
                          float right,
                          float bottom,
@@ -78,6 +91,6 @@ struct mat4_t mat4_ortho(float left,
     struct mat4_t result = mat4_identity();
     result.data[0][0] = 2 / (right - left);
     result.data[1][1] = 2 / (top - bottom);
-    result.data[2][2] = 2 / (z_far - z_near);
+    result.data[2][2] = -2 / (z_far - z_near);
     return result;
 }

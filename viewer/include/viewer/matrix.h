@@ -37,6 +37,11 @@ struct mat4_t mat4_translation(struct vec3_t offset);
 /// @returns The scaling matrix for the given scale.
 struct mat4_t mat4_scaling(struct vec3_t scale);
 
+/// Create a 4x4 Z rotation matrix from the given rotation, in radians.
+/// @param radians The rotation to create a matrix for, in radians, along the Z axis.
+/// @returns The Z rotation matrix for the given rotation.
+struct mat4_t mat4_rotation_z(float radians);
+
 /// Create a 4x4 orthographic projection matrix from the given properties.
 /// @param left The left vertical clipping plane.
 /// @param right The right vertical clipping plane.
