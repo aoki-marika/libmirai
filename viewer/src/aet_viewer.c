@@ -158,7 +158,7 @@ void aet_viewer_node_destroy(struct aet_viewer_node_t *node)
     }
 }
 
-/// Update the transforms of the given node and it's children.
+/// Update the cached properties of the given node and it's children, such as world transform and opacity.
 /// @param origin_x The base X origin of the given node.
 /// @param origin_y The base Y origin of the given node.
 /// @param position_x The base X position of the given node.
@@ -166,14 +166,16 @@ void aet_viewer_node_destroy(struct aet_viewer_node_t *node)
 /// @param rotation The base rotation of the given node.
 /// @param scale_x The base X scale of the given node.
 /// @param scale_y The base Y scale of the given node.
+/// @param opacity The base opacity of the given node.
 /// @param node The node to update the transforms of.
-void aet_viewer_node_update_transforms(float origin_x,
+void aet_viewer_node_update_properties(float origin_x,
                                        float origin_y,
                                        float position_x,
                                        float position_y,
                                        float rotation,
                                        float scale_x,
                                        float scale_y,
+                                       float opacity,
                                        struct aet_viewer_node_t *node)
 {
     // apply the given nodes properties to the base
@@ -187,6 +189,7 @@ void aet_viewer_node_update_transforms(float origin_x,
         float node_rotation = aet_node->rotation.values[0];
         float node_scale_x = aet_node->scale_x.values[0];
         float node_scale_y = aet_node->scale_y.values[0];
+        float node_opacity = aet_node->opacity.values[0];
 
         position_x = (position_x - origin_x) + node_position_x;
         position_y = (position_y - origin_y) + node_position_y;
@@ -195,11 +198,11 @@ void aet_viewer_node_update_transforms(float origin_x,
         rotation += node_rotation;
         scale_x *= node_scale_x;
         scale_y *= node_scale_y;
+        opacity *= node_opacity;
     }
 
-    // create and set the world transform
+    // create the world transform
     struct mat4_t transform_world = mat4_identity();
-
     struct vec3_t scale = { .x = scale_x, .y = scale_y, .z = 1 };
     float rotation_radians = rotation * (M_PI / 180);
     struct vec3_t position_scaled = { .x = position_x / scale.x, .y = position_y / scale.y, .z = 0 };
@@ -209,17 +212,20 @@ void aet_viewer_node_update_transforms(float origin_x,
     transform_world = mat4_multiply(transform_world, mat4_rotation_z(rotation_radians));
     transform_world = mat4_multiply(transform_world, mat4_translation(origin_inverse));
 
+    // set the properties
     node->transform_world = transform_world;
+    node->opacity = opacity;
 
-    // update the transforms for all the children
+    // update all the children
     for (int i = 0; i < node->num_children; i++)
-        aet_viewer_node_update_transforms(origin_x,
+        aet_viewer_node_update_properties(origin_x,
                                           origin_y,
                                           position_x,
                                           position_y,
                                           rotation,
                                           scale_x,
                                           scale_y,
+                                          opacity,
                                           &node->children[i]);
 }
 
@@ -227,10 +233,12 @@ void aet_viewer_node_update_transforms(float origin_x,
 /// @param viewer The viewer drawing the given node.
 /// @param uniform_model The model transform uniform location within the active program.
 /// @param uniform_sampler The texture sampler uniform location within the active program.
+/// @param uniform_color_multiplier The colour multiplier uniform location within the active program.
 /// @param node The node to draw.
 void aet_viewer_node_draw(struct aet_viewer_t *viewer,
                           GLint uniform_model,
                           GLint uniform_sampler,
+                          GLint uniform_color_multiplier,
                           struct aet_viewer_node_t *node)
 {
     // draw the given nodes contents
@@ -241,10 +249,12 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
             case AET_NODE_CONTENTS_TYPE_SPRITE_GROUP:
             {
                 GLenum unit = viewer->textures_base_unit + node->sprites_texture_index;
+                struct color4_t multiplier_color = { .r = 1, .g = 1, .b = 1, .a = node->opacity };
                 glActiveTexture(unit);
                 glBindVertexArray(node->sprite_quads_array->id);
                 glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&node->transform_world.data);
                 glUniform1i(uniform_sampler, unit - GL_TEXTURE0);
+                glUniform4fv(uniform_color_multiplier, 1, (GLfloat *)&multiplier_color);
                 glDrawArrays(GL_TRIANGLES, 0, node->num_sprite_quads * PROGRAM_2D_QUAD_VERTICES);
                 break;
             }
@@ -255,7 +265,11 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
 
     // children are drawn in reverse order
     for (int i = node->num_children - 1; i >= 0; i--)
-        aet_viewer_node_draw(viewer, uniform_model, uniform_sampler, &node->children[i]);
+        aet_viewer_node_draw(viewer,
+                             uniform_model,
+                             uniform_sampler,
+                             uniform_color_multiplier,
+                             &node->children[i]);
 }
 
 void aet_viewer_create(const struct aet_t *aet,
@@ -292,6 +306,7 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     glUseProgram(viewer->program2d->id);
     GLint uniform_model = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_MODEL);
     GLint uniform_sampler = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_SAMPLER);
+    GLint uniform_color_multiplier = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_COLOR_MULTIPLIER);
 
     // create the root node
     // TODO: REMOVEME
@@ -306,14 +321,15 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     struct aet_viewer_node_t root;
     aet_viewer_node_create_group(node_group, scene, viewer->spr, viewer->program2d, &root);
 
-    // set the initial transforms
+    // set the initial properties
     // set the base position to center the scene within the window
     float start_x = (WINDOW_WIDTH - scene->width) / 2;
     float start_y = (WINDOW_HEIGHT - scene->height) / 2;
-    aet_viewer_node_update_transforms(0, 0, //origin
+    aet_viewer_node_update_properties(0, 0, //origin
                                       start_x, start_y, //position
-                                      0,    //rotation
-                                      1, 1, //scale,
+                                      0, //rotation
+                                      1, 1, //scale
+                                      1, //opacity
                                       &root);
 
     // run the main loop
@@ -322,7 +338,11 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw the root node
-        aet_viewer_node_draw(viewer, uniform_model, uniform_sampler, &root);
+        aet_viewer_node_draw(viewer,
+                             uniform_model,
+                             uniform_sampler,
+                             uniform_color_multiplier,
+                             &root);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

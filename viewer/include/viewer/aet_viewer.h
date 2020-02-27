@@ -47,8 +47,11 @@ struct aet_viewer_node_t
     /// Else this is a pointer within the containing viewer's AET.
     const struct aet_node_t *backing;
 
-    /// The world-space model transform for this node's vertices.
+    /// The cached world-space model transform for this node's vertices.
     struct mat4_t transform_world;
+
+    /// The cached absolute opacity of this node's contents.
+    float opacity;
 
     /// The total number of quads within this node's sprite quads vertex array.
     unsigned int num_sprite_quads;

@@ -36,27 +36,44 @@
 { \
     "#version 150 core\n" \
     "uniform sampler2D sampler;", \
+    "uniform vec4 colorMultiplier;", \
     "in vec2 vertexTexcoord;", \
     "out vec4 outColor;", \
     "void main()", \
     "{", \
-    "    outColor = texture(sampler, vertexTexcoord.st);", \
+    "    vec4 sampled = texture(sampler, vertexTexcoord.st);", \
+    "    outColor = sampled * colorMultiplier;", \
     "}", \
 }
 
-/// The name of the model matrix uniform within the standard 2D rendering program.
+/// The name of the "model" mat4 uniform within the standard 2D rendering program.
+///
+/// This uniform is used to provide the model portion of the MVP matrix.
 #define PROGRAM_2D_UNIFORM_MODEL "model"
 
-/// The name of the projection matrix uniform within the standard 2D rendering program.
+/// The name of the "projection" mat4 uniform within the standard 2D rendering program.
+///
+/// This uniform is used to provide the projection portion of the MVP matrix.
 #define PROGRAM_2D_UNIFORM_PROJECTION "projection"
 
-/// The name of the sampler uniform within the standard 2D rendering program.
+/// The name of the "sampler" sampler2D uniform within the standard 2D rendering program.
+///
+/// This uniform is used to define the sampler which the texture coordinates are used to sample.
 #define PROGRAM_2D_UNIFORM_SAMPLER "sampler"
 
-/// The name of the position vertex component within the standard 2D rendering program.
+/// The name of the "colorMultiplier" vec4 uniform within the standard 2D rendering program.
+///
+/// This uniform is used to provide an RGBA colour which each sampled colour is multiplied by.
+#define PROGRAM_2D_UNIFORM_COLOR_MULTIPLIER "colorMultiplier"
+
+/// The name of the "position" vec2 vertex component within the standard 2D rendering program.
+///
+/// This component is used to define the X and Y positions of a vertex.
 #define PROGRAM_2D_COMPONENT_POSITION "position"
 
-/// The name of the texcoord vertex component within the standard 2D rendering program.
+/// The name of the "texcoord" vec2 vertex component within the standard 2D rendering program.
+///
+/// This component is used to define the U and V texture coordinates sampled by a vertex.
 #define PROGRAM_2D_COMPONENT_TEXCOORD "texcoord"
 
 /// The total number of vertices used to create a quad within the standard 2D rendering program.
