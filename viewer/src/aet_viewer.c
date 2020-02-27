@@ -10,6 +10,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "constants.h"
 #include "matrix.h"
@@ -158,13 +159,68 @@ void aet_viewer_node_destroy(struct aet_viewer_node_t *node)
 }
 
 /// Update the transforms of the given node and it's children.
+/// @param origin_x The base X origin of the given node.
+/// @param origin_y The base Y origin of the given node.
+/// @param position_x The base X position of the given node.
+/// @param position_y The base Y position of the given node.
+/// @param rotation The base rotation of the given node.
+/// @param scale_x The base X scale of the given node.
+/// @param scale_y The base Y scale of the given node.
 /// @param node The node to update the transforms of.
-void aet_viewer_node_update_transforms(struct aet_viewer_node_t *node)
+void aet_viewer_node_update_transforms(float origin_x,
+                                       float origin_y,
+                                       float position_x,
+                                       float position_y,
+                                       float rotation,
+                                       float scale_x,
+                                       float scale_y,
+                                       struct aet_viewer_node_t *node)
 {
-    node->transform_world = mat4_identity();
+    // apply the given nodes properties to the base
+    if (node->backing != NULL)
+    {
+        const struct aet_node_t *aet_node = node->backing;
+        float node_origin_x = aet_node->origin_x.values[0];
+        float node_origin_y = aet_node->origin_y.values[0];
+        float node_position_x = aet_node->position_x.values[0];
+        float node_position_y = aet_node->position_y.values[0];
+        float node_rotation = aet_node->rotation.values[0];
+        float node_scale_x = aet_node->scale_x.values[0];
+        float node_scale_y = aet_node->scale_y.values[0];
 
+        position_x = (position_x - origin_x) + node_position_x;
+        position_y = (position_y - origin_y) + node_position_y;
+        origin_x = node_origin_x;
+        origin_y = node_origin_y;
+        rotation += node_rotation;
+        scale_x *= node_scale_x;
+        scale_y *= node_scale_y;
+    }
+
+    // create and set the world transform
+    struct mat4_t transform_world = mat4_identity();
+
+    struct vec3_t scale = { .x = scale_x, .y = scale_y, .z = 1 };
+    float rotation_radians = rotation * (M_PI / 180);
+    struct vec3_t position_scaled = { .x = position_x / scale.x, .y = position_y / scale.y, .z = 0 };
+    struct vec3_t origin_inverse = { .x = -origin_x, .y = -origin_y, .z = 0 };
+    transform_world = mat4_multiply(transform_world, mat4_scaling(scale));
+    transform_world = mat4_multiply(transform_world, mat4_translation(position_scaled));
+    transform_world = mat4_multiply(transform_world, mat4_rotation_z(rotation_radians));
+    transform_world = mat4_multiply(transform_world, mat4_translation(origin_inverse));
+
+    node->transform_world = transform_world;
+
+    // update the transforms for all the children
     for (int i = 0; i < node->num_children; i++)
-        aet_viewer_node_update_transforms(&node->children[i]);
+        aet_viewer_node_update_transforms(origin_x,
+                                          origin_y,
+                                          position_x,
+                                          position_y,
+                                          rotation,
+                                          scale_x,
+                                          scale_y,
+                                          &node->children[i]);
 }
 
 /// Draw the given node and all of it's children.
@@ -251,7 +307,14 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     aet_viewer_node_create_group(node_group, scene, viewer->spr, viewer->program2d, &root);
 
     // set the initial transforms
-    aet_viewer_node_update_transforms(&root);
+    // set the base position to center the scene within the window
+    float start_x = (WINDOW_WIDTH - scene->width) / 2;
+    float start_y = (WINDOW_HEIGHT - scene->height) / 2;
+    aet_viewer_node_update_transforms(0, 0, //origin
+                                      start_x, start_y, //position
+                                      0,    //rotation
+                                      1, 1, //scale,
+                                      &root);
 
     // run the main loop
     while (!glfwWindowShouldClose(window))
