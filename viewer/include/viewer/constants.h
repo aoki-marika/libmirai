@@ -36,13 +36,13 @@
 { \
     "#version 150 core\n" \
     "uniform sampler2D sampler;", \
-    "uniform vec4 colorMultiplier;", \
+    "uniform vec4 multiplyColor;", \
     "in vec2 vertexTexcoord;", \
     "out vec4 outColor;", \
     "void main()", \
     "{", \
     "    vec4 sampled = texture(sampler, vertexTexcoord.st);", \
-    "    outColor = sampled * colorMultiplier;", \
+    "    outColor = sampled * multiplyColor;", \
     "}", \
 }
 
@@ -61,10 +61,10 @@
 /// This uniform is used to define the sampler which the texture coordinates are used to sample.
 #define PROGRAM_2D_UNIFORM_SAMPLER "sampler"
 
-/// The name of the "colorMultiplier" vec4 uniform within the standard 2D rendering program.
+/// The name of the "multiplyColor" vec4 uniform within the standard 2D rendering program.
 ///
 /// This uniform is used to provide an RGBA colour which each sampled colour is multiplied by.
-#define PROGRAM_2D_UNIFORM_COLOR_MULTIPLIER "colorMultiplier"
+#define PROGRAM_2D_UNIFORM_MULTIPLY_COLOR "multiplyColor"
 
 /// The name of the "position" vec2 vertex component within the standard 2D rendering program.
 ///

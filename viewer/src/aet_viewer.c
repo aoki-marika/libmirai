@@ -233,12 +233,12 @@ void aet_viewer_node_update_properties(float origin_x,
 /// @param viewer The viewer drawing the given node.
 /// @param uniform_model The model transform uniform location within the active program.
 /// @param uniform_sampler The texture sampler uniform location within the active program.
-/// @param uniform_color_multiplier The colour multiplier uniform location within the active program.
+/// @param uniform_multiply_color The multiply colour uniform location within the active program.
 /// @param node The node to draw.
 void aet_viewer_node_draw(struct aet_viewer_t *viewer,
                           GLint uniform_model,
                           GLint uniform_sampler,
-                          GLint uniform_color_multiplier,
+                          GLint uniform_multiply_color,
                           struct aet_viewer_node_t *node)
 {
     // draw the given nodes contents
@@ -249,12 +249,12 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
             case AET_NODE_CONTENTS_TYPE_SPRITE_GROUP:
             {
                 GLenum unit = viewer->textures_base_unit + node->sprites_texture_index;
-                struct color4_t multiplier_color = { .r = 1, .g = 1, .b = 1, .a = node->opacity };
+                struct color4_t multiply_color = { .r = 1, .g = 1, .b = 1, .a = node->opacity };
                 glActiveTexture(unit);
                 glBindVertexArray(node->sprite_quads_array->id);
                 glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&node->transform_world.data);
                 glUniform1i(uniform_sampler, unit - GL_TEXTURE0);
-                glUniform4fv(uniform_color_multiplier, 1, (GLfloat *)&multiplier_color);
+                glUniform4fv(uniform_multiply_color, 1, (GLfloat *)&multiply_color);
                 glDrawArrays(GL_TRIANGLES, 0, node->num_sprite_quads * PROGRAM_2D_QUAD_VERTICES);
                 break;
             }
@@ -268,7 +268,7 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
         aet_viewer_node_draw(viewer,
                              uniform_model,
                              uniform_sampler,
-                             uniform_color_multiplier,
+                             uniform_multiply_color,
                              &node->children[i]);
 }
 
@@ -306,7 +306,7 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
     glUseProgram(viewer->program2d->id);
     GLint uniform_model = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_MODEL);
     GLint uniform_sampler = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_SAMPLER);
-    GLint uniform_color_multiplier = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_COLOR_MULTIPLIER);
+    GLint uniform_multiply_color = glGetUniformLocation(viewer->program2d->id, PROGRAM_2D_UNIFORM_MULTIPLY_COLOR);
 
     // create the root node
     // TODO: REMOVEME
@@ -341,7 +341,7 @@ void aet_viewer_run(GLFWwindow *window, struct aet_viewer_t *viewer)
         aet_viewer_node_draw(viewer,
                              uniform_model,
                              uniform_sampler,
-                             uniform_color_multiplier,
+                             uniform_multiply_color,
                              &root);
 
         glfwSwapBuffers(window);

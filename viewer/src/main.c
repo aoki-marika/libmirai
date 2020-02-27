@@ -126,13 +126,13 @@ int main(int argc, char **argv)
     // set sensible default uniforms in case a viewer does not manipulate it
     GLint uniform_model = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_MODEL);
     GLint uniform_projection = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_PROJECTION);
-    GLint uniform_color_multiplier = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_COLOR_MULTIPLIER);
+    GLint uniform_multiply_color = glGetUniformLocation(program2d.id, PROGRAM_2D_UNIFORM_MULTIPLY_COLOR);
 
     struct mat4_t model = mat4_identity();
     glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&model.data);
 
-    struct color4_t color_multiplier = { .r = 1, .g = 1, .b = 1, .a = 1 };
-    glUniform4fv(uniform_color_multiplier, 1, (GLfloat *)&color_multiplier);
+    struct color4_t multiply_color = { .r = 1, .g = 1, .b = 1, .a = 1 };
+    glUniform4fv(uniform_multiply_color, 1, (GLfloat *)&multiply_color);
 
     // set an orthographic projection matrix that has takes center origin pixel-space coordinates
     // then translate this matrix by -w/2 and -h/2 to place the center in the top left
