@@ -15,10 +15,6 @@
 #define WINDOW_HEIGHT 720
 
 /// The source for the standard 2D rendering program's vertex shader.
-///
-/// This shader takes in `position` and `texcoord` vertex components,
-/// where `position` is a top-left origin pixel-space position mapped using the `viewportSize` uniform,
-/// and `texcoord` is passed to the fragment shader's `vertexTexcoord` vertex component.
 #define PROGRAM_2D_VERTEX_SOURCE \
 { \
     "#version 150 core\n", \
@@ -29,15 +25,13 @@
     "out vec2 vertexTexcoord;", \
     "void main()", \
     "{", \
-    "    gl_Position = model * projection * vec4(position.x, position.y, 0.0, 1.0);", \
+    "    mat4 mvp = projection * model;", \
+    "    gl_Position = mvp * vec4(position.x, position.y, 0.0, 1.0);", \
     "    vertexTexcoord = texcoord;", \
     "}", \
 }
 
 /// The source for the standard 2D rendering program's fragment shader.
-///
-/// This shader takes in a `vertexTexcoord` vertex component and uses it to sample the `sampler`
-/// uniform, which is then passed out via the `outColor` output.
 #define PROGRAM_2D_FRAGMENT_SOURCE \
 { \
     "#version 150 core\n" \
