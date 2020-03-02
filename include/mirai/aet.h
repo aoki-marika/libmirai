@@ -160,6 +160,16 @@ struct aet_composition_t
     ///
     /// Allocated.
     struct aet_layer_group_t *layer_groups;
+
+    /// The total number of sprite groups within this composition.
+    unsigned int num_sprite_groups;
+
+    /// All the sprite groups within this composition.
+    ///
+    /// This array should not need to be used directly,
+    /// instead using the sprite group pointers within layers.
+    /// Allocated.
+    struct aet_sprite_group_t *sprite_groups;
 };
 
 /// The data structure for a group of layers within a composition.
@@ -258,9 +268,10 @@ struct aet_layer_t
 
     /// The sprite group that this layer is sourcing, if any.
     ///
-    /// If `contents_type` is `AET_LAYER_TYPE_SOURCE_SPRITE_GROUP`, then this is allocated.
+    /// If `contents_type` is `AET_LAYER_TYPE_SOURCE_SPRITE_GROUP` then this
+    /// points to an item within the containing composition's sprite groups array.
     /// If not then this is `NULL`.
-    struct aet_sprite_group_t *sprite_group;
+    const struct aet_sprite_group_t *sprite_group;
 
     /// The total number of child layer within this layer.
     unsigned int num_children;
