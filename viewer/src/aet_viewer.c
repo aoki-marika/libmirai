@@ -249,7 +249,25 @@ void aet_viewer_node_draw(struct aet_viewer_t *viewer,
             case AET_NODE_CONTENTS_TYPE_SPRITE_GROUP:
             {
                 GLenum unit = viewer->textures_base_unit + node->sprites_texture_index;
-                struct color4_t multiply_color = { .r = 1, .g = 1, .b = 1, .a = node->opacity };
+                struct color4_t multiply_color =
+                {
+                    .r = 1,
+                    .g = 1,
+                    .b = 1,
+                    .a = node->opacity,
+                };
+
+                switch (node->backing->blend_mode)
+                {
+                    case AET_NODE_BLEND_MODE_NORMAL:
+                    default:
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                        break;
+                    case AET_NODE_BLEND_MODE_ADD:
+                        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                        break;
+                }
+
                 glActiveTexture(unit);
                 glBindVertexArray(node->sprite_quads_array->id);
                 glUniformMatrix4fv(uniform_model, 1, GL_FALSE, (GLfloat *)&node->transform_world.data);

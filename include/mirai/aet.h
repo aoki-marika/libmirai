@@ -13,6 +13,8 @@
 #include "color.h"
 #include "vector.h"
 
+#warning TODO: Update terminology in line with the Wiki page.
+
 // MARK: - Enumerations
 
 /// The different types of data that a node can contain.
@@ -70,6 +72,22 @@ enum aet_marker_type_t
     ///
     /// `ED_SP`.
     AET_MARKER_TYPE_PRESS_END   = 0x8,
+};
+
+/// The different blend modes that a single node can use to blend it's colours with colours behind it.
+enum aet_node_blend_mode_t
+{
+    /// Normal alpha blending.
+    AET_NODE_BLEND_MODE_NORMAL = 0x3,
+
+    /// Additive blending.
+    AET_NODE_BLEND_MODE_ADD = 0x5,
+
+    /// Unknown blending.
+    AET_NODE_BLEND_MODE_UNK1 = 0x6,
+
+    /// Unknown blending.
+    AET_NODE_BLEND_MODE_UNK2 = 0xb,
 };
 
 /// The different types that a single animatable property within a node can be.
@@ -206,6 +224,9 @@ struct aet_node_t
     ///
     /// Allocated.
     struct aet_marker_t *markers;
+
+    /// The blend mode of this node.
+    enum aet_node_blend_mode_t blend_mode;
 
     /// The X axis of this node's origin.
     struct aet_node_property_t origin_x;

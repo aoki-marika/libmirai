@@ -238,11 +238,19 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     }
 
     // read the properties
+    fseek(file, properties_pointer, SEEK_SET);
+
+    // read the blend mode
+    enum aet_node_blend_mode_t blend_mode = 0x0;
+    fread(&blend_mode, sizeof(uint8_t), 1, file);
+    node->blend_mode = blend_mode;
+
+    // read the temporal properties
     // origin x, origin y, position x, position y, rotation, scale x, scale y, opacity
     for (int i = 0; i < 8; i++)
     {
         // array
-        // +4 to skip the preceding 4x unknown bytes
+        // +4 to skip the preceding enums
         fseek(file, properties_pointer + 4 + (i * 8), SEEK_SET);
 
         // read the value count and data array pointer
