@@ -13,19 +13,7 @@
 #include "color.h"
 #include "vector.h"
 
-#warning TODO: Update terminology in line with the Wiki page.
-
 // MARK: - Enumerations
-
-/// The different types of data that a node can contain.
-enum aet_node_contents_type_t
-{
-    /// This node contains a sprite group that it draws.
-    AET_NODE_CONTENTS_TYPE_SPRITE_GROUP = 0x1,
-
-    /// This node contains child nodes that use this node's properties as a base.
-    AET_NODE_CONTENTS_TYPE_CHILDREN     = 0x3,
-};
 
 /// The different commonly used types of markers.
 enum aet_marker_type_t
@@ -74,30 +62,40 @@ enum aet_marker_type_t
     AET_MARKER_TYPE_PRESS_END   = 0x8,
 };
 
-/// The different blend modes that a single node can use to blend it's colours with colours behind it.
-enum aet_node_blend_mode_t
+/// The different blend modes that a layer can use to blend it's source's colours with colours behind it.
+enum aet_layer_blend_mode_t
 {
     /// Normal alpha blending.
-    AET_NODE_BLEND_MODE_NORMAL = 0x3,
+    AET_LAYER_BLEND_MODE_NORMAL = 0x3,
 
     /// Additive blending.
-    AET_NODE_BLEND_MODE_ADD = 0x5,
+    AET_LAYER_BLEND_MODE_ADD    = 0x5,
 
     /// Unknown blending.
-    AET_NODE_BLEND_MODE_UNK1 = 0x6,
+    AET_LAYER_BLEND_MODE_UNK1   = 0x6,
 
     /// Unknown blending.
-    AET_NODE_BLEND_MODE_UNK2 = 0xb,
+    AET_LAYER_BLEND_MODE_UNK2   = 0xb,
 };
 
-/// The different types that a single animatable property within a node can be.
-enum aet_node_property_type_t
+/// The different types that a temporal properties keyframes can be.
+enum aet_layer_keyframes_type_t
 {
-    /// This property has no animations.
-    AET_NODE_PROPERTY_TYPE_STATIC = 0x0,
+    /// There is a single keyframe which forms a static value, and has no frame number.
+    AET_LAYER_KEYFRAMES_TYPE_SINGLE   = 0x0,
 
-    /// This property has animations.
-    AET_NODE_PROPERTY_TYPE_DYNAMIC = 0x1,
+    /// There is a series of keyframes which form an animation.
+    AET_LAYER_KEYFRAMES_TYPE_MULTIPLE = 0x1,
+};
+
+/// The different types that a layer can be.
+enum aet_layer_type_t
+{
+    /// This layer sources a sprite group.
+    AET_LAYER_TYPE_SOURCE_SPRITE_GROUP = 0x1,
+
+    /// This layer does not have a source, but has children which use this layer's properties as a base.
+    AET_LAYER_TYPE_NULL_OBJECT         = 0x3,
 };
 
 // MARK: - Data Structures
@@ -110,173 +108,174 @@ struct aet_t
     /// Kept open until `aet_close(aet)` is called with this AET.
     FILE *file;
 
-    /// The total number of scenes within this AET.
-    unsigned int num_scenes;
+    /// The total number of compositions within this AET.
+    unsigned int num_compositions;
 
-    /// All the scenes within this AET.
+    /// All the compositions within this AET.
     ///
     /// Allocated.
-    struct aet_scene_t *scenes;
+    struct aet_composition_t *compositions;
 };
 
-/// The data structure for a single scene within an AET.
-struct aet_scene_t
+/// The data structure for a single composition within an AET.
+///
+/// Compositions are used to create self-contained independent timelines and layers.
+/// Generally multiple compositions are used within an AET to separate the two screens.
+struct aet_composition_t
 {
-    /// The name of this scene.
+    /// The name of this compositions.
     ///
     /// Allocated.
     char *name;
 
-    /// The total number of used SCR names within this scene.
+    /// The total number of used SCR names within this composition.
     unsigned int num_scr_names;
 
-    /// The names of all the SCRs that this scene uses.
+    /// The names of all the SCRs that this composition's sprites use.
     ///
     /// The array and each item are allocated.
     char **scr_names;
 
-    /// The frame number at which this scene's animation timeline begins.
+    /// The absolute frame number at which this compositions's timeline begins.
     float timeline_start_frame;
 
-    /// The frame number at which this scene's animation timeline ends.
+    /// The absolute frame number at which this composition's timeline ends.
     float timeline_end_frame;
 
-    /// The frame rate (frames per second) at which this scene's animation timeline is defined in.
+    /// The frame rate (frames per second) at which this composition's timeline is defined in.
     ///
-    /// All nodes within this scene take on this frame rate, and do not define their own.
-    float timeline_framerate;
+    /// All layers within this composition take on this frame rate, and do not define their own.
+    float timeline_frame_rate;
 
-    /// The width of this scene, in pixels.
+    /// The width of this composition, in pixels.
     unsigned int width;
 
-    /// The height of this scene, in pixels.
+    /// The height of this composition, in pixels.
     unsigned int height;
 
-    /// The total number of node groups within this scene.
-    unsigned int num_node_groups;
+    /// The total number of layer groups within this compositon.
+    unsigned int num_layer_groups;
 
-    /// All the node groups within this scene.
+    /// All the layer groups within this composition.
     ///
     /// Allocated.
-    struct aet_node_group_t *node_groups;
+    struct aet_layer_group_t *layer_groups;
 };
 
-/// The data structure for a group of nodes within an AET.
-struct aet_node_group_t
+/// The data structure for a group of layers within a composition.
+struct aet_layer_group_t
 {
-    /// The total number of nodes within this group.
-    unsigned int num_nodes;
+    /// The total number of layers within this group.
+    unsigned int num_layers;
 
-    /// All the nodes within this group.
+    /// All the layers within this group.
     ///
     /// Allocated.
-    struct aet_node_t *nodes;
+    struct aet_layer_t *layers;
 };
 
-/// The data structure for a single animatable property within a node.
-struct aet_node_property_t
+/// The data structure for the set of keyframes of a single temporal property within a layer.
+struct aet_layer_keyframes_t
 {
-    /// The type of this property.
-    enum aet_node_property_type_t type;
+    /// The type of this keyframe set.
+    enum aet_layer_keyframes_type_t type;
 
-    /// The total number of values within this property.
-    unsigned int num_values;
+    /// The total number of keyframes within this set.
+    unsigned int num_keyframes;
 
-    /// All the values of this property.
+    /// All the keyframe values within this set.
     ///
     /// Allocated.
     float *values;
 
-    /// The frame number of which each value of this property occurs.
+    /// All the keyframe frame numbers within this set.
     ///
-    /// If `type` is `AET_NODE_PROPERTY_TYPE_STATIC`, then this is `NULL`.
-    /// If `type` is `AET_NODE_PROPERTY_TYPE_DYNAMIC`, then this is allocated.
+    /// If `type` is `AET_LAYER_KEYFRAMES_TYPE_SINGLE`, then this is `NULL`.
+    /// If `type` is `AET_LAYER_KEYFRAMES_TYPE_MULTIPLE`, then this is allocated.
     float *frames;
 };
 
-/// The data structure for a single node within a scene's graph in an AET.
-struct aet_node_t
+/// The data structure for a single layer within a composition.
+struct aet_layer_t
 {
-    /// The name of this node.
+    /// The name of this layer.
     ///
     /// Allocated.
     char *name;
 
-    /// The frame number at which this node's animation timeline begins.
+    /// The frame number at which this layer's timeline begins.
     ///
-    /// Relative to both the scenes timeline and frame rate.
+    /// Relative to the parent layer's timeline.
+    /// If this layer has no parent, then this is relative to the containing composition's timeline.
     float timeline_start_frame;
 
-    /// The frame number at which this node's animation timeline end.
+    /// The frame number at which this layer's timeline ends.
     ///
-    /// Relative to both the scenes timeline and frame rate.
+    /// Relative to the parent layer's timeline.
+    /// If this layer has no parent, then this is relative to the containing composition's timeline.
     float timeline_end_frame;
 
-    /// The normalized speed at which this node's animation timeline plays at.
-    ///
-    /// `1.0` is normal speed, `2.0` is double speed, `0.5` is half, etc.
-    float timeline_playback_speed;
+    /// The speed, in percentage, at which this layer's timeline plays at.
+    float timeline_speed;
 
-    /// The total number of markers within this node.
+    /// The total number of markers within this layer.
     unsigned int num_markers;
 
-    /// All the markers within this node.
+    /// All the markers within this layer.
     ///
     /// Allocated.
     struct aet_marker_t *markers;
 
-    /// The blend mode of this node.
-    enum aet_node_blend_mode_t blend_mode;
+    /// The blend mode of this layer's source.
+    enum aet_layer_blend_mode_t blend_mode;
 
-    /// The X axis of this node's origin.
-    struct aet_node_property_t origin_x;
+    /// The keyframes for the X axis of this layer's transform anchor point, relative to scale.
+    struct aet_layer_keyframes_t anchor_point_x;
 
-    /// The Y axis of this node's origin.
-    struct aet_node_property_t origin_y;
+    /// The keyframes for the Y axis of this layer's transform anchor point, relative to scale.
+    struct aet_layer_keyframes_t anchor_point_y;
 
-    /// The X axis of this node's position.
-    struct aet_node_property_t position_x;
+    /// The keyframes for the X axis of this layer's position, in pixels.
+    struct aet_layer_keyframes_t position_x;
 
-    /// The Y axis of this node's origin.
-    struct aet_node_property_t position_y;
+    /// The keyframes for the Y axis of this layer's position, in pixels.
+    struct aet_layer_keyframes_t position_y;
 
-    /// The rotation of this node, in clockwise degrees.
-    struct aet_node_property_t rotation;
+    /// The keyframes for the rotation of this layer, in clockwise degrees.
+    struct aet_layer_keyframes_t rotation;
 
-    /// The X axis of this node's scale.
-    struct aet_node_property_t scale_x;
+    /// The keyframes for the X axis of this layer's scale, in percentage.
+    struct aet_layer_keyframes_t scale_x;
 
-    /// The Y axis of this node's scale.
-    struct aet_node_property_t scale_y;
+    /// The keyframes for the Y axis of this layer's scale, in percentage.
+    struct aet_layer_keyframes_t scale_y;
 
-    /// The opacity of this node.
-    struct aet_node_property_t opacity;
+    /// The keyframes for the opacity of this layer.
+    struct aet_layer_keyframes_t opacity;
 
-    /// The type of this node's contents.
-    enum aet_node_contents_type_t contents_type;
+    /// The type of this layer.
+    enum aet_layer_type_t type;
 
-    /// The sprite group that this node is drawing, if any.
+    /// The sprite group that this layer is sourcing, if any.
     ///
-    /// If `contents_type` is `AET_NODE_CONTENTS_TYPE_SPRITE_GROUP`, then this is allocated.
+    /// If `contents_type` is `AET_LAYER_TYPE_SOURCE_SPRITE_GROUP`, then this is allocated.
     /// If not then this is `NULL`.
     struct aet_sprite_group_t *sprite_group;
 
-    /// The total number of child nodes within this node.
+    /// The total number of child layer within this layer.
     unsigned int num_children;
 
-    /// All the child nodes of this node.
+    /// All the child layers of this layer.
     ///
-    /// If `contents_type` is `AET_NODE_CONTENTS_TYPE_CHILDREN`, then this is allocated.
+    /// If `type` is `AET_LAYER_TYPE_NULL_OBJECT`, then this is allocated.
     /// If not then this is `NULL`.
-    struct aet_node_t *children;
+    struct aet_layer_t *children;
 };
 
-/// The data structure for marking an animation point within a node's timeline.
+/// The data structure for marking an animation point or event within a layer's timeline.
 struct aet_marker_t
 {
-    /// The frame number at which this marker occurs.
-    ///
-    /// Relative to the containing node's timeline.
+    /// The frame number, within the containing layer's timeline, at which this marker occurs.
     float frame;
 
     /// The name of this marker.
@@ -320,7 +319,7 @@ struct aet_sprite_group_t
 /// The data structure for a single sprite within an AET.
 struct aet_sprite_t
 {
-    /// The index of the SCR that this sprite uses, within it's containing scene.
+    /// The index of the SCR that this sprite uses, within it's containing composition.
     unsigned int scr_index;
 };
 

@@ -87,10 +87,10 @@ void aet_sprite_group_read(FILE *file, struct aet_sprite_group_t *sprite_group)
     }
 }
 
-/// Read the node at the current position of the given file into the given node.
-/// @param file The file to read the node from.
-/// @param node The node to read the file into.
-void aet_node_read(FILE *file, struct aet_node_t *node)
+/// Read the layer at the current position of the given file into the given layer.
+/// @param file The file to read the layer from.
+/// @param layer The layer to read the file into.
+void aet_layer_read(FILE *file, struct aet_layer_t *layer)
 {
     // read the name and seek back
     uint32_t name_pointer;
@@ -102,26 +102,26 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
 
     // read the timeline properties
     // third float is unknown, skip it
-    float timeline_start_frame, timeline_end_frame, timeline_playback_speed;
+    float timeline_start_frame, timeline_end_frame, timeline_speed;
     fread(&timeline_start_frame, sizeof(timeline_start_frame), 1, file);
     fread(&timeline_end_frame, sizeof(timeline_end_frame), 1, file);
     fseek(file, 4, SEEK_CUR);
-    fread(&timeline_playback_speed, sizeof(timeline_playback_speed), 1, file);
+    fread(&timeline_speed, sizeof(timeline_speed), 1, file);
 
     // unknown values
     //  - 1x u16 flags unknown
     //  - 1x u8 unknown
     fseek(file, 2 + 1, SEEK_CUR);
 
-    // read the contents type and pointer
+    // read the type and source pointer
     // init 0x0 and fread sizeof(u8) as sizeof(enum) is 4
-    enum aet_node_contents_type_t contents_type = 0x0;
-    fread(&contents_type, sizeof(uint8_t), 1, file);
+    enum aet_layer_type_t type = 0x0;
+    fread(&type, sizeof(uint8_t), 1, file);
 
-    uint32_t contents_pointer;
-    fread(&contents_pointer, sizeof(contents_pointer), 1, file);
+    uint32_t source_pointer;
+    fread(&source_pointer, sizeof(source_pointer), 1, file);
 
-    // u32 parent node pointer, unused
+    // u32 parent layer pointer, unused
     fseek(file, 4, SEEK_CUR);
 
     // read the marker count and pointer
@@ -137,54 +137,54 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     for (int i = 0; i < 4; i++)
         assert(fgetc(file) == 0x0);
 
-    // initialize the node
-    node->name = name;
-    node->timeline_start_frame = timeline_start_frame;
-    node->timeline_end_frame = timeline_end_frame;
-    node->timeline_playback_speed = timeline_playback_speed;
+    // initialize the layer
+    layer->name = name;
+    layer->timeline_start_frame = timeline_start_frame;
+    layer->timeline_end_frame = timeline_end_frame;
+    layer->timeline_speed = timeline_speed;
 
-    // read the contents
-    node->contents_type = contents_type;
-    switch (contents_type)
+    // read the source
+    layer->type = type;
+    switch (type)
     {
-        case AET_NODE_CONTENTS_TYPE_SPRITE_GROUP:
+        case AET_LAYER_TYPE_SOURCE_SPRITE_GROUP:
         {
             // read the sprite group
-            fseek(file, contents_pointer, SEEK_SET);
+            fseek(file, source_pointer, SEEK_SET);
 
             struct aet_sprite_group_t *sprite_group = malloc(sizeof(struct aet_sprite_group_t));
             aet_sprite_group_read(file, sprite_group);
 
-            // set the nodes contents
-            node->sprite_group = sprite_group;
-            node->num_children = 0;
-            node->children = NULL;
+            // set the layers source
+            layer->sprite_group = sprite_group;
+            layer->num_children = 0;
+            layer->children = NULL;
             break;
         }
-        case AET_NODE_CONTENTS_TYPE_CHILDREN:
+        case AET_LAYER_TYPE_NULL_OBJECT:
         {
             // read the child count and pointer
-            fseek(file, contents_pointer, SEEK_SET);
+            fseek(file, source_pointer, SEEK_SET);
 
             uint32_t num_children, children_pointer;
             fread(&num_children, sizeof(num_children), 1, file);
             fread(&children_pointer, sizeof(children_pointer), 1, file);
 
-            // read the children and set the nodes contents
-            node->sprite_group = NULL;
-            node->num_children = num_children;
-            node->children = malloc(num_children * sizeof(struct aet_node_t));
+            // read the children and set the layers source
+            layer->sprite_group = NULL;
+            layer->num_children = num_children;
+            layer->children = malloc(num_children * sizeof(struct aet_layer_t));
             for (int i = 0; i < num_children; i++)
             {
                 // array
                 fseek(file, children_pointer + (i * 48), SEEK_SET);
 
-                // read the node
-                struct aet_node_t child;
-                aet_node_read(file, &child);
+                // read the layer
+                struct aet_layer_t child;
+                aet_layer_read(file, &child);
 
                 // insert the child
-                node->children[i] = child;
+                layer->children[i] = child;
             }
             break;
         }
@@ -194,8 +194,8 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     }
 
     // read the markers
-    node->num_markers = num_markers;
-    node->markers = malloc(num_markers * sizeof(struct aet_marker_t));
+    layer->num_markers = num_markers;
+    layer->markers = malloc(num_markers * sizeof(struct aet_marker_t));
     for (int i = 0; i < num_markers; i++)
     {
         // array
@@ -231,7 +231,7 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
             type = AET_MARKER_TYPE_PRESS_END;
 
         // insert the marker
-        struct aet_marker_t *marker = &node->markers[i];
+        struct aet_marker_t *marker = &layer->markers[i];
         marker->frame = frame;
         marker->name = name;
         marker->type = type;
@@ -241,81 +241,79 @@ void aet_node_read(FILE *file, struct aet_node_t *node)
     fseek(file, properties_pointer, SEEK_SET);
 
     // read the blend mode
-    enum aet_node_blend_mode_t blend_mode = 0x0;
+    enum aet_layer_blend_mode_t blend_mode = 0x0;
     fread(&blend_mode, sizeof(uint8_t), 1, file);
-    node->blend_mode = blend_mode;
+    layer->blend_mode = blend_mode;
 
-    // read the temporal properties
-    // origin x, origin y, position x, position y, rotation, scale x, scale y, opacity
+    // read the temporal property keyframes
+    // anchor point x/y, position x/y, rotation, scale x/y, opacity
     for (int i = 0; i < 8; i++)
     {
         // array
         // +4 to skip the preceding enums
         fseek(file, properties_pointer + 4 + (i * 8), SEEK_SET);
 
-        // read the value count and data array pointer
-        uint32_t num_values, data_pointer;
-        fread(&num_values, sizeof(num_values), 1, file);
+        // read the keyframe count and data array pointer
+        uint32_t num_keyframes, data_pointer;
+        fread(&num_keyframes, sizeof(num_keyframes), 1, file);
         fread(&data_pointer, sizeof(data_pointer), 1, file);
 
         // read the data
-        assert(num_values > 0);
+        assert(num_keyframes > 0);
 
-        struct aet_node_property_t property;
-        property.num_values = num_values;
-        property.values = malloc(num_values * sizeof(float));
-        if (num_values == 1)
+        struct aet_layer_keyframes_t keyframes;
+        keyframes.num_keyframes = num_keyframes;
+        keyframes.values = malloc(num_keyframes * sizeof(float));
+        if (num_keyframes == 1)
         {
-            property.type = AET_NODE_PROPERTY_TYPE_STATIC;
-            property.frames = NULL;
+            keyframes.type = AET_LAYER_KEYFRAMES_TYPE_SINGLE;
+            keyframes.frames = NULL;
 
-            // read the single value
+            // read and insert the single keyframe
             float value;
             fseek(file, data_pointer, SEEK_SET);
             fread(&value, sizeof(value), 1, file);
 
-            // insert the value
-            property.values[0] = value;
+            keyframes.values[0] = value;
         }
         else
         {
-            property.type = AET_NODE_PROPERTY_TYPE_DYNAMIC;
-            property.frames = malloc(num_values * sizeof(float));
+            keyframes.type = AET_LAYER_KEYFRAMES_TYPE_MULTIPLE;
+            keyframes.frames = malloc(num_keyframes * sizeof(float));
 
-            // read all the values and their frames
-            for (int i = 0; i < num_values; i++)
+            // read and insert all the keyframes
+            for (int i = 0; i < num_keyframes; i++)
             {
                 // read the frame number
                 float frame;
                 fseek(file, data_pointer + (i * sizeof(float)), SEEK_SET);
                 fread(&frame, sizeof(frame), 1, file);
 
-                // read the value
+                // read and insert the keyframe
                 // the value is in a second array after the frames
                 // with 2 floats per entry, so seek to the beginning of that array,
                 // then seek to the item and take the value
                 float value;
-                fseek(file, data_pointer + (num_values * sizeof(float)), SEEK_SET);
+                fseek(file, data_pointer + (num_keyframes * sizeof(float)), SEEK_SET);
                 fseek(file, (i * sizeof(float) * 2), SEEK_CUR);
                 fread(&value, sizeof(value), 1, file);
 
-                // insert the value
-                property.values[i] = value;
-                property.frames[i] = frame;
+                keyframes.values[i] = value;
+                keyframes.frames[i] = frame;
             }
         }
 
-        // set the property
+        // set the property keyframes
         switch (i)
         {
-            case 0: node->origin_x = property; break;
-            case 1: node->origin_y = property; break;
-            case 2: node->position_x = property; break;
-            case 3: node->position_y = property; break;
-            case 4: node->rotation = property; break;
-            case 5: node->scale_x = property; break;
-            case 6: node->scale_y = property; break;
-            case 7: node->opacity = property; break;
+            case 0: layer->anchor_point_x = keyframes; break;
+            case 1: layer->anchor_point_y = keyframes; break;
+            case 2: layer->position_x = keyframes; break;
+            case 3: layer->position_y = keyframes; break;
+            case 4: layer->rotation = keyframes; break;
+            case 5: layer->scale_x = keyframes; break;
+            case 6: layer->scale_y = keyframes; break;
+            case 7: layer->opacity = keyframes; break;
             default: assert(0);
         }
     }
@@ -325,51 +323,52 @@ void aet_open(const char *path, struct aet_t *aet)
 {
     // open the file for binary reading
     FILE *file = fopen(path, "rb");
+    aet->file = file;
 
     // read the header size
     uint32_t header_size;
     fread(&header_size, sizeof(header_size), 1, file);
 
-    // read the scene pointers
-    uint32_t scene_headers_pointer, scene_names_pointer, scene_scr_names_pointer;
-    fread(&scene_headers_pointer, sizeof(scene_headers_pointer), 1, file);
-    fread(&scene_names_pointer, sizeof(scene_names_pointer), 1, file);
-    fread(&scene_scr_names_pointer, sizeof(scene_scr_names_pointer), 1, file);
+    // read the composition pointers
+    uint32_t compositions_pointer, composition_names_pointer, composition_scr_names_pointer;
+    fread(&compositions_pointer, sizeof(compositions_pointer), 1, file);
+    fread(&composition_names_pointer, sizeof(composition_names_pointer), 1, file);
+    fread(&composition_scr_names_pointer, sizeof(composition_scr_names_pointer), 1, file);
 
-    // ensure the extra bytes within the header are 0x0
+    // padding
     for (int i = 0; i < header_size - 16; i++)
         assert(fgetc(file) == 0x0);
 
-    // read the scene count
-    uint32_t num_scenes;
-    fread(&num_scenes, sizeof(num_scenes), 1, file);
+    // read the composition count
+    uint32_t num_compositions;
+    fread(&num_compositions, sizeof(num_compositions), 1, file);
 
     // initialize the aet
-    aet->num_scenes = num_scenes;
-    aet->scenes = malloc(num_scenes * sizeof(struct aet_scene_t));
+    aet->num_compositions = num_compositions;
+    aet->compositions = malloc(num_compositions * sizeof(struct aet_composition_t));
 
-    // read the scenes
-    for (int i = 0; i < num_scenes; i++)
+    // read the compositions
+    for (int i = 0; i < num_compositions; i++)
     {
-        struct aet_scene_t scene;
+        struct aet_composition_t composition;
 
         // read the name
         {
             // pointer table
-            fseek(file, scene_names_pointer + (i * 4), SEEK_SET);
+            fseek(file, composition_names_pointer + (i * 4), SEEK_SET);
 
             uint32_t name_pointer;
             fread(&name_pointer, sizeof(name_pointer), 1, file);
             fseek(file, name_pointer, SEEK_SET);
 
             // read the string
-            scene.name = utils_read_string(file);
+            composition.name = utils_read_string(file);
         }
 
         // read the used scr names
         {
             // read the first and last entry pointers
-            fseek(file, scene_scr_names_pointer + (i * 8), SEEK_SET);
+            fseek(file, composition_scr_names_pointer + (i * 8), SEEK_SET);
 
             uint32_t first_entry_pointer, last_entry_pointer;
             fread(&first_entry_pointer, sizeof(first_entry_pointer), 1, file);
@@ -380,8 +379,8 @@ void aet_open(const char *path, struct aet_t *aet)
             unsigned int num_scr_names = (last_entry_pointer - first_entry_pointer) / 4;
 
             // read all the scr names
-            scene.num_scr_names = num_scr_names;
-            scene.scr_names = malloc(num_scr_names * sizeof(char *));
+            composition.num_scr_names = num_scr_names;
+            composition.scr_names = malloc(num_scr_names * sizeof(char *));
             for (int i = 0; i < num_scr_names; i++)
             {
                 // pointer table
@@ -392,24 +391,24 @@ void aet_open(const char *path, struct aet_t *aet)
                 fseek(file, scr_name_pointer, SEEK_SET);
 
                 // read the scr name
-                scene.scr_names[i] = utils_read_string(file);
+                composition.scr_names[i] = utils_read_string(file);
             }
         }
 
-        // read the header
+        // read the composition
         {
             // pointer table
-            fseek(file, scene_headers_pointer + (i * 4), SEEK_SET);
+            fseek(file, compositions_pointer + (i * 4), SEEK_SET);
 
-            uint32_t header_pointer;
-            fread(&header_pointer, sizeof(header_pointer), 1, file);
-            fseek(file, header_pointer, SEEK_SET);
+            uint32_t composition_pointer;
+            fread(&composition_pointer, sizeof(composition_pointer), 1, file);
+            fseek(file, composition_pointer, SEEK_SET);
 
             // read the timeline properties
-            float timeline_start_frame, timeline_end_frame, timeline_framerate;
+            float timeline_start_frame, timeline_end_frame, timeline_frame_rate;
             fread(&timeline_start_frame, sizeof(timeline_start_frame), 1, file);
             fread(&timeline_end_frame, sizeof(timeline_end_frame), 1, file);
-            fread(&timeline_framerate, sizeof(timeline_framerate), 1, file);
+            fread(&timeline_frame_rate, sizeof(timeline_frame_rate), 1, file);
 
             // 1x float unknown
             fseek(file, 4, SEEK_CUR);
@@ -425,77 +424,73 @@ void aet_open(const char *path, struct aet_t *aet)
             for (int i = 0; i < 4; i++)
                 assert(fgetc(file) == 0x0);
 
-            // initialize the scene
-            scene.timeline_start_frame = timeline_start_frame;
-            scene.timeline_end_frame = timeline_end_frame;
-            scene.timeline_framerate = timeline_framerate;
-            scene.width = width;
-            scene.height = height;
+            // initialize the composition
+            composition.timeline_start_frame = timeline_start_frame;
+            composition.timeline_end_frame = timeline_end_frame;
+            composition.timeline_frame_rate = timeline_frame_rate;
+            composition.width = width;
+            composition.height = height;
 
-            // read the node group count and pointer
-            uint32_t num_node_groups, node_groups_pointer;
-            fread(&num_node_groups, sizeof(num_node_groups), 1, file);
-            fread(&node_groups_pointer, sizeof(node_groups_pointer), 1, file);
+            // read the layer group count and pointer
+            uint32_t num_layer_groups, layer_groups_pointer;
+            fread(&num_layer_groups, sizeof(num_layer_groups), 1, file);
+            fread(&layer_groups_pointer, sizeof(layer_groups_pointer), 1, file);
 
             // u32 sprite group count and pointer, unused
-            // all the sprite groups are pointed to by nodes when needed
+            // all the sprite groups are pointed to by layers when needed
             fseek(file, 2 * 4, SEEK_CUR);
 
             // padding
             for (int i = 0; i < 5; i++)
                 assert(fgetc(file) == 0x0);
 
-            // read the node groups
-            scene.num_node_groups = num_node_groups;
-            scene.node_groups = malloc(num_node_groups * sizeof(struct aet_node_group_t));
-            for (int g = 0; g < num_node_groups; g++)
+            // read the layer groups
+            composition.num_layer_groups = num_layer_groups;
+            composition.layer_groups = malloc(num_layer_groups * sizeof(struct aet_layer_group_t));
+            for (int g = 0; g < num_layer_groups; g++)
             {
                 // array
-                fseek(file, node_groups_pointer + (g * 8), SEEK_SET);
+                fseek(file, layer_groups_pointer + (g * 8), SEEK_SET);
 
-                // read the node count and pointer
-                uint32_t num_nodes, nodes_pointer;
-                fread(&num_nodes, sizeof(num_nodes), 1, file);
-                fread(&nodes_pointer, sizeof(nodes_pointer), 1, file);
+                // read the layer count and pointer
+                uint32_t num_layers, layers_pointer;
+                fread(&num_layers, sizeof(num_layers), 1, file);
+                fread(&layers_pointer, sizeof(layers_pointer), 1, file);
 
-                // read the nodes
-                struct aet_node_group_t group;
-                group.num_nodes = num_nodes;
-                group.nodes = malloc(num_nodes * sizeof(struct aet_node_t));
-                for (int n = 0; n < num_nodes; n++)
+                // read the layers
+                struct aet_layer_group_t group;
+                group.num_layers = num_layers;
+                group.layers = malloc(num_layers * sizeof(struct aet_layer_t));
+                for (int n = 0; n < num_layers; n++)
                 {
-                    // read the node
-                    fseek(file, nodes_pointer + (n * 48), SEEK_SET);
+                    // array
+                    fseek(file, layers_pointer + (n * 48), SEEK_SET);
 
-                    struct aet_node_t node;
-                    aet_node_read(file, &node);
-
-                    // insert the node
-                    group.nodes[n] = node;
+                    // read and insert the layer
+                    struct aet_layer_t layer;
+                    aet_layer_read(file, &layer);
+                    group.layers[n] = layer;
                 }
 
-                // insert the node group
-                scene.node_groups[g] = group;
+                // insert the layer group
+                composition.layer_groups[g] = group;
             }
         }
 
-        // insert the scene
-        aet->scenes[i] = scene;
+        // insert the composition
+        aet->compositions[i] = composition;
     }
-
-    // initialize the aet
-    aet->file = file;
 }
 
-/// Release the given node property and all of it's allocated resources.
-/// @param property The node property to free.
-void aet_node_property_free(struct aet_node_property_t *property)
+/// Release the given layer keyframes and all of it's allocated resources.
+/// @param keyframes The layer keyframes to free.
+void aet_layer_keyframes_free(struct aet_layer_keyframes_t *keyframes)
 {
-    free(property->values);
-    switch (property->type)
+    free(keyframes->values);
+    switch (keyframes->type)
     {
-        case AET_NODE_PROPERTY_TYPE_DYNAMIC:
-            free(property->frames);
+        case AET_LAYER_KEYFRAMES_TYPE_MULTIPLE:
+            free(keyframes->frames);
             break;
         default:
             break;
@@ -504,52 +499,52 @@ void aet_node_property_free(struct aet_node_property_t *property)
 
 void aet_close(struct aet_t *aet)
 {
-    for (int i = 0; i < aet->num_scenes; i++)
+    for (int i = 0; i < aet->num_compositions; i++)
     {
-        struct aet_scene_t *scene = &aet->scenes[i];
-        for (int i = 0; i < scene->num_scr_names; i++)
-            free(scene->scr_names[i]);
+        struct aet_composition_t *composition = &aet->compositions[i];
+        for (int i = 0; i < composition->num_scr_names; i++)
+            free(composition->scr_names[i]);
 
-        for (int i = 0; i < scene->num_node_groups; i++)
+        for (int i = 0; i < composition->num_layer_groups; i++)
         {
-            struct aet_node_group_t *group = &scene->node_groups[i];
-            for (int i = 0; i < group->num_nodes; i++)
+            struct aet_layer_group_t *group = &composition->layer_groups[i];
+            for (int i = 0; i < group->num_layers; i++)
             {
-                struct aet_node_t *node = &group->nodes[i];
-                switch (node->contents_type)
+                struct aet_layer_t *layer = &group->layers[i];
+                switch (layer->type)
                 {
-                    case AET_NODE_CONTENTS_TYPE_SPRITE_GROUP:
-                        free(node->sprite_group);
+                    case AET_LAYER_TYPE_SOURCE_SPRITE_GROUP:
+                        free(layer->sprite_group);
                         break;
-                    case AET_NODE_CONTENTS_TYPE_CHILDREN:
-                        free(node->children);
+                    case AET_LAYER_TYPE_NULL_OBJECT:
+                        free(layer->children);
                         break;
                 }
 
-                for (int i = 0; i < node->num_markers; i++)
-                    free(node->markers[i].name);
+                for (int i = 0; i < layer->num_markers; i++)
+                    free(layer->markers[i].name);
 
-                free(node->markers);
+                free(layer->markers);
 
-                aet_node_property_free(&node->origin_x);
-                aet_node_property_free(&node->origin_y);
-                aet_node_property_free(&node->position_x);
-                aet_node_property_free(&node->position_y);
-                aet_node_property_free(&node->rotation);
-                aet_node_property_free(&node->scale_x);
-                aet_node_property_free(&node->scale_y);
-                aet_node_property_free(&node->opacity);
+                aet_layer_keyframes_free(&layer->anchor_point_x);
+                aet_layer_keyframes_free(&layer->anchor_point_y);
+                aet_layer_keyframes_free(&layer->position_x);
+                aet_layer_keyframes_free(&layer->position_y);
+                aet_layer_keyframes_free(&layer->rotation);
+                aet_layer_keyframes_free(&layer->scale_x);
+                aet_layer_keyframes_free(&layer->scale_y);
+                aet_layer_keyframes_free(&layer->opacity);
             }
 
-            free(group->nodes);
+            free(group->layers);
         }
 
-        free(scene->node_groups);
-        free(scene->scr_names);
-        free(scene->name);
+        free(composition->layer_groups);
+        free(composition->scr_names);
+        free(composition->name);
     }
 
-    free(aet->scenes);
+    free(aet->compositions);
     fclose(aet->file);
 }
 
