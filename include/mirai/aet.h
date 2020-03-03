@@ -158,8 +158,6 @@ struct aet_composition_t
 
     /// All the layers within this composition.
     ///
-    /// This array should not need to be used directly,
-    /// instead using the parent and child pointers within the root layers and their children.
     /// Allocated.
     struct aet_layer_t *layers;
 
@@ -169,7 +167,7 @@ struct aet_composition_t
     /// All the sprite groups within this composition.
     ///
     /// This array should not need to be used directly,
-    /// instead using the sprite group pointers within layers.
+    /// instead using the sprite group pointers within this composition's layers.
     /// Allocated.
     struct aet_sprite_group_t *sprite_groups;
 };

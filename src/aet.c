@@ -468,10 +468,10 @@ void aet_open(const char *path, struct aet_t *aet)
             composition.width = width;
             composition.height = height;
 
-            // read the layer group count and pointer
-            uint32_t num_layer_groups, layer_groups_pointer;
-            fread(&num_layer_groups, sizeof(num_layer_groups), 1, file);
-            fread(&layer_groups_pointer, sizeof(layer_groups_pointer), 1, file);
+            // read the layer level count and pointer
+            uint32_t num_layer_levels, layer_levels_pointer;
+            fread(&num_layer_levels, sizeof(num_layer_levels), 1, file);
+            fread(&layer_levels_pointer, sizeof(layer_levels_pointer), 1, file);
 
             // read the sprite group count and pointer
             uint32_t num_sprite_groups, sprite_groups_pointer;
@@ -505,9 +505,9 @@ void aet_open(const char *path, struct aet_t *aet)
 
             // read the layers
             //
-            // its difficult to understand what the purpose of layer groups are
+            // its difficult to understand what the purpose of layer levels are
             // but each group builds up a single "level" of layers,
-            // of which then a succeeding layer group uses as its children
+            // of which then a succeeding layer level uses within its layers children
             // the children of a layer within a group are **always** within
             // a preceding group, however parents rarely are
             //
@@ -519,10 +519,10 @@ void aet_open(const char *path, struct aet_t *aet)
             // iterate through the groups once first to get the total layer count
             // and avoid any annoying realloc business
             unsigned int num_layers = 0;
-            for (int g = 0; g < num_layer_groups; g++)
+            for (int level = 0; level < num_layer_levels; level++)
             {
                 // array
-                fseek(file, layer_groups_pointer + (g * 8), SEEK_SET);
+                fseek(file, layer_levels_pointer + (level * 8), SEEK_SET);
 
                 // read the group layer count and increment the total
                 uint32_t num_group_layers;
@@ -537,10 +537,10 @@ void aet_open(const char *path, struct aet_t *aet)
 
             unsigned int layer_index = 0;
             size_t layer_pointers[num_layers];
-            for (int g = 0; g < num_layer_groups; g++)
+            for (int level = 0; level < num_layer_levels; level++)
             {
                 // array
-                fseek(file, layer_groups_pointer + (g * 8), SEEK_SET);
+                fseek(file, layer_levels_pointer + (level * 8), SEEK_SET);
 
                 // read the group layer count and pointer
                 uint32_t num_group_layers, group_layers_pointer;
@@ -548,10 +548,10 @@ void aet_open(const char *path, struct aet_t *aet)
                 fread(&group_layers_pointer, sizeof(group_layers_pointer), 1, file);
 
                 // read all the layers within this group
-                for (int l = 0; l < num_group_layers; l++)
+                for (int layer = 0; layer < num_group_layers; layer++)
                 {
                     // array
-                    fseek(file, group_layers_pointer + (l * 48), SEEK_SET);
+                    fseek(file, group_layers_pointer + (layer * 48), SEEK_SET);
 
                     // set the pointer, read, and insert the layer
                     layer_pointers[layer_index] = ftell(file);
