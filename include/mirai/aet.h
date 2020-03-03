@@ -153,13 +153,15 @@ struct aet_composition_t
     /// The height of this composition, in pixels.
     unsigned int height;
 
-    /// The total number of layer groups within this compositon.
-    unsigned int num_layer_groups;
+    /// The total number of layers within this composition.
+    unsigned int num_layers;
 
-    /// All the layer groups within this composition.
+    /// All the layers within this composition.
     ///
+    /// This array should not need to be used directly,
+    /// instead using the parent and child pointers within the root layers and their children.
     /// Allocated.
-    struct aet_layer_group_t *layer_groups;
+    struct aet_layer_t *layers;
 
     /// The total number of sprite groups within this composition.
     unsigned int num_sprite_groups;
@@ -170,18 +172,6 @@ struct aet_composition_t
     /// instead using the sprite group pointers within layers.
     /// Allocated.
     struct aet_sprite_group_t *sprite_groups;
-};
-
-/// The data structure for a group of layers within a composition.
-struct aet_layer_group_t
-{
-    /// The total number of layers within this group.
-    unsigned int num_layers;
-
-    /// All the layers within this group.
-    ///
-    /// Allocated.
-    struct aet_layer_t *layers;
 };
 
 /// The data structure for the set of keyframes of a single temporal property within a layer.
@@ -228,6 +218,12 @@ struct aet_layer_t
     /// The speed, in percentage, at which this layer's timeline plays at.
     float timeline_speed;
 
+    /// The parent layer of this layer, if any.
+    ///
+    /// If this is not `NULL` then it points to a layer within the containing
+    /// composition's layers array.
+    const struct aet_layer_t *parent;
+
     /// The total number of markers within this layer.
     unsigned int num_markers;
 
@@ -273,14 +269,16 @@ struct aet_layer_t
     /// If not then this is `NULL`.
     const struct aet_sprite_group_t *sprite_group;
 
-    /// The total number of child layer within this layer.
+    /// The total number of child layers within this layer.
     unsigned int num_children;
 
-    /// All the child layers of this layer.
+    /// All the child layers of this layer, if any.
     ///
-    /// If `type` is `AET_LAYER_TYPE_NULL_OBJECT`, then this is allocated.
+    /// If `contents_type` is `AET_LAYER_TYPE_NULL_OBJECT` then each
+    /// item points to an item within the containing composition's layers array,
+    /// and the array is allocated.
     /// If not then this is `NULL`.
-    struct aet_layer_t *children;
+    const struct aet_layer_t **children;
 };
 
 /// The data structure for marking an animation point or event within a layer's timeline.

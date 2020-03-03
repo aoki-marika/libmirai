@@ -89,14 +89,24 @@ void aet_sprite_group_read(FILE *file, struct aet_sprite_group_t *sprite_group)
 
 /// Read the layer at the current position of the given file into the given layer.
 /// @param file The file to read the layer from.
+/// @param num_related_layers The total number of layers within the given array.
+/// @param related_layers All the possibly related layers that this layer can point to for children and parents.
+/// It is asserted that the children and/or parent for this layer are within this array.
+/// It is expected that this array is kept in memory until the layer is released.
+/// The parents of these layers are set depending on if they are a child of the new layer.
+/// @param related_layer_pointers The pointer to each layer within the given array,
+/// within the given file handle.
 /// @param num_sprite_groups The total number of sprite groups within the given array.
-/// @param sprite_groups All the sprite groups that this layer can point to.
+/// @param sprite_groups All the sprite groups that this layer can point to for it's source.
 /// It is asserted that the sprite group for this layer is within this array.
 /// It is expected that this array is kept in memory until the layer is released.
 /// @param sprite_group_pointers The pointer to each sprite group within the given array,
 /// within the given file handle.
 /// @param layer The layer to read the file into.
 void aet_layer_read(FILE *file,
+                    unsigned int num_related_layers,
+                    struct aet_layer_t *related_layers,
+                    const size_t *related_layer_pointers,
                     unsigned int num_sprite_groups,
                     const struct aet_sprite_group_t *sprite_groups,
                     const size_t *sprite_group_pointers,
@@ -132,6 +142,8 @@ void aet_layer_read(FILE *file,
     fread(&source_pointer, sizeof(source_pointer), 1, file);
 
     // u32 parent layer pointer, unused
+    // the parent is set later on when children are read
+    // as the parent is not always read before this point
     fseek(file, 4, SEEK_CUR);
 
     // read the marker count and pointer
@@ -152,6 +164,7 @@ void aet_layer_read(FILE *file,
     layer->timeline_start_frame = timeline_start_frame;
     layer->timeline_end_frame = timeline_end_frame;
     layer->timeline_speed = timeline_speed;
+    layer->parent = NULL;
 
     // read the source
     layer->type = type;
@@ -170,6 +183,7 @@ void aet_layer_read(FILE *file,
                 }
             }
 
+            // assert that the sprite group was found
             assert(sprite_group != NULL);
 
             // set the layers source
@@ -187,21 +201,27 @@ void aet_layer_read(FILE *file,
             fread(&num_children, sizeof(num_children), 1, file);
             fread(&children_pointer, sizeof(children_pointer), 1, file);
 
-            // read the children and set the layers source
+            // get and set the children
             layer->sprite_group = NULL;
             layer->num_children = num_children;
-            layer->children = malloc(num_children * sizeof(struct aet_layer_t));
-            for (int i = 0; i < num_children; i++)
+            layer->children = calloc(num_children, sizeof(struct aet_layer_t));
+            for (int c = 0; c < num_children; c++)
             {
                 // array
-                fseek(file, children_pointer + (i * 48), SEEK_SET);
+                size_t child_pointer = children_pointer + (c * 48);
+                for (int l = 0; l < num_related_layers; l++)
+                {
+                    if (related_layer_pointers[l] == child_pointer)
+                    {
+                        struct aet_layer_t *child = &related_layers[l];
+                        child->parent = layer;
+                        layer->children[c] = child;
+                        break;
+                    }
+                }
 
-                // read the layer
-                struct aet_layer_t child;
-                aet_layer_read(file, num_sprite_groups, sprite_groups, sprite_group_pointers, &child);
-
-                // insert the child
-                layer->children[i] = child;
+                // assert that the child was found
+                assert(layer->children[c] != NULL);
             }
             break;
         }
@@ -483,37 +503,78 @@ void aet_open(const char *path, struct aet_t *aet)
                 composition.sprite_groups[i] = sprite_group;
             }
 
-            // read the layer groups
-            composition.num_layer_groups = num_layer_groups;
-            composition.layer_groups = malloc(num_layer_groups * sizeof(struct aet_layer_group_t));
+            // read the layers
+            //
+            // its difficult to understand what the purpose of layer groups are
+            // but each group builds up a single "level" of layers,
+            // of which then a succeeding layer group uses as its children
+            // the children of a layer within a group are **always** within
+            // a preceding group, however parents rarely are
+            //
+            // so the (seemingly) best way to read these is to only read
+            // the top level layers of each group, getting their children
+            // by comparing the pointer to the child with the pointer of already
+            // read layers, and then setting them by reference
+            //
+            // iterate through the groups once first to get the total layer count
+            // and avoid any annoying realloc business
+            unsigned int num_layers = 0;
             for (int g = 0; g < num_layer_groups; g++)
             {
                 // array
                 fseek(file, layer_groups_pointer + (g * 8), SEEK_SET);
 
-                // read the layer count and pointer
-                uint32_t num_layers, layers_pointer;
-                fread(&num_layers, sizeof(num_layers), 1, file);
-                fread(&layers_pointer, sizeof(layers_pointer), 1, file);
+                // read the group layer count and increment the total
+                uint32_t num_group_layers;
+                fread(&num_group_layers, sizeof(num_group_layers), 1, file);
 
-                // read the layers
-                struct aet_layer_group_t group;
-                group.num_layers = num_layers;
-                group.layers = malloc(num_layers * sizeof(struct aet_layer_t));
-                for (int n = 0; n < num_layers; n++)
+                num_layers += num_group_layers;
+            }
+
+            // reiterate and read all the groups and their layers
+            composition.num_layers = num_layers;
+            composition.layers = malloc(num_layers * sizeof(struct aet_layer_t));
+
+            unsigned int layer_index = 0;
+            size_t layer_pointers[num_layers];
+            for (int g = 0; g < num_layer_groups; g++)
+            {
+                // array
+                fseek(file, layer_groups_pointer + (g * 8), SEEK_SET);
+
+                // read the group layer count and pointer
+                uint32_t num_group_layers, group_layers_pointer;
+                fread(&num_group_layers, sizeof(num_group_layers), 1, file);
+                fread(&group_layers_pointer, sizeof(group_layers_pointer), 1, file);
+
+                // read all the layers within this group
+                for (int l = 0; l < num_group_layers; l++)
                 {
                     // array
-                    fseek(file, layers_pointer + (n * 48), SEEK_SET);
+                    fseek(file, group_layers_pointer + (l * 48), SEEK_SET);
 
-                    // read and insert the layer
+                    // set the pointer, read, and insert the layer
+                    layer_pointers[layer_index] = ftell(file);
+
                     struct aet_layer_t layer;
-                    aet_layer_read(file, num_sprite_groups, composition.sprite_groups, sprite_group_pointers, &layer);
-                    group.layers[n] = layer;
-                }
+                    aet_layer_read(file,
+                                   num_layers,
+                                   composition.layers,
+                                   layer_pointers,
+                                   num_sprite_groups,
+                                   composition.sprite_groups,
+                                   sprite_group_pointers,
+                                   &layer);
 
-                // insert the layer group
-                composition.layer_groups[g] = group;
+                    composition.layers[layer_index] = layer;
+
+                    // increment the layer index
+                    layer_index++;
+                }
             }
+
+            // assert that the correct amount of layers were read
+            assert(layer_index == num_layers);
         }
 
         // insert the composition
@@ -544,41 +605,35 @@ void aet_close(struct aet_t *aet)
         for (int i = 0; i < composition->num_scr_names; i++)
             free(composition->scr_names[i]);
 
-        for (int i = 0; i < composition->num_layer_groups; i++)
+        for (int i = 0; i < composition->num_layers; i++)
         {
-            struct aet_layer_group_t *group = &composition->layer_groups[i];
-            for (int i = 0; i < group->num_layers; i++)
+            struct aet_layer_t *layer = &composition->layers[i];
+            switch (layer->type)
             {
-                struct aet_layer_t *layer = &group->layers[i];
-                switch (layer->type)
-                {
-                    case AET_LAYER_TYPE_NULL_OBJECT:
-                        free(layer->children);
-                        break;
-                    default:
-                        break;
-                }
-
-                for (int i = 0; i < layer->num_markers; i++)
-                    free(layer->markers[i].name);
-
-                free(layer->markers);
-
-                aet_layer_keyframes_free(&layer->anchor_point_x);
-                aet_layer_keyframes_free(&layer->anchor_point_y);
-                aet_layer_keyframes_free(&layer->position_x);
-                aet_layer_keyframes_free(&layer->position_y);
-                aet_layer_keyframes_free(&layer->rotation);
-                aet_layer_keyframes_free(&layer->scale_x);
-                aet_layer_keyframes_free(&layer->scale_y);
-                aet_layer_keyframes_free(&layer->opacity);
+                case AET_LAYER_TYPE_NULL_OBJECT:
+                    free(layer->children);
+                    break;
+                default:
+                    break;
             }
 
-            free(group->layers);
+            for (int i = 0; i < layer->num_markers; i++)
+                free(layer->markers[i].name);
+
+            free(layer->markers);
+
+            aet_layer_keyframes_free(&layer->anchor_point_x);
+            aet_layer_keyframes_free(&layer->anchor_point_y);
+            aet_layer_keyframes_free(&layer->position_x);
+            aet_layer_keyframes_free(&layer->position_y);
+            aet_layer_keyframes_free(&layer->rotation);
+            aet_layer_keyframes_free(&layer->scale_x);
+            aet_layer_keyframes_free(&layer->scale_y);
+            aet_layer_keyframes_free(&layer->opacity);
         }
 
         free(composition->sprite_groups);
-        free(composition->layer_groups);
+        free(composition->layers);
         free(composition->scr_names);
         free(composition->name);
     }
