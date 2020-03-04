@@ -201,6 +201,9 @@ struct aet_layer_t
     /// Allocated.
     char *name;
 
+    /// The unique number identifying this layer within the containing composition.
+    unsigned int number;
+
     /// The frame number at which this layer's timeline begins.
     ///
     /// Relative to the parent layer's timeline.

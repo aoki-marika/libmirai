@@ -568,6 +568,11 @@ void aet_open(const char *path, struct aet_t *aet)
 
                     composition.layers[layer_index] = layer;
 
+                    // set the layer number
+                    // has to be done here as to not pass in the index to aet_layer_read
+                    // increment the number by one as ae layers are 1-indexed
+                    composition.layers[layer_index].number = layer_index + 1;
+
                     // increment the layer index
                     layer_index++;
                 }
