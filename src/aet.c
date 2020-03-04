@@ -556,7 +556,7 @@ void aet_open(const char *path, struct aet_t *aet)
                     // set the pointer, read, and insert the layer
                     layer_pointers[layer_index] = ftell(file);
 
-                    struct aet_layer_t layer;
+                    struct aet_layer_t *layer = &composition.layers[layer_index];
                     aet_layer_read(file,
                                    num_layers,
                                    composition.layers,
@@ -564,14 +564,12 @@ void aet_open(const char *path, struct aet_t *aet)
                                    num_sprite_groups,
                                    composition.sprite_groups,
                                    sprite_group_pointers,
-                                   &layer);
-
-                    composition.layers[layer_index] = layer;
+                                   layer);
 
                     // set the layer number
                     // has to be done here as to not pass in the index to aet_layer_read
                     // increment the number by one as ae layers are 1-indexed
-                    composition.layers[layer_index].number = layer_index + 1;
+                    layer->number = layer_index + 1;
 
                     // increment the layer index
                     layer_index++;
