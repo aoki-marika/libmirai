@@ -218,12 +218,6 @@ struct aet_layer_t
     /// The speed, in percentage, at which this layer's timeline plays at.
     float timeline_speed;
 
-    /// The parent layer of this layer, if any.
-    ///
-    /// If this is not `NULL` then it points to a layer within the containing
-    /// composition's layers array.
-    const struct aet_layer_t *parent;
-
     /// The total number of markers within this layer.
     unsigned int num_markers;
 

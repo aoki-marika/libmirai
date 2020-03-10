@@ -164,7 +164,6 @@ void aet_layer_read(FILE *file,
     layer->timeline_start_frame = timeline_start_frame;
     layer->timeline_end_frame = timeline_end_frame;
     layer->timeline_speed = timeline_speed;
-    layer->parent = NULL;
 
     // read the source
     layer->type = type;
@@ -214,7 +213,6 @@ void aet_layer_read(FILE *file,
                     if (related_layer_pointers[l] == child_pointer)
                     {
                         struct aet_layer_t *child = &related_layers[l];
-                        child->parent = layer;
                         layer->children[c] = child;
                         break;
                     }
