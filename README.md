@@ -11,10 +11,3 @@ and then have the library be linked by adding libmirai to your target's Framewor
 
 In other cases either the source files can be added to the program, or a custom Makefile or similar
 can be created to build libmirai into a static/dynamic library and then link that to the program.
-
-## Viewer
-
-A demo program, viewer, is included with the project to demonstrate the abilities and usage of libmirai.
-
-If using macOS then viewer can be compiled and run by opening the project in Xcode and running as GLFW is included with the project.
-If using Windows or Linux then GLFW needs to be installed, and the program built linking against it using a custom Makefile or similar.
