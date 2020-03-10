@@ -83,9 +83,9 @@
 		EC2DB38E23D31F9300A5FA6C /* src */ = {
 			isa = PBXGroup;
 			children = (
+				EC6FB37023E08CA800EEB73A /* aet.c */,
 				EC2DB39323D31F9300A5FA6C /* spr.c */,
 				EC2DB39923D31F9300A5FA6C /* ctpk.c */,
-				EC6FB37023E08CA800EEB73A /* aet.c */,
 				EC2DB39423D31F9300A5FA6C /* ctr_texture.c */,
 				EC2DB39723D31F9300A5FA6C /* utils.c */,
 			);
@@ -95,9 +95,9 @@
 		EC74315C23D32A7F00586E48 /* mirai */ = {
 			isa = PBXGroup;
 			children = (
+				EC6FB36E23E08C9B00EEB73A /* aet.h */,
 				EC2DB37E23D31F8700A5FA6C /* spr.h */,
 				EC2DB37523D31F8700A5FA6C /* ctpk.h */,
-				EC6FB36E23E08C9B00EEB73A /* aet.h */,
 				EC2DB37D23D31F8700A5FA6C /* ctr_texture.h */,
 				EC2DB37323D31F8700A5FA6C /* utils.h */,
 				EC47097423D47604004863D0 /* color.h */,
