@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include "ctr_texture.h"
-#include "vector.h"
 
 // MARK: - Data Structures
 
@@ -58,15 +57,25 @@ struct scr_t
     /// The index of the texture that this SCR is within, within this SCR's containing SPR.
     unsigned int texture_index;
 
-    /// The top left UV coordinate of this SCR's bounds.
+    /// The U of the top left UV coordinate of this SCR's bounds.
     ///
     /// Despite being a UV coordinate, this uses a top-left origin.
-    struct vec2_t top_left;
+    float start_u;
 
-    /// The bottom right UV coordinate of this SCR's bounds.
+    /// The V of the top left UV coordinate of this SCR's bounds.
     ///
     /// Despite being a UV coordinate, this uses a top-left origin.
-    struct vec2_t bottom_right;
+    float start_v;
+
+    /// The U of the bottom right UV coordinate of this SCR's bounds.
+    ///
+    /// Despite being a UV coordinate, this uses a top-left origin.
+    float end_u;
+
+    /// The V of the bottom right UV coordinate of this SCR's bounds.
+    ///
+    /// Despite being a UV coordinate, this uses a top-left origin.
+    float end_v;
 
     /// The top left U coordinate of this SCR's bounds, in pixels.
     ///

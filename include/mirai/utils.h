@@ -10,9 +10,6 @@
 
 #include <stdio.h>
 
-#include "vector.h"
-#include "matrix.h"
-
 // MARK: - Functions
 
 /// Read the relative offset at the current offset of the given file handle, and convert it to an absolute pointer within the file.

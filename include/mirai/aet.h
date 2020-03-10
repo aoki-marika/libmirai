@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 #include "color.h"
-#include "vector.h"
 
 // MARK: - Enumerations
 

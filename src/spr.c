@@ -139,12 +139,14 @@ void spr_open(const char *path, struct spr_t *spr)
         // read the name
         char *name = spr_string_read(file, scr_name_allocated_size);
 
-        // read the top left and bottom right coordinates
-        struct vec2_t top_left, bottom_right;
-        vec2_read(file, &top_left);
-        vec2_read(file, &bottom_right);
-        assert(bottom_right.x > top_left.x);
-        assert(bottom_right.y > top_left.y);
+        // read the uv bounds coordinates
+        float start_u, start_v, end_u, end_v;
+        fread(&start_u, sizeof(start_u), 1, file);
+        fread(&start_v, sizeof(start_v), 1, file);
+        fread(&end_u, sizeof(end_u), 1, file);
+        fread(&end_v, sizeof(end_v), 1, file);
+        assert(end_u > start_u);
+        assert(end_v > start_v);
 
         // read the pixel space uv coordinates and size
         uint16_t x, y, width, height;
@@ -157,8 +159,10 @@ void spr_open(const char *path, struct spr_t *spr)
         struct scr_t scr;
         scr.name = name;
         scr.texture_index = texture_index;
-        scr.top_left = top_left;
-        scr.bottom_right = bottom_right;
+        scr.start_u = start_u;
+        scr.start_v = start_v;
+        scr.end_u = end_u;
+        scr.end_v = end_v;
         scr.x = x;
         scr.y = y;
         scr.width = width;
