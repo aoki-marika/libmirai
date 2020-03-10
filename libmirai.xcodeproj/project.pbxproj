@@ -16,7 +16,6 @@
 		EC2DB3A123D31F9300A5FA6C /* ctr_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39423D31F9300A5FA6C /* ctr_texture.c */; };
 		EC2DB3A423D31F9300A5FA6C /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39723D31F9300A5FA6C /* utils.c */; };
 		EC2DB3A623D31F9300A5FA6C /* ctpk.c in Sources */ = {isa = PBXBuildFile; fileRef = EC2DB39923D31F9300A5FA6C /* ctpk.c */; };
-		EC47097623D47666004863D0 /* color.c in Sources */ = {isa = PBXBuildFile; fileRef = EC47097523D47666004863D0 /* color.c */; };
 		EC6FB37123E08CA800EEB73A /* aet.c in Sources */ = {isa = PBXBuildFile; fileRef = EC6FB37023E08CA800EEB73A /* aet.c */; };
 /* End PBXBuildFile section */
 
@@ -32,7 +31,6 @@
 		EC2DB39723D31F9300A5FA6C /* utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = utils.c; sourceTree = "<group>"; };
 		EC2DB39923D31F9300A5FA6C /* ctpk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctpk.c; sourceTree = "<group>"; };
 		EC47097423D47604004863D0 /* color.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = color.h; sourceTree = "<group>"; };
-		EC47097523D47666004863D0 /* color.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = color.c; sourceTree = "<group>"; };
 		EC6FB36E23E08C9B00EEB73A /* aet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = aet.h; sourceTree = "<group>"; };
 		EC6FB37023E08CA800EEB73A /* aet.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = aet.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -90,7 +88,6 @@
 				EC6FB37023E08CA800EEB73A /* aet.c */,
 				EC2DB39423D31F9300A5FA6C /* ctr_texture.c */,
 				EC2DB39723D31F9300A5FA6C /* utils.c */,
-				EC47097523D47666004863D0 /* color.c */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -185,7 +182,6 @@
 				EC2DB3A423D31F9300A5FA6C /* utils.c in Sources */,
 				EC2DB3A023D31F9300A5FA6C /* spr.c in Sources */,
 				EC2DB3A123D31F9300A5FA6C /* ctr_texture.c in Sources */,
-				EC47097623D47666004863D0 /* color.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
