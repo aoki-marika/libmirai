@@ -13,19 +13,24 @@
 #include <string.h>
 
 #include "constants.h"
+#include "vector.h"
 #include "texture.h"
 
 // MARK: - Functions
 
 /// Create the vertices for a quad displaying a sampled texture.
-/// @param uv_bottom_left The bottom left UV coordinate of the quad.
-/// @param uv_top_right The top right UV coordinate of the quad.
+/// @param start_u The U of the bottom left UV coordinate of the quad.
+/// @param start_v The V of the bottom left UV coordinate of the quad.
+/// @param end_u The U of the top right UV coordinate of the quad.
+/// @param end_v The V of the top right UV coordinate of the quad.
 /// @param width The width of the quad.
 /// @param height The height of the quad.
 /// @param out The array to write the new vertices to, must have 24 entries available.
 /// The data is formatted as X, Y, U, and V floats for each vertex, with there being 6 vertices (two triangles) per quad.
-void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
-                                    struct vec2_t uv_top_right,
+void spr_viewer_texture_quad_create(float start_u,
+                                    float start_v,
+                                    float end_u,
+                                    float end_v,
                                     unsigned int width,
                                     unsigned int height,
                                     float *out)
@@ -36,14 +41,14 @@ void spr_viewer_texture_quad_create(struct vec2_t uv_bottom_left,
     const float y = (WINDOW_HEIGHT - h) / 2;
     const float vertices[] =
     {
-        //  x,     y,                u,                v
-        x,     y,     uv_bottom_left.x, uv_top_right.y,   // top-left
-        x,     y + h, uv_bottom_left.x, uv_bottom_left.y, // bottom-left
-        x + w, y + h, uv_top_right.x,   uv_bottom_left.y, // bottom-right
+        //  x,     y,       u,       v
+        x,     y,     start_u, end_v,   // top-left
+        x,     y + h, start_u, start_v, // bottom-left
+        x + w, y + h, end_u,   start_v, // bottom-right
 
-        x,     y,     uv_bottom_left.x, uv_top_right.y,   // top-left
-        x + w, y,     uv_top_right.x,   uv_top_right.y,   // top-right
-        x + w, y + h, uv_top_right.x,   uv_bottom_left.y, // bottom-right
+        x,     y,     start_u, end_v,   // top-left
+        x + w, y,     end_u,   end_v,   // top-right
+        x + w, y + h, end_u,   start_v, // bottom-right
     };
 
     // copy the vertices to the output
@@ -172,10 +177,8 @@ void spr_viewer_create(const struct spr_t *spr,
     for (int i = 0; i < spr->num_textures; i++)
     {
         struct ctr_texture_t *texture = &spr->textures[i];
-        struct vec2_t uv_bottom_left = { .x = 0, .y = 0 };
-        struct vec2_t uv_top_right = { .x = 1, .y = 1 };
-        spr_viewer_texture_quad_create(uv_bottom_left,
-                                       uv_top_right,
+        spr_viewer_texture_quad_create(0, 0,
+                                       1, 1,
                                        texture->width,
                                        texture->height,
                                        &texture_quads_vertices[i * PROGRAM_2D_QUAD_FLOATS]);
@@ -193,10 +196,8 @@ void spr_viewer_create(const struct spr_t *spr,
     {
         // invert the v coordinates to convert from top-left origin to bottom-left
         struct scr_t *scr = &spr->scrs[i];
-        struct vec2_t uv_bottom_left = { .x = scr->top_left.x, .y = 1.0 - scr->bottom_right.y };
-        struct vec2_t uv_top_right = { .x = scr->bottom_right.x, .y = 1.0 - scr->top_left.y };
-        spr_viewer_texture_quad_create(uv_bottom_left,
-                                       uv_top_right,
+        spr_viewer_texture_quad_create(scr->start_u, 1.0 - scr->end_v,
+                                       scr->end_u, 1.0 - scr->start_v,
                                        scr->width,
                                        scr->height,
                                        &scr_quads_vertices[i * PROGRAM_2D_QUAD_FLOATS]);

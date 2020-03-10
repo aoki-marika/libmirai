@@ -10,9 +10,9 @@
 
 #include <mirai/aet.h>
 #include <mirai/spr.h>
-#include <mirai/matrix.h>
 
 #include "program.h"
+#include "matrix.h"
 #include "vertex_array.h"
 
 // MARK: - Data Structures

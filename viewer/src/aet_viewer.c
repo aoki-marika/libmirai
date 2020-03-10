@@ -63,14 +63,14 @@ void aet_viewer_node_create(const struct aet_node_t *backing,
 
                 float sprite_vertices[PROGRAM_2D_QUAD_FLOATS] =
                 {
-                //  x, y,                   u,                         v
-                    0, 0, scr->top_left.x,     1.0 - scr->top_left.y,     // top-left
-                    0, h, scr->top_left.x,     1.0 - scr->bottom_right.y, // bottom-left
-                    w, h, scr->bottom_right.x, 1.0 - scr->bottom_right.y, // bottom-right
+                //  x, y,            u,                  v
+                    0, 0, scr->start_u, 1.0 - scr->start_v, // top-left
+                    0, h, scr->start_u, 1.0 - scr->end_v,   // bottom-left
+                    w, h, scr->end_u,   1.0 - scr->end_v,   // bottom-right
 
-                    0, 0, scr->top_left.x,     1.0 - scr->top_left.y,     // top-left
-                    w, 0, scr->bottom_right.x, 1.0 - scr->top_left.y,     // top-right
-                    w, h, scr->bottom_right.x, 1.0 - scr->bottom_right.y, // bottom-right
+                    0, 0, scr->start_u, 1.0 - scr->start_v, // top-left
+                    w, 0, scr->end_u,   1.0 - scr->start_v, // top-right
+                    w, h, scr->end_u,   1.0 - scr->end_v,   // bottom-right
                 };
 
                 memcpy(&vertices[i * PROGRAM_2D_QUAD_FLOATS], sprite_vertices, sizeof(sprite_vertices));
